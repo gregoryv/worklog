@@ -32,7 +32,9 @@ func (l *lexer) lex() {
 }
 
 func ParseString(body, name string) {
-	l := &lexer{report: make(chan part)}
+	l := &lexer{
+		report: make(chan part),
+	}
 	go l.lex()
 	for {
 		select {
