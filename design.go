@@ -1,9 +1,5 @@
 package timesheet
 
-type parser interface {
-	parse() error
-}
-
 type lexer struct {
 	report chan part
 }

@@ -9,17 +9,14 @@ func (p part) String() string {
 }
 
 func start(l *lexer) state {
-	l.report <- part{tag: Comment, val: "start"}
-	return mid
+	// Comment
+
+	// or Year Month row is
+	// If starts with digit atRow
+	return atYear
 }
 
-func mid(l *lexer) state {
-	l.report <- part{tag: Text, val: "mid"}
-	return end
-}
-
-func end(l *lexer) state {
-	l.report <- part{tag: Text, val: "end"}
+func atYear(l *lexer) state {
 	return nil
 }
 
