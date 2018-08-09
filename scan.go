@@ -13,6 +13,13 @@ type Scanner struct {
 
 const eof = -1
 
+// peek returns but does not consume the next rune in the input.
+func (s *Scanner) Peek() rune {
+	r := s.Next()
+	s.Backup()
+	return r
+}
+
 func (s *Scanner) Backup() {
 	s.pos -= s.width
 	// Correct newline count.
