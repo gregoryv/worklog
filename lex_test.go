@@ -9,7 +9,9 @@ import (
 func Example() {
 	report := make(chan part)
 	var s scanner.Scanner
-	s.Init(strings.NewReader("2018 August"))
+	s.Init(strings.NewReader(`2018 August
+-----------
+`))
 	l := &lexer{
 		report: report,
 		stream: s,
@@ -31,4 +33,5 @@ func Example() {
 	// output:
 	// Year: 2018
 	// Month: August
+	// Separator: -----------
 }

@@ -10,4 +10,5 @@ const (
 	Text
 	Year
 	Month
+	Separator
 )
