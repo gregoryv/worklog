@@ -4,9 +4,9 @@ package timesheet
 
 import "fmt"
 
-const _tag_name = "UnknownCommentTextYear"
+const _tag_name = "UnknownCommentTextYearMonth"
 
-var _tag_index = [...]uint8{0, 7, 14, 18, 22}
+var _tag_index = [...]uint8{0, 7, 14, 18, 22, 27}
 
 func (i tag) String() string {
 	if i < 0 || i >= tag(len(_tag_index)-1) {

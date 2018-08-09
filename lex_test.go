@@ -15,17 +15,20 @@ func Example() {
 		stream: s,
 	}
 	// print all parts as they come in
+	done := make(chan bool)
 	go func() {
 		for {
 			part, more := <-report
 			if !more {
+				done <- true
 				return
 			}
 			fmt.Println(part)
 		}
 	}()
 	l.lex()
+	<-done
 	// output:
 	// Year: 2018
-	// August
+	// Month: August
 }

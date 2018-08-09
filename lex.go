@@ -2,7 +2,6 @@ package timesheet
 
 import (
 	"fmt"
-	"strings"
 	"text/scanner"
 )
 
@@ -15,20 +14,16 @@ type lexer struct {
 // state funcs are used to scan for parts from specific context
 type state func(*lexer) state
 
-func start(l *lexer) state {
-	r := l.stream.Peek()
-	// If comment
-
-	// or Year Month row is
-	// If starts with digit atRow
-	if strings.ContainsRune("0123456789", r) {
-		return atYear
-	}
-	return nil
-}
-
 func atYear(l *lexer) state {
 	p := part{tag: Year}
+	l.stream.Scan()
+	p.val = l.stream.TokenText()
+	l.report <- p
+	return atMonth
+}
+
+func atMonth(l *lexer) state {
+	p := part{tag: Month}
 	l.stream.Scan()
 	p.val = l.stream.TokenText()
 	l.report <- p
@@ -37,7 +32,7 @@ func atYear(l *lexer) state {
 
 // lex runs until report is closed
 func (l *lexer) lex() {
-	for state := start; state != nil; {
+	for state := atYear; state != nil; {
 		state = state(l)
 	}
 	close(l.report)

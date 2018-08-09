@@ -9,4 +9,5 @@ const (
 	Comment
 	Text
 	Year
+	Month
 )
