@@ -1,5 +1,0 @@
-package timesheet
-
-func Example() {
-
-}
