@@ -5,8 +5,8 @@ import (
 )
 
 type ScanCase struct {
-	exp       rune
-	line, pos int
+	exp         rune
+	line, index int
 }
 
 func TestScanner_Next(t *testing.T) {
@@ -40,7 +40,7 @@ func TestScanner_Back(t *testing.T) {
 	scan = &Scanner{input: "\na"}
 	scan.Next()
 	scan.Back()
-	if scan.line != 1 || scan.pos != 0 {
+	if scan.line != 1 || scan.index != 0 {
 		t.Fail()
 	}
 }
@@ -60,7 +60,7 @@ func check(c ScanCase, r rune, scan *Scanner, t *testing.T) {
 	if c.line != scan.line {
 		t.Errorf("Expected line %v, got %v", c.line, scan.line)
 	}
-	if c.pos != scan.pos {
-		t.Errorf("Expected pos %v, got %v", c.pos, scan.pos)
+	if c.index != scan.index {
+		t.Errorf("Expected pos %v, got %v", c.index, scan.index)
 	}
 }
