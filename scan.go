@@ -11,16 +11,16 @@ type Scanner struct {
 	input string
 }
 
-const eof = -1
+const EOS = -1
 
 // peek returns but does not consume the next rune in the input.
 func (s *Scanner) Peek() rune {
 	r := s.Next()
-	s.Backup()
+	s.Back()
 	return r
 }
 
-func (s *Scanner) Backup() {
+func (s *Scanner) Back() {
 	s.pos -= s.width
 	// Correct newline count.
 	if s.width == 1 && s.input[s.pos] == '\n' {
@@ -28,13 +28,14 @@ func (s *Scanner) Backup() {
 	}
 }
 
+// Reads the next rune and advances the position by 1 if not at eos
 func (s *Scanner) Next() rune {
 	if s.line == 0 {
 		s.line = 1
 	}
 	if s.pos >= len(s.input) {
 		s.width = 0
-		return eof
+		return EOS
 	}
 	r, w := utf8.DecodeRuneInString(s.input[s.pos:])
 	s.width = w

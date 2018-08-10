@@ -9,7 +9,7 @@ type ScanCase struct {
 	line, pos int
 }
 
-func TestScanner_movement(t *testing.T) {
+func TestScanner_Next(t *testing.T) {
 	scan := &Scanner{input: "abc\nd\ne"}
 	cases := []ScanCase{
 		{'a', 1, 1},
@@ -19,29 +19,43 @@ func TestScanner_movement(t *testing.T) {
 		{'d', 2, 5},
 		{'\n', 3, 6},
 		{'e', 3, 7},
-		//		{eof, 3, 7},
+		{EOS, 3, 7},
 	}
 
 	for _, c := range cases {
-		r := scan.Next()
-		check(c, r, scan, t)
-	}
-
-	// Now check them by going backward and forwards
-	for i := len(cases) - 1; i >= 0; i-- {
-		scan.Backup()
-		r := scan.Next()
-		c := cases[i]
-		t.Logf("%v", c)
-		check(c, r, scan, t)
-		scan.Backup()
+		res := scan.Next()
+		check(c, res, scan, t)
 	}
 }
 
-func check(c ScanCase, res rune, scan *Scanner, t *testing.T) {
+func TestScanner_Back(t *testing.T) {
+	scan := &Scanner{input: "abc\nd\ne"}
+	scan.Next()
+	scan.Back()
+	r := scan.Next()
+	c := ScanCase{'a', 1, 1}
+	check(c, r, scan, t)
+
+	// Back over a newline
+	scan = &Scanner{input: "\na"}
+	scan.Next()
+	scan.Back()
+	if scan.line != 1 || scan.pos != 0 {
+		t.Fail()
+	}
+}
+
+func TestScanner_Peek(t *testing.T) {
+	scan := &Scanner{input: "12"}
+	res := scan.Peek()
+	c := ScanCase{'1', 1, 0}
+	check(c, res, scan, t)
+}
+
+func check(c ScanCase, r rune, scan *Scanner, t *testing.T) {
 	t.Helper()
-	if res != c.exp {
-		t.Errorf("Expected rune %q, got %q", c.exp, string(res))
+	if c.exp != r {
+		t.Errorf("Expected rune %q, got %q", c.exp, string(r))
 	}
 	if c.line != scan.line {
 		t.Errorf("Expected line %v, got %v", c.line, scan.line)
