@@ -11,5 +11,6 @@ case $extension in
         gofmt -w $path
         ;;
 esac
+go vet
 go test -coverprofile /tmp/c.out .
 uncover /tmp/c.out
