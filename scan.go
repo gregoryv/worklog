@@ -11,6 +11,10 @@ type Scanner struct {
 	input string
 }
 
+func NewScanner(txt string) *Scanner {
+	return &Scanner{input: txt}
+}
+
 // End Of String
 const EOS = -1
 

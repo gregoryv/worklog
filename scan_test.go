@@ -9,8 +9,15 @@ type ScanCase struct {
 	line, index int
 }
 
+func TestNewScanner(t *testing.T) {
+	s := NewScanner("")
+	if s == nil {
+		t.Fail()
+	}
+}
+
 func TestScanner_Next(t *testing.T) {
-	scan := &Scanner{input: "abc\nd\ne"}
+	scan := NewScanner("abc\nd\ne")
 	cases := []ScanCase{
 		{'a', 1, 1},
 		{'b', 1, 2},
