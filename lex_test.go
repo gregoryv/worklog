@@ -5,7 +5,7 @@ import (
 )
 
 func TestNewLexer(t *testing.T) {
-	if l := NewLexer(); l == nil {
+	if l := NewLexer(""); l == nil {
 		t.Fail()
 	}
 }

@@ -4,10 +4,14 @@ import (
 	"fmt"
 )
 
-type Lexer struct{}
+type Lexer struct {
+	scanner *Scanner
+}
 
-func NewLexer() *Lexer {
-	return &Lexer{}
+func NewLexer(txt string) *Lexer {
+	return &Lexer{
+		scanner: NewScanner(txt),
+	}
 }
 
 type Part struct {
