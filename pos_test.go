@@ -12,7 +12,10 @@ type TestCase struct {
 }
 
 func p(line, col int) Position {
-	return Position{line: line, col: col}
+	p := NewPosition()
+	p.line = line
+	p.col = col
+	return *p
 }
 
 func TestPosition_Val(t *testing.T) {
@@ -31,10 +34,12 @@ func TestPosition_Back(t *testing.T) {
 
 	cases := []TestCase{
 		{"Stay on first, when already there", p(1, 1), 1, 1},
+		{"Backup line", p(2, 1), 1, 1},
 		{"Only backup column", p(1, 5), 1, 4},
 		{"Last column should be remembered", special, 3, 3},
 	}
 	for _, c := range cases {
+		c.msg += ", from " + c.pos.String()
 		line, col := c.pos.Back()
 		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
 	}

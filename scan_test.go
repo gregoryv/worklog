@@ -10,6 +10,27 @@ type ScanCase struct {
 	line, index int
 }
 
+func ExampleScanner_Next() {
+	s := NewScanner("ab\nc")
+	for {
+		r := s.Peek()
+		if r == EOS {
+			break
+		}
+		v := string(r)
+		if r == '\n' {
+			v = "\\n"
+		}
+		fmt.Printf("%s: %s\n", s.Pos().String(), v)
+		s.Next()
+	}
+	//output:
+	// 1,1: a
+	// 1,2: b
+	// 1,3: \n
+	// 2,1: c
+}
+
 func TestNewScanner(t *testing.T) {
 	s := NewScanner("")
 	if s == nil {

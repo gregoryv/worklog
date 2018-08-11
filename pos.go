@@ -10,7 +10,7 @@ type Position struct {
 }
 
 func NewPosition() *Position {
-	return &Position{line: 1, col: 1}
+	return &Position{line: 1, col: 1, last: 1}
 }
 
 func (pos *Position) Val() (line, col int) {
@@ -18,19 +18,21 @@ func (pos *Position) Val() (line, col int) {
 }
 
 func (pos *Position) Back() (line, col int) {
-	if pos.col == 1 && pos.line > 1 {
+	line, col = pos.line, pos.col
+	switch {
+	case col > 1 && line >= 1:
+		col--
+	case col == 1 && line > 1:
 		if pos.last == -1 {
 			panic("You can only Back once over a newline")
 		}
-		pos.col = pos.last
+		col = pos.last
 		pos.last = -1
-	} else if pos.col > 1 {
-		pos.col--
+		line--
 	}
-	if pos.line > 1 {
-		pos.line--
-	}
-	return pos.line, pos.col
+	pos.line = line
+	pos.col = col
+	return
 }
 
 func (pos *Position) NextLine() (line, col int) {

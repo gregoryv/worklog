@@ -27,12 +27,10 @@ func (s *Scanner) Peek() rune {
 
 func (s *Scanner) Back() {
 	s.index -= s.width
-	if s.width == 1 && s.input[s.index] == '\n' {
-		s.pos.Back()
-	}
+	s.pos.Back()
 }
 
-// Reads the next rune and advances the position by 1 if not at eos
+// Reads the next rune and advances the position by 1 if not at EOS
 func (s *Scanner) Next() rune {
 	if s.index >= len(s.input) {
 		s.width = 0
@@ -41,9 +39,14 @@ func (s *Scanner) Next() rune {
 	r, w := utf8.DecodeRuneInString(s.input[s.index:])
 	s.width = w
 	s.index += s.width
-	s.pos.Next()
 	if r == '\n' {
 		s.pos.NextLine()
+	} else {
+		s.pos.Next()
 	}
 	return r
+}
+
+func (s *Scanner) Pos() *Position {
+	return s.pos
 }
