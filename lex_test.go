@@ -10,9 +10,10 @@ func TestPart_String(t *testing.T) {
 		part Part
 		exp  string
 	}{
-		{"", Part{tok: Unknown, val: "jib"}, `Unknown: "jib"`},
-		{"", Part{tok: Number, val: "1"}, `Number: "1"`},
-		{"Undefined, run 'go generate'", Part{tok: Token(-1), val: ""}, `Token(-1): ""`},
+		{"", Part{tok: Unknown, val: "jib"}, `Unknown[0,0]: "jib"`},
+		{"", Part{tok: Number, val: "1"}, `Number[0,0]: "1"`},
+		{"Undefined, run 'go generate'", Part{tok: Token(-1), val: ""},
+			`Token(-1)[0,0]: ""`},
 	} {
 		got := c.part.String()
 		assert(t, c.msg,

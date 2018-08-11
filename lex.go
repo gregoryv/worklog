@@ -7,10 +7,11 @@ import (
 type Part struct {
 	tok Token
 	val string
+	pos Position
 }
 
 func (p *Part) String() string {
-	return fmt.Sprintf("%s: %q", p.tok, p.val)
+	return fmt.Sprintf("%s[%s]: %q", p.tok, p.pos.String(), p.val)
 }
 
 func NewPart() *Part {
