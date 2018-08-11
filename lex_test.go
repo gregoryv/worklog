@@ -33,9 +33,9 @@ func TestPart_String(t *testing.T) {
 		part Part
 		exp  string
 	}{
-		{"", Part{tok: Unknown, val: "jib"}, `Unknown[0,0]: "jib"`},
-		{"", Part{tok: Number, val: "1"}, `Number[0,0]: "1"`},
-		{"Undefined, run 'go generate'", Part{tok: Token(-1), val: ""},
+		{"", Part{Tok: Unknown, Val: "jib"}, `Unknown[0,0]: "jib"`},
+		{"", Part{Tok: Number, Val: "1"}, `Number[0,0]: "1"`},
+		{"Undefined, run 'go generate'", Part{Tok: Token(-1), Val: ""},
 			`Token(-1)[0,0]: ""`},
 	} {
 		got := c.part.String()

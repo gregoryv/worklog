@@ -4,19 +4,27 @@ import (
 	"testing"
 )
 
-func Test_lexYear(t *testing.T) {
-	cases := []struct {
-		s   *Scanner
-		out chan Part
+func Test_lex(t *testing.T) {
+	for _, c := range []struct {
+		txt string
+		fn  lexFn
+		exp string
 	}{
-		{NewScanner("2018"), make(chan Part)},
+		{"2018", lexYear, `Number[1,1]: "2018"`},
+		{"August", lexMonth, `Month[1,1]: "August"`},
+	} {
+		lex(c.fn, c.txt, c.exp, t)
 	}
-	for _, c := range cases {
-		go lexYear(c.s, c.out)
-		part := <-c.out
-		assert(t, "",
-			equals("", "Number[1,1]: \"2018\"", part.String()),
-		)
-		close(c.out)
-	}
+}
+
+func lex(fn lexFn, txt, exp string, t *testing.T) {
+	t.Helper()
+	s := NewScanner(txt)
+	out := make(chan Part)
+	go fn(s, out)
+	part := <-out
+	assert(t, "",
+		equals("", exp, part.String()),
+	)
+	close(out)
 }

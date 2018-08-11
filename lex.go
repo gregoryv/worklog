@@ -24,13 +24,13 @@ func NewLexer(name, txt string) *Lexer {
 }
 
 type Part struct {
-	tok Token
-	val string
-	pos Position
+	Tok Token
+	Val string
+	Pos Position
 }
 
 func (p *Part) String() string {
-	return fmt.Sprintf("%s[%s]: %q", p.tok, p.pos.String(), p.val)
+	return fmt.Sprintf("%s[%s]: %q", p.Tok, p.Pos.String(), p.Val)
 }
 
 func NewPart() *Part {

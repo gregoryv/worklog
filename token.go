@@ -6,4 +6,5 @@ type Token int
 const (
 	Unknown Token = iota
 	Number
+	Month
 )

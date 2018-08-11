@@ -2,10 +2,19 @@ package timesheet
 
 type lexFn func(s *Scanner, out chan Part) lexFn
 
+func lexMonth(s *Scanner, out chan Part) lexFn {
+	pos := s.Pos()
+	// todo err check here
+	val, _ := s.Scan("JFMASOND")
+	val += s.ScanAll("abcdefghijklmnopqrstuvxyz")
+	out <- Part{Tok: Month, Val: val, Pos: pos}
+	return nil
+}
+
 func lexYear(s *Scanner, out chan Part) lexFn {
 	pos := s.Pos()
 	val := s.ScanAll("0123456789")
-	out <- Part{tok: Number, val: val, pos: pos}
+	out <- Part{Tok: Number, Val: val, Pos: pos}
 	s.Scan(" ")
 	return nil
 }
