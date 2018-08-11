@@ -11,7 +11,30 @@ type ScanCase struct {
 }
 
 func TestScanner_Scan(t *testing.T) {
-	todo(t)
+	s := NewScanner("shi")
+	cases := []struct {
+		msg    string
+		s      *Scanner
+		valid  string
+		letter string
+		ok     bool
+	}{
+		{"", s, "xyz", "", false},
+		{"", s, "s", "s", true},
+		{"", s, "thrsi", "h", true},
+		{"", s, "thrsi", "i", true},
+		{"End of string", s, "thrsi", "", false},
+	}
+
+	for _, c := range cases {
+		got, ok := c.s.Scan(c.valid)
+		if c.letter != got {
+			t.Errorf("Expected %q, got %q", c.letter, got)
+		}
+		if c.ok != ok {
+			t.Errorf("Expected ok = %v, got %v", c.ok, ok)
+		}
+	}
 }
 
 func TestScanner_ScanAll(t *testing.T) {
