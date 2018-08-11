@@ -9,7 +9,12 @@ type Pos struct {
 }
 
 func NewPos() *Pos {
-	return &Pos{}
+	return &Pos{line: 1, column: 1}
+}
+
+func (p *Pos) Next() (line, column int) {
+	p.column++
+	return p.line, p.column
 }
 
 func (p *Pos) String() string {
