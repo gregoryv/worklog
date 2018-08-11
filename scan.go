@@ -11,6 +11,7 @@ type Scanner struct {
 	input string
 }
 
+// End Of String
 const EOS = -1
 
 // peek returns but does not consume the next rune in the input.
