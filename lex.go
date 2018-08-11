@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+type Lexer struct{}
+
+func NewLexer() *Lexer {
+	return &Lexer{}
+}
+
 type Part struct {
 	tok Token
 	val string

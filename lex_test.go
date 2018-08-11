@@ -4,6 +4,12 @@ import (
 	"testing"
 )
 
+func TestNewLexer(t *testing.T) {
+	if l := NewLexer(); l == nil {
+		t.Fail()
+	}
+}
+
 func TestPart_String(t *testing.T) {
 	for _, c := range []struct {
 		msg  string
