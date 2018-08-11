@@ -11,15 +11,33 @@ type TestCase struct {
 	line, col int
 }
 
+func p(line, col int) Position {
+	return Position{line: line, col: col}
+}
+
 func TestPosition_Back(t *testing.T) {
+	// Case when a position is moved back over a new line
+	special := p(3, 3)
+	special.NextLine()
+
 	cases := []TestCase{
-		{"Stay on first, when already there", Position{1, 1}, 1, 1},
-		{"Only backup column", Position{1, 5}, 1, 4},
-		{"Backup line when possible", Position{2, 1}, 1, 1},
+		{"Stay on first, when already there", p(1, 1), 1, 1},
+		{"Only backup column", p(1, 5), 1, 4},
+		{"Last column should be remembered", special, 3, 3},
 	}
 	for _, c := range cases {
 		line, col := c.pos.Back()
 		assert(t, compareLineCol(c.msg, c.line, line, c.col, col))
+	}
+
+	err := catchPanic(func() {
+		pos := p(2, 1)
+		pos.NextLine()
+		pos.Back() // ok
+		pos.Back() // not ok since we have no history left
+	})
+	if err == nil {
+		t.Error("Expected 2 x Back to panic")
 	}
 }
 
@@ -29,8 +47,8 @@ func TestPosition_NextLine(t *testing.T) {
 		pos       Position
 		line, col int
 	}{
-		{"", Position{1, 1}, 2, 1},
-		{"Reset column when moving to next line", Position{1, 5}, 2, 1},
+		{"", p(1, 1), 2, 1},
+		{"Reset column when moving to next line", p(1, 5), 2, 1},
 	}
 	for _, c := range cases {
 		line, col := c.pos.NextLine()
@@ -44,8 +62,8 @@ func TestPosition_Next(t *testing.T) {
 		pos       Position
 		line, col int
 	}{
-		{"Advance column by 1", Position{1, 1}, 1, 2},
-		{"", Position{3, 5}, 3, 6},
+		{"Advance column by 1", p(1, 1), 1, 2},
+		{"", p(3, 5), 3, 6},
 	}
 	for _, c := range cases {
 		line, col := c.pos.Next()
@@ -83,4 +101,15 @@ func TestNewPosition(t *testing.T) {
 	if pos := NewPosition(); pos == nil {
 		t.Fail()
 	}
+}
+
+func catchPanic(fn func()) (err error) {
+	defer func() {
+		e := recover()
+		if e != nil {
+			err = fmt.Errorf("%s", err)
+		}
+	}()
+	fn()
+	return
 }
