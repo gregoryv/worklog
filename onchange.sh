@@ -11,6 +11,13 @@ case $extension in
         gofmt -w $path
         ;;
 esac
+
+case $filename in
+    token.go)
+	go generate
+	;;
+esac
+
 go vet
 go test -coverprofile /tmp/c.out .
 uncover /tmp/c.out
