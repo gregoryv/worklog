@@ -4,25 +4,35 @@ import (
 	"fmt"
 )
 
-type Pos struct {
+type Position struct {
 	line, col int
 }
 
-func NewPos() *Pos {
-	return &Pos{line: 1, col: 1}
+func NewPosition() *Position {
+	return &Position{line: 1, col: 1}
 }
 
-func (p *Pos) NextLine() (line, col int) {
-	p.line++
-	p.col = 1
-	return p.line, p.col
+func (pos *Position) Back() (line, col int) {
+	if pos.col > 1 {
+		pos.col--
+	}
+	if pos.line > 1 {
+		pos.line--
+	}
+	return pos.line, pos.col
 }
 
-func (p *Pos) Next() (line, col int) {
-	p.col++
-	return p.line, p.col
+func (pos *Position) NextLine() (line, col int) {
+	pos.line++
+	pos.col = 1
+	return pos.line, pos.col
 }
 
-func (p *Pos) String() string {
-	return fmt.Sprintf("%v,%v", p.line, p.col)
+func (pos *Position) Next() (line, col int) {
+	pos.col++
+	return pos.line, pos.col
+}
+
+func (pos *Position) String() string {
+	return fmt.Sprintf("%v,%v", pos.line, pos.col)
 }
