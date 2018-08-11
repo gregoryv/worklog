@@ -5,11 +5,13 @@ import (
 )
 
 type Lexer struct {
+	name    string // eg. named file
 	scanner *Scanner
 }
 
-func NewLexer(txt string) *Lexer {
+func NewLexer(name, txt string) *Lexer {
 	return &Lexer{
+		name:    name,
 		scanner: NewScanner(txt),
 	}
 }
