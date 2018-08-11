@@ -8,23 +8,20 @@ func Test_lex(t *testing.T) {
 	for _, c := range []struct {
 		txt string
 		fn  lexFn
-		exp string
+		tok Token
+		val string
 	}{
-		{"2018", lexYear, `Number[1,1]: "2018"`},
-		{"August", lexMonth, `Month[1,1]: "August"`},
+		{"2018", lexYear, Number, "2018"},
+		{"August", lexMonth, Month, "August"},
 	} {
-		lex(c.fn, c.txt, c.exp, t)
+		s := NewScanner(c.txt)
+		out := make(chan Part)
+		go c.fn(s, out)
+		part := <-out
+		assert(t, "",
+			equals("", c.tok, part.Tok),
+			equals("", c.val, part.Val),
+		)
+		close(out)
 	}
-}
-
-func lex(fn lexFn, txt, exp string, t *testing.T) {
-	t.Helper()
-	s := NewScanner(txt)
-	out := make(chan Part)
-	go fn(s, out)
-	part := <-out
-	assert(t, "",
-		equals("", exp, part.String()),
-	)
-	close(out)
 }
