@@ -32,7 +32,7 @@ func assert(t *testing.T, msg string, errors ...error) {
 
 func equals(label string, a, b interface{}) (err error) {
 	if a != b {
-		return fmt.Errorf("expected %s=\"%v\", got \"%v\"", label, a, b)
+		return fmt.Errorf("expected %s \"%v\", got \"%v\"", label, a, b)
 	}
 	return
 }

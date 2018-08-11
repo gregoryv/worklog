@@ -21,10 +21,10 @@ func p(line, col int) Position {
 func TestPosition_Val(t *testing.T) {
 	p := NewPosition()
 	line, col := p.Val()
-	assert(t, "Should match", compareLineCol(line, 1, col, 1))
-	p.Next()
-	line, col = p.Val()
-	assert(t, "Should match", compareLineCol(line, 1, col, 2))
+	assert(t, "Should match",
+		equals("line", line, 1),
+		equals("col", col, 1),
+	)
 }
 
 func TestPosition_Back(t *testing.T) {
@@ -41,7 +41,10 @@ func TestPosition_Back(t *testing.T) {
 	for _, c := range cases {
 		c.msg += ", from " + c.pos.String()
 		line, col := c.pos.Back()
-		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
+		assert(t, c.msg,
+			equals("line", c.line, line),
+			equals("col", c.col, col),
+		)
 	}
 
 	err := catchPanic(func() {
@@ -66,7 +69,10 @@ func TestPosition_NextLine(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.NextLine()
-		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
+		assert(t, c.msg,
+			equals("line", c.line, line),
+			equals("col", c.col, col),
+		)
 	}
 }
 
@@ -81,18 +87,11 @@ func TestPosition_Next(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.Next()
-		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
+		assert(t, c.msg,
+			equals("line", c.line, line),
+			equals("col", c.col, col),
+		)
 	}
-}
-
-func compareLineCol(expLine, line, expCol, col int) (err error) {
-	switch {
-	case expLine != line:
-		err = fmt.Errorf("expected line %v, got %v", expLine, line)
-	case expCol != col:
-		err = fmt.Errorf("expected col %v, got %v", expCol, col)
-	}
-	return
 }
 
 func ExamplePosition_String() {
