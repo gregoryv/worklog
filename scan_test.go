@@ -1,6 +1,7 @@
 package timesheet
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -31,7 +32,7 @@ func TestScanner_Next(t *testing.T) {
 
 	for _, c := range cases {
 		res := scan.Next()
-		check(c, res, scan, t)
+		assert(t, check(c, res, scan))
 	}
 }
 
@@ -41,7 +42,7 @@ func TestScanner_Back(t *testing.T) {
 	scan.Back()
 	r := scan.Next()
 	c := ScanCase{'a', 1, 1}
-	check(c, r, scan, t)
+	assert(t, check(c, r, scan))
 
 	// Back over a newline
 	scan = &Scanner{input: "\na"}
@@ -56,18 +57,18 @@ func TestScanner_Peek(t *testing.T) {
 	scan := &Scanner{input: "12"}
 	res := scan.Peek()
 	c := ScanCase{'1', 1, 0}
-	check(c, res, scan, t)
+	assert(t, check(c, res, scan))
 }
 
-func check(c ScanCase, r rune, scan *Scanner, t *testing.T) {
-	t.Helper()
+func check(c ScanCase, r rune, scan *Scanner) (err error) {
 	if c.exp != r {
-		t.Errorf("Expected rune %q, got %q", c.exp, string(r))
+		return fmt.Errorf("Expected rune %q, got %q", c.exp, string(r))
 	}
 	if c.line != scan.line {
-		t.Errorf("Expected line %v, got %v", c.line, scan.line)
+		return fmt.Errorf("Expected line %v, got %v", c.line, scan.line)
 	}
 	if c.index != scan.index {
-		t.Errorf("Expected pos %v, got %v", c.index, scan.index)
+		return fmt.Errorf("Expected pos %v, got %v", c.index, scan.index)
 	}
+	return
 }

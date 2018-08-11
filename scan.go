@@ -9,10 +9,11 @@ type Scanner struct {
 	index int
 	width int
 	input string
+	pos   *Position
 }
 
 func NewScanner(txt string) *Scanner {
-	return &Scanner{input: txt}
+	return &Scanner{input: txt, pos: NewPosition()}
 }
 
 // End Of String
