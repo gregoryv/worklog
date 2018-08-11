@@ -5,7 +5,6 @@ import (
 )
 
 type Scanner struct {
-	line  int
 	index int
 	width int
 	input string
@@ -28,17 +27,13 @@ func (s *Scanner) Peek() rune {
 
 func (s *Scanner) Back() {
 	s.index -= s.width
-	// Correct newline count.
 	if s.width == 1 && s.input[s.index] == '\n' {
-		s.line--
+		s.pos.Back()
 	}
 }
 
 // Reads the next rune and advances the position by 1 if not at eos
 func (s *Scanner) Next() rune {
-	if s.line == 0 {
-		s.line = 1
-	}
 	if s.index >= len(s.input) {
 		s.width = 0
 		return EOS
@@ -46,8 +41,9 @@ func (s *Scanner) Next() rune {
 	r, w := utf8.DecodeRuneInString(s.input[s.index:])
 	s.width = w
 	s.index += s.width
+	s.pos.Next()
 	if r == '\n' {
-		s.line++
+		s.pos.NextLine()
 	}
 	return r
 }
