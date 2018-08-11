@@ -85,15 +85,6 @@ func TestPosition_Next(t *testing.T) {
 	}
 }
 
-func assert(t *testing.T, msg string, errors ...error) {
-	t.Helper()
-	for _, err := range errors {
-		if err != nil {
-			t.Errorf("%s: %s", msg, err)
-		}
-	}
-}
-
 func compareLineCol(expLine, line, expCol, col int) (err error) {
 	switch {
 	case expLine != line:
@@ -115,15 +106,4 @@ func TestNewPosition(t *testing.T) {
 	if pos := NewPosition(); pos == nil {
 		t.Fail()
 	}
-}
-
-func catchPanic(fn func()) (err error) {
-	defer func() {
-		e := recover()
-		if e != nil {
-			err = fmt.Errorf("%s", err)
-		}
-	}()
-	fn()
-	return
 }

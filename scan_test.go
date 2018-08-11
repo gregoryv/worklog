@@ -10,6 +10,10 @@ type ScanCase struct {
 	line, index int
 }
 
+func TestScanner_Scan(t *testing.T) {
+	todo(t)
+}
+
 func TestScanner_ScanAll(t *testing.T) {
 	s := NewScanner("cab123")
 	got := s.ScanAll("abcdefghijklmnopqrst")
