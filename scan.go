@@ -1,6 +1,7 @@
 package timesheet
 
 import (
+	"strings"
 	"unicode/utf8"
 )
 
@@ -45,6 +46,13 @@ func (s *Scanner) Next() rune {
 		s.pos.Next()
 	}
 	return r
+}
+
+func (s *Scanner) Scan(valid string) (part string) {
+	for r := s.Next(); strings.ContainsRune(valid, r); r = s.Next() {
+		part += string(r)
+	}
+	return
 }
 
 func (s *Scanner) Pos() *Position {
