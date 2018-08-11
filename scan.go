@@ -65,6 +65,6 @@ func (s *Scanner) ScanAll(valid string) (part string) {
 	return
 }
 
-func (s *Scanner) Pos() *Position {
-	return s.pos
+func (s *Scanner) Pos() Position {
+	return s.pos.Copy()
 }

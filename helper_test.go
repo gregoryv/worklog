@@ -25,7 +25,11 @@ func assert(t *testing.T, msg string, errors ...error) {
 	t.Helper()
 	for _, err := range errors {
 		if err != nil {
-			t.Errorf("%s: %s", msg, err)
+			if msg != "" {
+				t.Errorf("%s: %s", msg, err)
+			} else {
+				t.Errorf("%s", err)
+			}
 		}
 	}
 }

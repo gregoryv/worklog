@@ -72,6 +72,7 @@ func ExampleScanner_Next() {
 		if r == '\n' {
 			v = "\\n"
 		}
+
 		fmt.Printf("%s: %s\n", s.Pos().String(), v)
 		s.Next()
 	}

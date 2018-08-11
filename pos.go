@@ -13,6 +13,10 @@ func NewPosition() *Position {
 	return &Position{line: 1, col: 1, last: 1}
 }
 
+func (pos *Position) Copy() Position {
+	return Position{line: pos.line, col: pos.col, last: pos.last}
+}
+
 func (pos *Position) Val() (line, col int) {
 	return pos.line, pos.col
 }
@@ -47,6 +51,6 @@ func (pos *Position) Next() (line, col int) {
 	return pos.line, pos.col
 }
 
-func (pos *Position) String() string {
+func (pos Position) String() string {
 	return fmt.Sprintf("%v,%v", pos.line, pos.col)
 }

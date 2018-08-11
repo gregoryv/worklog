@@ -7,12 +7,24 @@ import (
 type Lexer struct {
 	name    string // eg. named file
 	scanner *Scanner
+	out     chan Part
+}
+
+func (l *Lexer) run(s *Scanner, out chan Part) {
+	val := s.ScanAll("0123456789")
+	out <- Part{tok: Number, val: val, pos: s.Pos()}
+}
+
+func (l *Lexer) Run() chan Part {
+	go l.run(l.scanner, l.out)
+	return l.out
 }
 
 func NewLexer(name, txt string) *Lexer {
 	return &Lexer{
 		name:    name,
 		scanner: NewScanner(txt),
+		out:     make(chan Part),
 	}
 }
 
