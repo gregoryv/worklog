@@ -5,14 +5,13 @@ import (
 )
 
 func TestLexer_Run(t *testing.T) {
-	todo(t)
 	l := NewLexer("", "2018")
 	out := l.Run()
 	cases := []struct {
 		part Part
 		exp  string
 	}{
-		{<-out, "Number[1,1]: 2018"},
+		{<-out, "Number[1,1]: \"2018\""},
 	}
 	for _, c := range cases {
 		got := c.part.String()
