@@ -10,18 +10,22 @@ type ScanCase struct {
 	line, index int
 }
 
-func TestScanner_Scan(t *testing.T) {
+func TestScanner_ScanAll(t *testing.T) {
 	s := NewScanner("cab123")
-	got := s.Scan("abcdefghijklmnopqrst")
+	got := s.ScanAll("abcdefghijklmnopqrst")
 	exp := "cab"
 	if exp != got {
 		t.Errorf("Expected %q, got %q", exp, got)
 	}
+	r := s.Next()
+	if r != '1' {
+		t.Fail()
+	}
 }
 
-func ExampleScanner_Scan() {
+func ExampleScanner_ScanAll() {
 	s := NewScanner("cab123")
-	fmt.Print(s.Scan("abcdefg"))
+	fmt.Print(s.ScanAll("abcdefg"))
 	//ouput:
 	//cab
 }

@@ -48,10 +48,11 @@ func (s *Scanner) Next() rune {
 	return r
 }
 
-func (s *Scanner) Scan(valid string) (part string) {
+func (s *Scanner) ScanAll(valid string) (part string) {
 	for r := s.Next(); strings.ContainsRune(valid, r); r = s.Next() {
 		part += string(r)
 	}
+	s.Back()
 	return
 }
 
