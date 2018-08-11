@@ -5,30 +5,48 @@ import (
 	"testing"
 )
 
-func TestPos_Next(t *testing.T) {
+func TestPos_NextLine(t *testing.T) {
 	cases := []struct {
+		msg       string
+		p         Pos
 		line, col int
 	}{
-		{1, 2},
-		{1, 3},
-		{1, 4},
+		{"", Pos{1, 1}, 2, 1},
+		{"Reset column when moving to next line", Pos{1, 5}, 2, 1},
 	}
-	p := NewPos()
-	for i, c := range cases {
-		line, col := p.Next()
-		switch {
-		case c.line != line:
-			if i == 0 {
-				t.Error("Next() should not advance line")
-			}
-			t.Errorf("Expected line %v, got %v", c.line, line)
-		case c.col != col:
-			if i == 0 {
-				t.Error("Next() should advance column by one")
-			}
-			t.Errorf("Expected col %v, got %v", c.col, col)
+	for _, c := range cases {
+		line, col := c.p.NextLine()
+		if err := compareLineCol(c.msg, c.line, line, c.col, col); err != nil {
+			t.Error(err)
 		}
 	}
+}
+
+func TestPos_Next(t *testing.T) {
+	cases := []struct {
+		msg       string
+		p         Pos
+		line, col int
+	}{
+		{"Advance column by 1", Pos{1, 1}, 1, 2},
+		{"", Pos{3, 5}, 3, 6},
+	}
+	for _, c := range cases {
+		line, col := c.p.Next()
+		if err := compareLineCol(c.msg, c.line, line, c.col, col); err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+func compareLineCol(msg string, expLine, line, expCol, col int) (err error) {
+	switch {
+	case expLine != line:
+		err = fmt.Errorf("%s\nExpected line %v, got %v", msg, expLine, line)
+	case expCol != col:
+		err = fmt.Errorf("%s\nExpected col %v, got %v", msg, expCol, col)
+	}
+	return
 }
 
 func ExamplePos_String() {
