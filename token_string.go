@@ -4,9 +4,9 @@ package timesheet
 
 import "fmt"
 
-const _Token_name = "Unknown"
+const _Token_name = "UnknownNumber"
 
-var _Token_index = [...]uint8{0, 7}
+var _Token_index = [...]uint8{0, 7, 13}
 
 func (i Token) String() string {
 	if i < 0 || i >= Token(len(_Token_index)-1) {
