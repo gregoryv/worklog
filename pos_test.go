@@ -27,7 +27,7 @@ func TestPosition_Back(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.Back()
-		assert(t, compareLineCol(c.msg, c.line, line, c.col, col))
+		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
 	}
 
 	err := catchPanic(func() {
@@ -52,7 +52,7 @@ func TestPosition_NextLine(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.NextLine()
-		assert(t, compareLineCol(c.msg, c.line, line, c.col, col))
+		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
 	}
 }
 
@@ -67,25 +67,25 @@ func TestPosition_Next(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.Next()
-		assert(t, compareLineCol(c.msg, c.line, line, c.col, col))
+		assert(t, c.msg, compareLineCol(c.line, line, c.col, col))
 	}
 }
 
-func assert(t *testing.T, errors ...error) {
+func assert(t *testing.T, msg string, errors ...error) {
 	t.Helper()
 	for _, err := range errors {
 		if err != nil {
-			t.Error(err)
+			t.Errorf("%s: %s", msg, err)
 		}
 	}
 }
 
-func compareLineCol(msg string, expLine, line, expCol, col int) (err error) {
+func compareLineCol(expLine, line, expCol, col int) (err error) {
 	switch {
 	case expLine != line:
-		err = fmt.Errorf("%s\nExpected line %v, got %v", msg, expLine, line)
+		err = fmt.Errorf("expected line %v, got %v", expLine, line)
 	case expCol != col:
-		err = fmt.Errorf("%s\nExpected col %v, got %v", msg, expCol, col)
+		err = fmt.Errorf("expected col %v, got %v", expCol, col)
 	}
 	return
 }
