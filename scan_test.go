@@ -55,7 +55,7 @@ func TestNewScanner(t *testing.T) {
 }
 
 func TestScanner_Next(t *testing.T) {
-	scan := NewScanner("abc\nd\ne")
+	s := NewScanner("abc\nd\ne")
 	cases := []ScanCase{
 		{'a', 1, 1},
 		{'b', 1, 2},
@@ -67,45 +67,45 @@ func TestScanner_Next(t *testing.T) {
 		{EOS, 3, 7},
 	}
 	for _, c := range cases {
-		res := scan.Next()
-		assert(t, "", check(c, res, scan))
+		res := s.Next()
+		assert(t, "", check(c, res, s))
 	}
 }
 
 func TestScanner_Back(t *testing.T) {
-	scan := NewScanner("abc\nd\ne")
-	scan.Next()
-	scan.Back()
-	r := scan.Next()
+	s := NewScanner("abc\nd\ne")
+	s.Next()
+	s.Back()
+	r := s.Next()
 	c := ScanCase{'a', 1, 1}
-	assert(t, "", check(c, r, scan))
+	assert(t, "", check(c, r, s))
 	// Back over a newline
-	scan = NewScanner("\na")
-	scan.Next()
-	scan.Back()
-	line, _ := scan.pos.Val()
-	if line != 1 || scan.index != 0 {
+	s = NewScanner("\na")
+	s.Next()
+	s.Back()
+	line, _ := s.pos.Val()
+	if line != 1 || s.index != 0 {
 		t.Fail()
 	}
 }
 
 func TestScanner_Peek(t *testing.T) {
-	scan := NewScanner("12")
-	res := scan.Peek()
+	s := NewScanner("12")
+	res := s.Peek()
 	c := ScanCase{'1', 1, 0}
-	assert(t, "", check(c, res, scan))
+	assert(t, "", check(c, res, s))
 }
 
-func check(c ScanCase, r rune, scan *Scanner) (err error) {
+func check(c ScanCase, r rune, s *Scanner) (err error) {
 	if c.exp != r {
 		return fmt.Errorf("Expected rune %q, got %q", c.exp, string(r))
 	}
-	line, _ := scan.pos.Val()
+	line, _ := s.pos.Val()
 	if c.line != line {
 		return fmt.Errorf("Expected line %v, got %v", c.line, line)
 	}
-	if c.index != scan.index {
-		return fmt.Errorf("Expected index %v, got %v", c.index, scan.index)
+	if c.index != s.index {
+		return fmt.Errorf("Expected index %v, got %v", c.index, s.index)
 	}
 	return
 }
