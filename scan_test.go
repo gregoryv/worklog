@@ -28,25 +28,29 @@ func TestScanner_Scan(t *testing.T) {
 
 	for _, c := range cases {
 		got, ok := c.s.Scan(c.valid)
-		if c.letter != got {
-			t.Errorf("Expected %q, got %q", c.letter, got)
-		}
-		if c.ok != ok {
-			t.Errorf("Expected ok = %v, got %v", c.ok, ok)
-		}
+		assert(t, c.msg,
+			equals("ok", c.ok, ok),
+			equals("letter", c.letter, got),
+		)
 	}
 }
 
 func TestScanner_ScanAll(t *testing.T) {
 	s := NewScanner("cab123")
-	got := s.ScanAll("abcdefghijklmnopqrst")
-	exp := "cab"
-	if exp != got {
-		t.Errorf("Expected %q, got %q", exp, got)
+	cases := []struct {
+		msg   string
+		s     *Scanner
+		valid string
+		part  string
+		ok    bool
+	}{
+		{"", s, "abcdefghijklmnopqrst", "cab", true},
 	}
-	r := s.Next()
-	if r != '1' {
-		t.Fail()
+	for _, c := range cases {
+		got := c.s.ScanAll(c.valid)
+		assert(t, c.msg,
+			equals("part", c.part, got),
+		)
 	}
 }
 
@@ -98,8 +102,13 @@ func TestScanner_Next(t *testing.T) {
 		{EOS, 3, 7},
 	}
 	for _, c := range cases {
-		res := s.Next()
-		assert(t, "", check(c, res, s))
+		r := s.Next()
+		line, _ := s.pos.Val()
+		assert(t, "",
+			equals("rune", c.exp, r),
+			equals("line", c.line, line),
+			equals("index", c.index, s.index),
+		)
 	}
 }
 
@@ -109,34 +118,31 @@ func TestScanner_Back(t *testing.T) {
 	s.Back()
 	r := s.Next()
 	c := ScanCase{'a', 1, 1}
-	assert(t, "", check(c, r, s))
+	line, _ := s.pos.Val()
+	assert(t, "",
+		equals("rune", c.exp, r),
+		equals("line", c.line, line),
+		equals("index", c.index, s.index),
+	)
 	// Back over a newline
 	s = NewScanner("\na")
 	s.Next()
 	s.Back()
-	line, _ := s.pos.Val()
-	if line != 1 || s.index != 0 {
-		t.Fail()
-	}
+	line, _ = s.pos.Val()
+	assert(t, "Back over a newline",
+		equals("line", line, 1),
+		equals("index", s.index, 0),
+	)
 }
 
 func TestScanner_Peek(t *testing.T) {
 	s := NewScanner("12")
-	res := s.Peek()
+	r := s.Peek()
 	c := ScanCase{'1', 1, 0}
-	assert(t, "", check(c, res, s))
-}
-
-func check(c ScanCase, r rune, s *Scanner) (err error) {
-	if c.exp != r {
-		return fmt.Errorf("Expected rune %q, got %q", c.exp, string(r))
-	}
 	line, _ := s.pos.Val()
-	if c.line != line {
-		return fmt.Errorf("Expected line %v, got %v", c.line, line)
-	}
-	if c.index != s.index {
-		return fmt.Errorf("Expected index %v, got %v", c.index, s.index)
-	}
-	return
+	assert(t, "",
+		equals("rune", c.exp, r),
+		equals("line", c.line, line),
+		equals("index", c.index, s.index),
+	)
 }
