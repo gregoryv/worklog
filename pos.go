@@ -13,6 +13,10 @@ func NewPosition() *Position {
 	return &Position{line: 1, col: 1}
 }
 
+func (pos *Position) Val() (line, col int) {
+	return pos.line, pos.col
+}
+
 func (pos *Position) Back() (line, col int) {
 	if pos.col == 1 && pos.line > 1 {
 		if pos.last == -1 {

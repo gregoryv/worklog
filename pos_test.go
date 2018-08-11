@@ -15,6 +15,15 @@ func p(line, col int) Position {
 	return Position{line: line, col: col}
 }
 
+func TestPosition_Val(t *testing.T) {
+	p := NewPosition()
+	line, col := p.Val()
+	assert(t, "Should match", compareLineCol(line, 1, col, 1))
+	p.Next()
+	line, col = p.Val()
+	assert(t, "Should match", compareLineCol(line, 1, col, 2))
+}
+
 func TestPosition_Back(t *testing.T) {
 	// Case when a position is moved back over a new line
 	special := p(3, 3)
