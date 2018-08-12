@@ -13,7 +13,10 @@ func TestLexer_run(t *testing.T) {
 		tok   Token
 		val   string
 	}{
-		{2, lexMonth, "August\n1", Number, "1"},
+		{2, lexMonth, "April  \n  1", Number, "1"},
+		{1, lexDate, " 4", Error, "invalid date"},
+		{1, lexDate, "4", Number, "4"},
+		{2, lexMonth, "August\n3", Number, "3"},
 		{1, lexWeek, "jkl", Error, "invalid week"},
 		{1, lexWeek, "26", Number, "26"},
 		{1, lexYear, "2018", Number, "2018"},

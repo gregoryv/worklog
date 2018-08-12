@@ -4,6 +4,18 @@ import (
 	"strings"
 )
 
+func lexDate(s *Scanner, out chan Part) lexFn {
+	p := Part{Tok: Number, Pos: s.Pos()}
+	val, ok := s.ScanAll("0123456789")
+	if !ok {
+		p.Errorf("invalid date")
+	} else {
+		p.Val = val
+	}
+	out <- p
+	return nil
+}
+
 func lexWeek(s *Scanner, out chan Part) lexFn {
 	p := Part{Tok: Number, Pos: s.Pos()}
 	val, ok := s.ScanAll("0123456789")
@@ -33,13 +45,18 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 	}
 	out <- p
 	skipToNextLine(s, out)
+	if s.PeekIs(" ") { // No week number
+		s.ScanAll(" ")
+		return lexDate
+	}
 	return lexWeek
 }
 
 func skipToNextLine(s *Scanner, out chan Part) {
 	pos := s.Pos()
-	val, ok := s.ScanAll(" \n\t")
-	if !ok || !strings.Contains(val, "\n") {
+	s.ScanAll(" \t")
+	_, ok := s.Scan("\n")
+	if !ok {
 		out <- Part{Pos: pos, Val: "expect newline"}
 	}
 }
