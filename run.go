@@ -5,27 +5,13 @@ import (
 )
 
 func lexDate(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: Number, Pos: s.Pos()}
-	val, ok := s.ScanAll("0123456789")
-	if !ok {
-		p.Errorf("invalid date")
-	} else {
-		p.Val = val
-	}
-	out <- p
+	out <- ScanPart(s, Number)
 	return nil
 }
 
 func lexWeek(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: Number, Pos: s.Pos()}
-	val, ok := s.ScanAll("0123456789")
-	if !ok {
-		p.Errorf("invalid week")
-	} else {
-		p.Val = val
-	}
-	out <- p
-	return nil
+	out <- ScanPart(s, Number)
+	return lexDate
 }
 
 const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
@@ -52,6 +38,22 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 	return lexWeek
 }
 
+func ScanPart(s *Scanner, tok Token) (p Part) {
+	p = Part{Tok: tok, Pos: s.Pos()}
+	var valid string
+	switch tok {
+	case Number:
+		valid = "0123456789"
+	}
+	val, ok := s.ScanAll(valid)
+	if !ok {
+		p.Errorf("invalid %s", tok)
+	} else {
+		p.Val = val
+	}
+	return
+}
+
 func skipToNextLine(s *Scanner, out chan Part) {
 	pos := s.Pos()
 	s.ScanAll(" \t")
@@ -62,13 +64,7 @@ func skipToNextLine(s *Scanner, out chan Part) {
 }
 
 func lexYear(s *Scanner, out chan Part) lexFn {
-	pos := s.Pos()
-	val, ok := s.ScanAll("0123456789")
-	p := Part{Tok: Number, Val: val, Pos: pos}
-	if !ok {
-		p.Errorf("invalid year")
-	}
-	out <- p
+	out <- ScanPart(s, Number)
 	s.Scan(" ")
 	return nil
 }
