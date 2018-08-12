@@ -137,6 +137,24 @@ func TestScanner_Back(t *testing.T) {
 	)
 }
 
+func TestScanner_PeekIs(t *testing.T) {
+	for _, c := range []struct {
+		txt, valid string
+		exp        bool
+	}{
+		{"abc", "a", true},
+		{"abc", "csa", true},
+		{"abc", "q", false},
+		{"abc", "qbc", false},
+	} {
+		s := NewScanner(c.txt)
+		got := s.PeekIs(c.valid)
+		assert(t, "txt="+c.txt,
+			equals("valid="+c.valid, c.exp, got),
+		)
+	}
+}
+
 func TestScanner_Peek(t *testing.T) {
 	s := NewScanner("12")
 	r := s.Peek()

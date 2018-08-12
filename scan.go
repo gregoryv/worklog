@@ -19,6 +19,10 @@ func NewScanner(txt string) *Scanner {
 // End Of String
 const EOS = -1
 
+func (p *Scanner) PeekIs(valid string) bool {
+	return strings.ContainsRune(valid, p.Peek())
+}
+
 // peek returns but does not consume the next rune in the input.
 func (s *Scanner) Peek() rune {
 	r := s.Next()
