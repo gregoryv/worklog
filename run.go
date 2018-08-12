@@ -1,13 +1,27 @@
 package timesheet
 
+import (
+	"strings"
+)
+
 type lexFn func(s *Scanner, out chan Part) lexFn
 
 func lexMonth(s *Scanner, out chan Part) lexFn {
-	pos := s.Pos()
-	// todo err check here
-	first, _ := s.Scan("JFMASOND")
-	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
-	out <- Part{Tok: Month, Val: first + rest, Pos: pos}
+	p := Part{Tok: Month, Pos: s.Pos()}
+	val, ok := s.Scan("JFMASOND")
+	if !ok {
+		p.Tok = Error
+		p.Val = "invalid month"
+	} else {
+		rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
+		p.Val = val + rest
+		if !strings.Contains("JanuaryFebruaryMarchAprilMayJuneJulyAugustSeptemberOctoberNovemberDecember", p.Val) {
+			p.Tok = Error
+			p.Val = "invalid month"
+		}
+	}
+	out <- p
+	s.Scan(" \n")
 	return nil
 }
 

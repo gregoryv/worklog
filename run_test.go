@@ -15,6 +15,8 @@ func Test_lex(t *testing.T) {
 		{"2018", lexYear, Number, "2018"},
 		{"not a year", lexYear, Error, "invalid year"},
 		{"August", lexMonth, Month, "August"},
+		{"not a month", lexMonth, Error, "invalid month"},
+		{"Augusty", lexMonth, Error, "invalid month"},
 	} {
 		s := NewScanner(c.txt)
 		go c.fn(s, out)
