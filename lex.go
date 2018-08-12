@@ -1,11 +1,7 @@
 package timesheet
 
-import (
-	"fmt"
-)
-
 type Lexer struct {
-	name    string // eg. named file
+	name    string // eg. named file, todo remove from here
 	scanner *Scanner
 	out     chan Part
 }
@@ -21,18 +17,4 @@ func NewLexer(name, txt string) *Lexer {
 		scanner: NewScanner(txt),
 		out:     make(chan Part),
 	}
-}
-
-type Part struct {
-	Tok Token
-	Val string
-	Pos Position
-}
-
-func (p *Part) String() string {
-	return fmt.Sprintf("%s[%s]: %q", p.Tok, p.Pos.String(), p.Val)
-}
-
-func NewPart() *Part {
-	return &Part{}
 }
