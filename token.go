@@ -9,4 +9,5 @@ const (
 	Month
 	Separator
 	Day
+	Hour
 )
