@@ -32,7 +32,16 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 		}
 	}
 	out <- p
+	skipToNextLine(s, out)
 	return lexWeek
+}
+
+func skipToNextLine(s *Scanner, out chan Part) {
+	pos := s.Pos()
+	val, ok := s.ScanAll(" \n")
+	if !ok || !strings.Contains(val, "\n") {
+		out <- Part{Pos: pos, Val: "line should end"}
+	}
 }
 
 func lexYear(s *Scanner, out chan Part) lexFn {
