@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+func TestPart_Errorf(t *testing.T) {
+	p := Part{Tok: Number, Val: "12x3"}
+	got := p.Errorf("invalid %s", "12x")
+	assert(t, "Part.Errorf()",
+		equals("val", "invalid 12x", got.Error()),
+		equals("Part.Val", "invalid 12x", p.Val),
+		equals("Part.Tok", Error, p.Tok),
+	)
+}
+
 func TestPart_String(t *testing.T) {
 	for _, c := range []struct {
 		msg  string
