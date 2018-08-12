@@ -1,6 +1,7 @@
 package timesheet
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -17,11 +18,13 @@ func Test_lex(t *testing.T) {
 		{"August", lexMonth, Month, "August"},
 		{"not a month", lexMonth, Error, "invalid month"},
 		{"Augusty", lexMonth, Error, "invalid month"},
+		{"august", lexMonth, Error, "invalid month"},
+		{" August", lexMonth, Error, "invalid month"},
 	} {
 		s := NewScanner(c.txt)
 		go c.fn(s, out)
 		part := <-out
-		assert(t, "",
+		assert(t, fmt.Sprintf("%q", c.txt),
 			equals("", c.tok, part.Tok),
 			equals("", c.val, part.Val),
 		)
