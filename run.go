@@ -24,11 +24,13 @@ func lexDay(s *Scanner, out chan Part) lexFn {
 
 func lexDate(s *Scanner, out chan Part) lexFn {
 	out <- ScanPart(s, Number)
+	s.Scan(" ")
 	return lexDay
 }
 
 func lexWeek(s *Scanner, out chan Part) lexFn {
 	out <- ScanPart(s, Number)
+	s.ScanAll(" ")
 	return lexDate
 }
 

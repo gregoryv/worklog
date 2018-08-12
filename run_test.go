@@ -18,6 +18,7 @@ func TestLexer_run(t *testing.T) {
 		{1, lexDay, "Mon", Day, "Mon"},
 		{1, lexDate, " 4", Error, "invalid Number"},
 		{1, lexDate, "4", Number, "4"},
+		{2, lexWeek, "26   1", Number, "1"},
 		{1, lexWeek, "jkl", Error, "invalid Number"},
 		{1, lexWeek, "26", Number, "26"},
 		{1, lexYear, "2018", Number, "2018"},
