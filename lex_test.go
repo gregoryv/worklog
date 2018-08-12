@@ -33,7 +33,7 @@ func TestPart_String(t *testing.T) {
 		part Part
 		exp  string
 	}{
-		{"", Part{Tok: Unknown, Val: "jib"}, `Unknown[0,0]: "jib"`},
+		{"", Part{Tok: Error, Val: "error message"}, `Error[0,0]: "error message"`},
 		{"", Part{Tok: Number, Val: "1"}, `Number[0,0]: "1"`},
 		{"Undefined, run 'go generate'", Part{Tok: Token(-1), Val: ""},
 			`Token(-1)[0,0]: ""`},

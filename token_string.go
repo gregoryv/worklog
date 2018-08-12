@@ -4,9 +4,9 @@ package timesheet
 
 import "fmt"
 
-const _Token_name = "UnknownNumberMonth"
+const _Token_name = "ErrorNumberMonth"
 
-var _Token_index = [...]uint8{0, 7, 13, 18}
+var _Token_index = [...]uint8{0, 5, 11, 16}
 
 func (i Token) String() string {
 	if i < 0 || i >= Token(len(_Token_index)-1) {

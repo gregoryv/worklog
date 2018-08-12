@@ -4,7 +4,7 @@ type Token int
 
 //go:generate stringer -type Token token.go
 const (
-	Unknown Token = iota
+	Error Token = iota
 	Number
 	Month
 )
