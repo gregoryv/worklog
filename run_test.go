@@ -5,6 +5,7 @@ import (
 )
 
 func Test_lex(t *testing.T) {
+	out := make(chan Part)
 	for _, c := range []struct {
 		txt string
 		fn  lexFn
@@ -12,16 +13,16 @@ func Test_lex(t *testing.T) {
 		val string
 	}{
 		{"2018", lexYear, Number, "2018"},
+		{"not a year", lexYear, Error, "invalid year"},
 		{"August", lexMonth, Month, "August"},
 	} {
 		s := NewScanner(c.txt)
-		out := make(chan Part)
 		go c.fn(s, out)
 		part := <-out
 		assert(t, "",
 			equals("", c.tok, part.Tok),
 			equals("", c.val, part.Val),
 		)
-		close(out)
 	}
+	close(out)
 }

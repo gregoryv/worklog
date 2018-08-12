@@ -13,9 +13,13 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 
 func lexYear(s *Scanner, out chan Part) lexFn {
 	pos := s.Pos()
-	// todo error check
-	val, _ := s.ScanAll("0123456789")
-	out <- Part{Tok: Number, Val: val, Pos: pos}
+	val, ok := s.ScanAll("0123456789")
+	p := Part{Tok: Number, Val: val, Pos: pos}
+	if !ok {
+		p.Tok = Error
+		p.Val = "invalid year"
+	}
+	out <- p
 	s.Scan(" ")
 	return nil
 }
