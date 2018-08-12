@@ -6,7 +6,7 @@ type Lexer struct {
 }
 
 func (l *Lexer) Run() chan Part {
-	go l.run(l.scanner, l.out)
+	go l.run(lexYear, l.scanner, l.out)
 	return l.out
 }
 
