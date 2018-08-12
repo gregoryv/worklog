@@ -13,15 +13,16 @@ func TestLexer_run(t *testing.T) {
 		tok   Token
 		val   string
 	}{
-		{3, lexMonth, "April  \n---\n1", Number, "1"},
-		{2, lexMonth, "April  \n  1", Error, "invalid Separator"},
 		{1, lexDate, " 4", Error, "invalid Number"},
 		{1, lexDate, "4", Number, "4"},
-		{2, lexMonth, "August\n3", Error, "invalid Separator"},
 		{1, lexWeek, "jkl", Error, "invalid Number"},
 		{1, lexWeek, "26", Number, "26"},
 		{1, lexYear, "2018", Number, "2018"},
 		{1, lexYear, "not a year", Error, "invalid Number"},
+		{1, lexSep, "-----", Separator, "-----"},
+		{3, lexMonth, "April  \n---\n1", Number, "1"},
+		{2, lexMonth, "April  \n  1", Error, "invalid Separator"},
+		{2, lexMonth, "August\n3", Error, "invalid Separator"},
 		{1, lexMonth, "August", Month, "August"},
 		{1, lexMonth, "not a month", Error, "invalid month"},
 		{2, lexMonth, "August something more", Error, "expect newline"},

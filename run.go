@@ -4,6 +4,16 @@ import (
 	"strings"
 )
 
+func lexSep(s *Scanner, out chan Part) lexFn {
+	out <- ScanPart(s, Separator)
+	s.Scan("\n")
+	if s.PeekIs(" ") { // No week
+		s.ScanAll(" ")
+		return lexDate
+	}
+	return lexWeek
+}
+
 func lexDate(s *Scanner, out chan Part) lexFn {
 	out <- ScanPart(s, Number)
 	return nil
@@ -31,13 +41,7 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 	}
 	out <- p
 	skipToNextLine(s, out)
-	out <- ScanPart(s, Separator)
-	s.Scan("\n")
-	if s.PeekIs(" ") { // No week
-		s.ScanAll(" ")
-		return lexDate
-	}
-	return lexWeek
+	return lexSep
 }
 
 func ScanPart(s *Scanner, tok Token) (p Part) {
