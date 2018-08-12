@@ -13,6 +13,8 @@ func Test_lex(t *testing.T) {
 		tok Token
 		val string
 	}{
+		{"jkl", lexWeek, Error, "invalid week"},
+		{"26", lexWeek, Number, "26"},
 		{"2018", lexYear, Number, "2018"},
 		{"not a year", lexYear, Error, "invalid year"},
 		{"August", lexMonth, Month, "August"},

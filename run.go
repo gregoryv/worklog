@@ -4,7 +4,17 @@ import (
 	"strings"
 )
 
-type lexFn func(s *Scanner, out chan Part) lexFn
+func lexWeek(s *Scanner, out chan Part) lexFn {
+	p := Part{Tok: Number, Pos: s.Pos()}
+	val, ok := s.ScanAll("0123456789")
+	if !ok {
+		p.Errorf("invalid week")
+	} else {
+		p.Val = val
+	}
+	out <- p
+	return nil
+}
 
 const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
 	"JulyAugustSeptemberOctoberNovemberDecember"
@@ -22,8 +32,7 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 		}
 	}
 	out <- p
-	s.Scan(" \n")
-	return nil
+	return lexWeek
 }
 
 func lexYear(s *Scanner, out chan Part) lexFn {
@@ -44,3 +53,5 @@ func (l *Lexer) run(s *Scanner, out chan Part) {
 	}
 	close(out)
 }
+
+type lexFn func(s *Scanner, out chan Part) lexFn
