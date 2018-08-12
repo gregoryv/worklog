@@ -5,7 +5,7 @@ import (
 )
 
 func TestLexer_Run(t *testing.T) {
-	l := NewLexer("", "2018")
+	l := NewLexer("2018")
 	out := l.Run()
 	cases := []struct {
 		part Part
@@ -22,7 +22,7 @@ func TestLexer_Run(t *testing.T) {
 }
 
 func TestNewLexer(t *testing.T) {
-	if l := NewLexer("lex_test.go", ""); l == nil {
+	if l := NewLexer(""); l == nil {
 		t.Fail()
 	}
 }
