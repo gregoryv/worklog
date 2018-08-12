@@ -57,11 +57,12 @@ func (s *Scanner) Scan(valid string) (letter string, ok bool) {
 	return
 }
 
-func (s *Scanner) ScanAll(valid string) (part string) {
+func (s *Scanner) ScanAll(valid string) (part string, ok bool) {
 	for r := s.Next(); strings.ContainsRune(valid, r); r = s.Next() {
 		part += string(r)
 	}
 	s.Back()
+	ok = part != ""
 	return
 }
 

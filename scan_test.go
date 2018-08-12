@@ -47,9 +47,10 @@ func TestScanner_ScanAll(t *testing.T) {
 		{"", s, "abcdefghijklmnopqrst", "cab", true},
 	}
 	for _, c := range cases {
-		got := c.s.ScanAll(c.valid)
+		got, ok := c.s.ScanAll(c.valid)
 		assert(t, c.msg,
 			equals("part", c.part, got),
+			equals("valid scan", c.ok, ok),
 		)
 	}
 }

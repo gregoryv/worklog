@@ -46,7 +46,7 @@ func TestPosition_Back(t *testing.T) {
 			equals("col", c.col, col),
 		)
 	}
-
+	// Panic case
 	err := catchPanic(func() {
 		pos := p(2, 1)
 		pos.NextLine()
