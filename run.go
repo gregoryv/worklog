@@ -4,6 +4,34 @@ import (
 	"strings"
 )
 
+const validDays = "MonTueWenThuFriSatSun"
+
+func lexDay(s *Scanner, out chan Part) lexFn {
+	p := Part{Tok: Day, Pos: s.Pos()}
+	val, ok := s.Scan("MTWFS")
+	if !ok {
+		p.Errorf("invalid %s", Day)
+	} else {
+		rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
+		p.Val = val + rest
+		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
+			p.Errorf("invalid %s", Day)
+		}
+	}
+	out <- p
+	return nil
+}
+
+func lexDate(s *Scanner, out chan Part) lexFn {
+	out <- ScanPart(s, Number)
+	return lexDay
+}
+
+func lexWeek(s *Scanner, out chan Part) lexFn {
+	out <- ScanPart(s, Number)
+	return lexDate
+}
+
 func lexSep(s *Scanner, out chan Part) lexFn {
 	out <- ScanPart(s, Separator)
 	s.Scan("\n")
@@ -12,16 +40,6 @@ func lexSep(s *Scanner, out chan Part) lexFn {
 		return lexDate
 	}
 	return lexWeek
-}
-
-func lexDate(s *Scanner, out chan Part) lexFn {
-	out <- ScanPart(s, Number)
-	return nil
-}
-
-func lexWeek(s *Scanner, out chan Part) lexFn {
-	out <- ScanPart(s, Number)
-	return lexDate
 }
 
 const validMonths = "JanuaryFebruaryMarchAprilMayJune" +

@@ -13,6 +13,9 @@ func TestLexer_run(t *testing.T) {
 		tok   Token
 		val   string
 	}{
+		{1, lexDay, "Mo", Error, "invalid Day"},
+		{1, lexDay, "mon", Error, "invalid Day"},
+		{1, lexDay, "Mon", Day, "Mon"},
 		{1, lexDate, " 4", Error, "invalid Number"},
 		{1, lexDate, "4", Number, "4"},
 		{1, lexWeek, "jkl", Error, "invalid Number"},

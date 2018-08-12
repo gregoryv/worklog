@@ -8,4 +8,5 @@ const (
 	Number
 	Month
 	Separator
+	Day
 )
