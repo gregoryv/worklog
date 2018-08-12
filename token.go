@@ -7,4 +7,5 @@ const (
 	Error Token = iota
 	Number
 	Month
+	Separator
 )

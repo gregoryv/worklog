@@ -31,7 +31,9 @@ func lexMonth(s *Scanner, out chan Part) lexFn {
 	}
 	out <- p
 	skipToNextLine(s, out)
-	if s.PeekIs(" ") { // No week number
+	out <- ScanPart(s, Separator)
+	s.Scan("\n")
+	if s.PeekIs(" ") { // No week
 		s.ScanAll(" ")
 		return lexDate
 	}
@@ -44,6 +46,8 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	switch tok {
 	case Number:
 		valid = "0123456789"
+	case Separator:
+		valid = "-"
 	}
 	val, ok := s.ScanAll(valid)
 	if !ok {
