@@ -1,16 +1,17 @@
 package timesheet
 
 import (
+	. "github.com/gregoryv/qual"
 	"testing"
 )
 
 func TestPart_Errorf(t *testing.T) {
 	p := Part{Tok: Number, Val: "12x3"}
-	got := p.Errorf("invalid %s", "12x")
-	assert(t, "Part.Errorf()",
-		equals("val", "invalid 12x", got.Error()),
-		equals("Part.Val", "invalid 12x", p.Val),
-		equals("Part.Tok", Error, p.Tok),
+	got := p.Errorf("invalid %s", "12x").Error()
+	Assert(t, Vars{got, p.Val, p.Tok},
+		got == "invalid 12x",
+		p.Val == "invalid 12x",
+		p.Tok == Error,
 	)
 }
 
@@ -26,8 +27,8 @@ func TestPart_String(t *testing.T) {
 			`Token(-1)[0,0]: ""`},
 	} {
 		got := c.part.String()
-		assert(t, c.msg,
-			equals("String() return", c.exp, got),
+		Assert(t, Vars{c.msg, c.exp, got},
+			c.exp == got,
 		)
 	}
 }

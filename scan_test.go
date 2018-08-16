@@ -2,6 +2,7 @@ package timesheet
 
 import (
 	"fmt"
+	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -27,10 +28,10 @@ func TestScanner_Scan(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got, ok := c.s.Scan(c.valid)
-		assert(t, c.msg,
-			equals("ok", c.ok, ok),
-			equals("letter", c.letter, got),
+		letter, ok := c.s.Scan(c.valid)
+		Assert(t, Vars{c, letter, ok},
+			c.ok == ok,
+			c.letter == letter,
 		)
 	}
 }
@@ -48,9 +49,9 @@ func TestScanner_ScanAll(t *testing.T) {
 	}
 	for _, c := range cases {
 		got, ok := c.s.ScanAll(c.valid)
-		assert(t, c.msg,
-			equals("part", c.part, got),
-			equals("valid scan", c.ok, ok),
+		Assert(t, Vars{c, got, ok},
+			c.part == got,
+			c.ok == ok,
 		)
 	}
 }
@@ -106,10 +107,10 @@ func TestScanner_Next(t *testing.T) {
 	for _, c := range cases {
 		r := s.Next()
 		line, _ := s.pos.Val()
-		assert(t, "",
-			equals("rune", c.exp, r),
-			equals("line", c.line, line),
-			equals("index", c.index, s.index),
+		Assert(t, Vars{c, line, r},
+			c.exp == r,
+			c.line == line,
+			c.index == s.index,
 		)
 	}
 }
@@ -121,19 +122,19 @@ func TestScanner_Back(t *testing.T) {
 	r := s.Next()
 	c := ScanCase{'a', 1, 1}
 	line, _ := s.pos.Val()
-	assert(t, "",
-		equals("rune", c.exp, r),
-		equals("line", c.line, line),
-		equals("index", c.index, s.index),
+	Assert(t, Vars{c, r, line},
+		c.exp == r,
+		c.line == line,
+		c.index == s.index,
 	)
 	// Back over a newline
 	s = NewScanner("\na")
 	s.Next()
 	s.Back()
 	line, _ = s.pos.Val()
-	assert(t, "Back over a newline",
-		equals("line", line, 1),
-		equals("index", s.index, 0),
+	Assert(t, Vars{line, s.index},
+		line == 1,
+		s.index == 0,
 	)
 }
 
@@ -149,8 +150,8 @@ func TestScanner_PeekIs(t *testing.T) {
 	} {
 		s := NewScanner(c.txt)
 		got := s.PeekIs(c.valid)
-		assert(t, "txt="+c.txt,
-			equals("valid="+c.valid, c.exp, got),
+		Assert(t, Vars{c, got},
+			c.exp == got,
 		)
 	}
 }
@@ -160,9 +161,9 @@ func TestScanner_Peek(t *testing.T) {
 	r := s.Peek()
 	c := ScanCase{'1', 1, 0}
 	line, _ := s.pos.Val()
-	assert(t, "",
-		equals("rune", c.exp, r),
-		equals("line", c.line, line),
-		equals("index", c.index, s.index),
+	Assert(t, Vars{c, line},
+		c.exp == r,
+		c.line == line,
+		c.index == s.index,
 	)
 }

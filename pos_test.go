@@ -2,6 +2,7 @@ package timesheet
 
 import (
 	"fmt"
+	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -21,9 +22,9 @@ func p(line, col int) Position {
 func TestPosition_Val(t *testing.T) {
 	p := NewPosition()
 	line, col := p.Val()
-	assert(t, "Should match",
-		equals("line", line, 1),
-		equals("col", col, 1),
+	Assert(t, Vars{line, col},
+		line == 1,
+		col == 1,
 	)
 }
 
@@ -41,9 +42,9 @@ func TestPosition_Back(t *testing.T) {
 	for _, c := range cases {
 		c.msg += ", from " + c.pos.String()
 		line, col := c.pos.Back()
-		assert(t, c.msg,
-			equals("line", c.line, line),
-			equals("col", c.col, col),
+		Assert(t, Vars{c, line, col},
+			c.line == line,
+			c.col == col,
 		)
 	}
 	// Panic case
@@ -69,9 +70,9 @@ func TestPosition_NextLine(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.NextLine()
-		assert(t, c.msg,
-			equals("line", c.line, line),
-			equals("col", c.col, col),
+		Assert(t, Vars{c, line, col},
+			c.line == line,
+			c.col == col,
 		)
 	}
 }
@@ -87,9 +88,9 @@ func TestPosition_Next(t *testing.T) {
 	}
 	for _, c := range cases {
 		line, col := c.pos.Next()
-		assert(t, c.msg,
-			equals("line", c.line, line),
-			equals("col", c.col, col),
+		Assert(t, Vars{c, line, col},
+			c.line == line,
+			c.col == col,
 		)
 	}
 }

@@ -1,7 +1,7 @@
 package timesheet
 
 import (
-	"fmt"
+	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -41,9 +41,10 @@ func TestLexer_run(t *testing.T) {
 		for i := 0; i < c.i; i++ {
 			part = <-out
 		}
-		assert(t, fmt.Sprintf("%q", c.txt),
-			equals("", c.tok, part.Tok),
-			equals("", c.val, part.Val),
+		// Check the i:th part
+		Assert(t, Vars{c.i, c.txt, c.tok, c.val, part},
+			c.tok == part.Tok,
+			c.val == part.Val,
 		)
 	}
 }
@@ -59,9 +60,7 @@ func TestScanPart(t *testing.T) {
 	for _, c := range cases {
 		s := NewScanner(c.txt)
 		got := ScanPart(s, Number)
-		assert(t, c.msg,
-			equals("Tok", c.tok, got.Tok),
-		)
+		Assert(t, Vars{c, got}, c.tok == got.Tok)
 	}
 
 }

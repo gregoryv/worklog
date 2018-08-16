@@ -1,6 +1,7 @@
 package timesheet
 
 import (
+	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -15,9 +16,7 @@ func TestLexer_Run(t *testing.T) {
 	}
 	for _, c := range cases {
 		got := c.part.String()
-		assert(t, "",
-			equals("Part.String()", c.exp, got),
-		)
+		Assert(t, Vars{c.exp, got}, c.exp == got)
 	}
 }
 
