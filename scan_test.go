@@ -15,20 +15,19 @@ func TestScanner_Scan(t *testing.T) {
 	s := NewScanner("shi")
 	cases := []struct {
 		msg    string
-		s      *Scanner
 		valid  string
 		letter string
 		ok     bool
 	}{
-		{"", s, "xyz", "", false},
-		{"", s, "s", "s", true},
-		{"", s, "thrsi", "h", true},
-		{"", s, "thrsi", "i", true},
-		{"End of string", s, "thrsi", "", false},
+		{"", "xyz", "", false},
+		{"", "s", "s", true},
+		{"", "thrsi", "h", true},
+		{"", "thrsi", "i", true},
+		{"End of string", "thrsi", "", false},
 	}
 
 	for _, c := range cases {
-		letter, ok := c.s.Scan(c.valid)
+		letter, ok := s.Scan(c.valid)
 		Assert(t, Vars{c, letter, ok},
 			c.ok == ok,
 			c.letter == letter,
@@ -106,7 +105,8 @@ func TestScanner_Next(t *testing.T) {
 	}
 	for _, c := range cases {
 		r := s.Next()
-		line, _ := s.pos.Val()
+		pos := s.Pos()
+		line, _ := pos.Val()
 		Assert(t, Vars{c, line, r},
 			c.exp == r,
 			c.line == line,
@@ -121,7 +121,8 @@ func TestScanner_Back(t *testing.T) {
 	s.Back()
 	r := s.Next()
 	c := ScanCase{'a', 1, 1}
-	line, _ := s.pos.Val()
+	pos := s.Pos()
+	line, _ := pos.Val()
 	Assert(t, Vars{c, r, line},
 		c.exp == r,
 		c.line == line,
@@ -131,7 +132,8 @@ func TestScanner_Back(t *testing.T) {
 	s = NewScanner("\na")
 	s.Next()
 	s.Back()
-	line, _ = s.pos.Val()
+	pos = s.Pos()
+	line, _ = pos.Val()
 	Assert(t, Vars{line, s.index},
 		line == 1,
 		s.index == 0,
@@ -160,7 +162,8 @@ func TestScanner_Peek(t *testing.T) {
 	s := NewScanner("12")
 	r := s.Peek()
 	c := ScanCase{'1', 1, 0}
-	line, _ := s.pos.Val()
+	pos := s.Pos()
+	line, _ := pos.Val()
 	Assert(t, Vars{c, line},
 		c.exp == r,
 		c.line == line,
