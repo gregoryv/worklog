@@ -4,6 +4,16 @@ import (
 	"strings"
 )
 
+func lexReported(s *Scanner, out chan Part) lexFn {
+	if s.PeekIs(" \n") {
+		skipToNextLine(s, out)
+		return lexWeek
+	}
+	out <- ScanPart(s, Number)
+	s.ScanAll(" ")
+	return nil
+}
+
 const validDays = "MonTueWenThuFriSatSun"
 
 func lexDay(s *Scanner, out chan Part) lexFn {
@@ -19,7 +29,8 @@ func lexDay(s *Scanner, out chan Part) lexFn {
 		}
 	}
 	out <- p
-	return nil
+	s.ScanAll(" ")
+	return lexReported
 }
 
 func lexDate(s *Scanner, out chan Part) lexFn {
@@ -29,6 +40,11 @@ func lexDate(s *Scanner, out chan Part) lexFn {
 }
 
 func lexWeek(s *Scanner, out chan Part) lexFn {
+	// todo week num is only available sometimes
+	if s.PeekIs(" ") {
+		s.ScanAll(" ")
+		return lexDate
+	}
 	out <- ScanPart(s, Number)
 	s.ScanAll(" ")
 	return lexDate
@@ -37,10 +53,6 @@ func lexWeek(s *Scanner, out chan Part) lexFn {
 func lexSep(s *Scanner, out chan Part) lexFn {
 	out <- ScanPart(s, Separator)
 	s.Scan("\n")
-	if s.PeekIs(" ") { // No week
-		s.ScanAll(" ")
-		return lexDate
-	}
 	return lexWeek
 }
 
