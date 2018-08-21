@@ -4,6 +4,19 @@ import (
 	"strings"
 )
 
+func lexLeftParenthesis(s *Scanner, out chan Part) lexFn {
+	p := Part{Tok: LeftParenthesis, Pos: s.Pos()}
+	val, ok := s.Scan("(")
+	if !ok {
+		p.Errorf("invalid %s", LeftParenthesis)
+		out <- p
+		return nil
+	}
+	p.Val = val
+	out <- p
+	return nil
+}
+
 func lexReported(s *Scanner, out chan Part) lexFn {
 	if s.PeekIs(" \n") {
 		skipToNextLine(s, out)
@@ -11,6 +24,16 @@ func lexReported(s *Scanner, out chan Part) lexFn {
 	}
 	out <- ScanPart(s, Number)
 	s.ScanAll(" ")
+	if s.PeekIs("(") {
+		return lexLeftParenthesis
+	}
+	if s.PeekIs("\n") {
+		s.Scan("\n")
+		return lexWeek
+	}
+	p := Part{}
+	p.Errorf("invalid %s", Number)
+	out <- p
 	return nil
 }
 

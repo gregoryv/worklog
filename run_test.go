@@ -13,6 +13,11 @@ func TestLexer_run(t *testing.T) {
 		tok   Token
 		val   string
 	}{
+		{1, lexLeftParenthesis, "  (", Error, "invalid LeftParenthesis"},
+		{1, lexLeftParenthesis, "(", LeftParenthesis, "("},
+		{2, lexReported, "6\n39", Number, "39"},
+		{2, lexReported, "6 (", LeftParenthesis, "("},
+		{1, lexReported, "\n6", Number, "6"},
 		{1, lexReported, "  \n   6", Number, "6"}, // date number
 		{1, lexReported, "  \n5", Number, "5"},    // week number
 		{2, lexDay, "Mon 8", Number, "8"},

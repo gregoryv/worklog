@@ -10,4 +10,5 @@ const (
 	Separator
 	Day
 	Hour
+	LeftParenthesis
 )
