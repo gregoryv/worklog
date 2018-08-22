@@ -45,7 +45,7 @@ func lexDay(s *Scanner, out chan Part) lexFn {
 	if !ok {
 		p.Errorf("invalid %s", Day)
 	} else {
-		rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
+		rest, _ := s.ScanAll("aehniortu")
 		p.Val = val + rest
 		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
 			p.Errorf("invalid %s", Day)
