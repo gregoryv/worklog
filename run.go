@@ -69,15 +69,15 @@ func lexDay(s *Scanner, out chan Part) lexFn {
 	s.ScanAll(" ")
 	return lexReported
 }
-
-func lexDate(s *Scanner, out chan Part) lexFn {
-	out <- ScanPart(s, Number)
-	s.Scan(" ")
-	return lexDay
-}
 */
+func lexDate(s *Scanner) (p Part, next lexFn) {
+	p, next = ScanPart(s, Number), nil //lexDay
+	s.Scan(" ")
+	return
+}
+
 func lexWeek(s *Scanner) (p Part, next lexFn) {
-	next = nil //lexDate
+	next = lexDate
 	if s.PeekIs(" ") {
 		s.ScanAll(" ")
 		return

@@ -27,9 +27,9 @@ func TestLexer_run(t *testing.T) {
 			{2, lexDay, "Mon 8", Number.Is("8", Position{1, 5})},
 			{1, lexDay, "Mo", Error.Is("invalid Day")},
 			{1, lexDay, "mon", Error.Is("invalid Day")},
-			{1, lexDay, "Mon", Day.Is("Mon")},
-			{1, lexDate, " 4", Error.Is("invalid Number")},
-			{1, lexDate, "4", Number.Is("4")},*/
+			{1, lexDay, "Mon", Day.Is("Mon")},*/
+		{lexDate, " 4", Error.Is("invalid Number")},
+		{lexDate, "4", Number.Is("4")},
 		{lexWeek, "26   1", Number.Is("26", Position{1, 1})},
 		{lexWeek, "     2", Undefined.Is("", Position{0, 0})},
 		{lexWeek, "jkl", Error.Is("invalid Number")},
