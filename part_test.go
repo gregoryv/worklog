@@ -7,12 +7,12 @@ import (
 
 func TestPart_Equals(t *testing.T) {
 	cases := []struct {
-		a, b Part
+		a, b *Part
 		exp  bool
 	}{
 		{
-			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
-			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			&Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			&Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
 			true,
 		},
 	}

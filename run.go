@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+/*
 func lexOperator(s *Scanner, out chan Part) lexFn {
 	p := Part{Tok: Operator, Pos: s.Pos()}
 	val, ok := s.Scan("-+")
@@ -85,35 +86,43 @@ func lexWeek(s *Scanner, out chan Part) lexFn {
 	s.ScanAll(" ")
 	return lexDate
 }
-
-func lexSep(s *Scanner, out chan Part) lexFn {
-	out <- ScanPart(s, Separator)
+*/
+func lexSep(s *Scanner) (p *Part, next lexFn) {
+	p, next = ScanPart(s, Separator), nil //lexWeek
 	s.Scan("\n")
-	return lexWeek
+	return
 }
 
 const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
 	"JulyAugustSeptemberOctoberNovemberDecember"
 
-func lexMonth(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: Month, Pos: s.Pos()}
+func lexMonth(s *Scanner) (p *Part, next lexFn) {
+	p, next = &Part{Tok: Month, Pos: s.Pos()}, lexSep
 	val, ok := s.Scan("JFMASOND")
 	if !ok {
 		p.Errorf("invalid month")
-	} else {
-		rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
-		p.Val = val + rest
-		if !strings.Contains(validMonths, p.Val) {
-			p.Errorf("invalid month")
-		}
+		return
 	}
-	out <- p
-	skipToNextLine(s, out)
-	return lexSep
+	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
+	p.Val = val + rest
+	if !strings.Contains(validMonths, p.Val) {
+		p.Errorf("invalid month")
+		return
+	}
+	if p := skipToNextLine(s); p != nil {
+		return p, next
+	}
+	return
 }
 
-func ScanPart(s *Scanner, tok Token) (p Part) {
-	p = Part{Tok: tok, Pos: s.Pos()}
+func lexYear(s *Scanner) (p *Part, next lexFn) {
+	p, next = ScanPart(s, Number), lexMonth
+	s.Scan(" ")
+	return
+}
+
+func ScanPart(s *Scanner, tok Token) (p *Part) {
+	p = &Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
 	case Number:
@@ -130,26 +139,24 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	return
 }
 
-func skipToNextLine(s *Scanner, out chan Part) {
+func skipToNextLine(s *Scanner) *Part {
 	pos := s.Pos()
 	s.ScanAll(" \t")
 	_, ok := s.Scan("\n")
 	if !ok {
-		out <- Part{Pos: pos, Val: "expect newline"}
+		return &Part{Pos: pos, Val: "expect newline"}
 	}
-}
-
-func lexYear(s *Scanner, out chan Part) lexFn {
-	out <- ScanPart(s, Number)
-	s.Scan(" ")
 	return nil
 }
 
 func (l *Lexer) run(start lexFn, s *Scanner, out chan Part) {
 	// We expect to start the file with a year
-	for fn := start; fn != nil; fn = fn(s, out) {
+	for p, next := start(s); next != nil; p, next = next(s) {
+		if p != nil {
+			out <- *p
+		}
 	}
 	close(out)
 }
 
-type lexFn func(s *Scanner, out chan Part) lexFn
+type lexFn func(s *Scanner) (*Part, lexFn)

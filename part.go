@@ -10,7 +10,7 @@ type Part struct {
 	Pos Position
 }
 
-func (a *Part) Equals(b Part) bool {
+func (a *Part) Equals(b *Part) bool {
 	return a.Tok == b.Tok &&
 		a.Val == b.Val &&
 		a.Pos.Equals(b.Pos)
@@ -30,9 +30,9 @@ func NewPart() *Part {
 	return &Part{}
 }
 
-func (tok Token) Is(val string, optional ...Position) Part {
+func (tok Token) Is(val string, optional ...Position) *Part {
 	if len(optional) > 0 {
-		return Part{tok, val, optional[0]}
+		return &Part{tok, val, optional[0]}
 	}
-	return Part{tok, val, Position{1, 1}}
+	return &Part{tok, val, Position{1, 1}}
 }
