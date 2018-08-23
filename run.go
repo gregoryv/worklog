@@ -30,31 +30,30 @@ func lexLeftParenthesis(s *Scanner, out chan Part) lexFn {
 	out <- p
 	return lexOperator
 }
-
-func lexReported(s *Scanner, out chan Part) lexFn {
-	if s.PeekIs(" \n") {
-		skipToNextLine(s, out)
-		return lexWeek
+*/
+func lexReported(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{}, lexWeek
+	if s.PeekIs("\n") {
+		s.Scan("\n")
+		return
 	}
-	out <- ScanPart(s, Number)
+	p = ScanPart(s, Number)
 	s.ScanAll(" ")
 	if s.PeekIs("(") {
-		return lexLeftParenthesis
+		return p, nil //lexLeftParenthesis
 	}
 	if s.PeekIs("\n") {
 		s.Scan("\n")
-		return lexWeek
+		return
 	}
-	p := Part{}
 	p.Errorf("invalid %s", Number)
-	out <- p
-	return nil
+	return
 }
-*/
+
 const validDays = "MonTueWenThuFriSatSun"
 
 func lexDay(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Day, Pos: s.Pos()}, nil //lexReported
+	p, next = Part{Tok: Day, Pos: s.Pos()}, lexReported
 	val, ok := s.Scan("MTWFS")
 	if !ok {
 		p.Errorf("invalid %s", Day)
@@ -65,7 +64,7 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 			p.Errorf("invalid %s", Day)
 		}
 	}
-	s.ScanAll(" ")
+	s.Scan(" ")
 	return
 }
 

@@ -18,25 +18,29 @@ func TestLexer_run(t *testing.T) {
 			{1, lexLeftParenthesis, "  (",
 				Error.Is("invalid LeftParenthesis", Position{1, 1}),
 			},
-			{1, lexLeftParenthesis, "(", LeftParenthesis.Is("(")},
-			{2, lexReported, "6\n39", Number.Is("39", Position{2, 1})},
-			{2, lexReported, "6 (", LeftParenthesis.Is("(", Position{1, 3})},
-			{1, lexReported, "\n6", Number.Is("6", Position{2, 1})},
-			{1, lexReported, "  \n   6", Number.Is("6", Position{2, 4})}, // date number
-			{1, lexReported, "  \n5", Number.Is("5", Position{2, 1})},    // week number
-			{2, lexDay, "Mon 8", Number.Is("8", Position{1, 5})},*/
+			{1, lexLeftParenthesis, "(", LeftParenthesis.Is("(")},*/
+		{lexReported, "6 (", Number.Is("6", Position{1, 1})},
+		{lexReported, "6\n", Number.Is("6", Position{1, 1})},
+		{lexReported, "\n", Undefined.Is("", Position{0, 0})},
+		{lexReported, " ", Error.Is("invalid Number", Position{1, 1})},
+
 		{lexDay, "Mo", Error.Is("invalid Day")},
 		{lexDay, "mon", Error.Is("invalid Day")},
 		{lexDay, "Mon", Day.Is("Mon")},
+
 		{lexDate, " 4", Error.Is("invalid Number")},
 		{lexDate, "4", Number.Is("4")},
+
 		{lexWeek, "26   1", Number.Is("26", Position{1, 1})},
 		{lexWeek, "     2", Undefined.Is("", Position{0, 0})},
 		{lexWeek, "jkl", Error.Is("invalid Number")},
 		{lexWeek, "26", Number.Is("26")},
+
 		{lexYear, "2018", Number.Is("2018")},
 		{lexYear, "not a year", Error.Is("invalid Number")},
+
 		{lexSep, "-----", Separator.Is("-----")},
+
 		{lexMonth, "April  \n---\n11", Month.Is("April")},
 		{lexMonth, "August\n", Month.Is("August")},
 		{lexMonth, "not a month", Error.Is("invalid month")},
