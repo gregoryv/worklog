@@ -9,54 +9,68 @@ func TestLexer_run(t *testing.T) {
 	for _, c := range []struct {
 		i     int // which part to assert
 		start lexFn
-		txt   string
-		tok   Token
-		val   string
+		input string
+		exp   Part
 	}{
-		{1, lexLeftParenthesis, "  (", Error, "invalid LeftParenthesis"},
-		{1, lexLeftParenthesis, "(", LeftParenthesis, "("},
-		{2, lexReported, "6\n39", Number, "39"},
-		{2, lexReported, "6 (", LeftParenthesis, "("},
-		{1, lexReported, "\n6", Number, "6"},
-		{1, lexReported, "  \n   6", Number, "6"}, // date number
-		{1, lexReported, "  \n5", Number, "5"},    // week number
-		{2, lexDay, "Mon 8", Number, "8"},
-		{1, lexDay, "Mo", Error, "invalid Day"},
-		{1, lexDay, "mon", Error, "invalid Day"},
-		{1, lexDay, "Mon", Day, "Mon"},
-		{1, lexDate, " 4", Error, "invalid Number"},
-		{1, lexDate, "4", Number, "4"},
-		{2, lexWeek, "26   1", Number, "1"},
-		{1, lexWeek, "     2", Number, "2"},
-		{1, lexWeek, "jkl", Error, "invalid Number"},
-		{1, lexWeek, "26", Number, "26"},
-		{1, lexYear, "2018", Number, "2018"},
-		{1, lexYear, "not a year", Error, "invalid Number"},
-		{1, lexSep, "-----", Separator, "-----"},
-		{3, lexMonth, "April  \n---\n11", Number, "11"},
-		{2, lexMonth, "April  \n  1", Error, "invalid Separator"},
-		{2, lexMonth, "August\n3", Error, "invalid Separator"},
-		{1, lexMonth, "August", Month, "August"},
-		{1, lexMonth, "not a month", Error, "invalid month"},
-		{2, lexMonth, "August something more", Error, "expect newline"},
-		{1, lexMonth, "Augusty", Error, "invalid month"},
-		{1, lexMonth, "august", Error, "invalid month"},
-		{1, lexMonth, " August", Error, "invalid month"},
+		{1, lexOperator, " ", Error.Is("invalid Operator")},
+		{1, lexOperator, "+", Operator.Is("+")},
+		{1, lexOperator, "-", Operator.Is("-")},
+		{2, lexLeftParenthesis, "(-", Operator.Is("-", Position{1, 2})},
+		{1, lexLeftParenthesis, "  (",
+			Error.Is("invalid LeftParenthesis", Position{1, 1}),
+		},
+		{1, lexLeftParenthesis, "(", LeftParenthesis.Is("(")},
+		{2, lexReported, "6\n39", Number.Is("39", Position{2, 1})},
+		{2, lexReported, "6 (", LeftParenthesis.Is("(", Position{1, 3})},
+		{1, lexReported, "\n6", Number.Is("6", Position{2, 1})},
+		{1, lexReported, "  \n   6", Number.Is("6", Position{2, 4})}, // date number
+		{1, lexReported, "  \n5", Number.Is("5", Position{2, 1})},    // week number
+		{2, lexDay, "Mon 8", Number.Is("8", Position{1, 5})},
+		{1, lexDay, "Mo", Error.Is("invalid Day")},
+		{1, lexDay, "mon", Error.Is("invalid Day")},
+		{1, lexDay, "Mon", Day.Is("Mon")},
+		{1, lexDate, " 4", Error.Is("invalid Number")},
+		{1, lexDate, "4", Number.Is("4")},
+		{2, lexWeek, "26   1", Number.Is("1", Position{1, 6})},
+		{1, lexWeek, "     2", Number.Is("2", Position{1, 6})},
+		{1, lexWeek, "jkl", Error.Is("invalid Number")},
+		{1, lexWeek, "26", Number.Is("26")},
+		{1, lexYear, "2018", Number.Is("2018")},
+		{1, lexYear, "not a year", Error.Is("invalid Number")},
+		{1, lexSep, "-----", Separator.Is("-----")},
+		{3, lexMonth, "April  \n---\n11",
+			Number.Is("11", Position{3, 1}),
+		},
+		{2, lexMonth, "April  \n  1",
+			Error.Is("invalid Separator", Position{2, 1})},
+		{2, lexMonth, "August\n3",
+			Error.Is("invalid Separator", Position{2, 1}),
+		},
+		{1, lexMonth, "August", Month.Is("August")},
+		{1, lexMonth, "not a month", Error.Is("invalid month")},
+		{2, lexMonth, "August something more",
+			Error.Is("expect newline", Position{1, 7}),
+		},
+		{1, lexMonth, "Augusty", Error.Is("invalid month")},
+		{1, lexMonth, "august", Error.Is("invalid month")},
+		{1, lexMonth, " August", Error.Is("invalid month")},
 	} {
-		l := NewLexer(c.txt)
+		l := NewLexer(c.input)
 		out := make(chan Part, 2) // buffer it so we can ignore following parts
 		go l.run(c.start, l.scanner, out)
-		var part Part
-		for i := 0; i < c.i; i++ {
-			part = <-out
-		}
-		i, txt, tok, val := c.i, c.txt, c.tok, c.val
-		// Check the i:th part
-		Assert(t, Vars{i, txt, tok, part.Tok, val, part.Val},
-			tok == part.Tok,
-			val == part.Val,
+		i, input, exp := c.i, c.input, c.exp
+		got := skipParts(i, out)
+		Assert(t, Vars{i, input, exp, got},
+			got.Equals(exp),
 		)
 	}
+}
+
+func skipParts(i int, out chan Part) (p Part) {
+	for j := 0; j < i; j++ {
+		p = <-out
+	}
+	return
 }
 
 func TestScanPart(t *testing.T) {

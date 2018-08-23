@@ -11,4 +11,5 @@ const (
 	Day
 	Hour
 	LeftParenthesis
+	Operator // -,+
 )

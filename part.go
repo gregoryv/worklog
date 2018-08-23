@@ -29,3 +29,10 @@ func (p *Part) String() string {
 func NewPart() *Part {
 	return &Part{}
 }
+
+func (tok Token) Is(val string, optional ...Position) Part {
+	if len(optional) > 0 {
+		return Part{tok, val, optional[0]}
+	}
+	return Part{tok, val, Position{1, 1}}
+}

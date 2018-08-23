@@ -4,6 +4,19 @@ import (
 	"strings"
 )
 
+func lexOperator(s *Scanner, out chan Part) lexFn {
+	p := Part{Tok: Operator, Pos: s.Pos()}
+	val, ok := s.Scan("-+")
+	if !ok {
+		p.Errorf("invalid %s", Operator)
+		out <- p
+	} else {
+		p.Val = val
+		out <- p
+	}
+	return nil
+}
+
 func lexLeftParenthesis(s *Scanner, out chan Part) lexFn {
 	p := Part{Tok: LeftParenthesis, Pos: s.Pos()}
 	val, ok := s.Scan("(")
@@ -14,7 +27,7 @@ func lexLeftParenthesis(s *Scanner, out chan Part) lexFn {
 	}
 	p.Val = val
 	out <- p
-	return nil
+	return lexOperator
 }
 
 func lexReported(s *Scanner, out chan Part) lexFn {
