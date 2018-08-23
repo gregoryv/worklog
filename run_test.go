@@ -7,10 +7,9 @@ import (
 
 func TestLexer_run(t *testing.T) {
 	for _, c := range []struct {
-		start   lexFn
-		input   string
-		exp     Part
-		hasNext bool
+		start lexFn
+		input string
+		exp   Part
 	}{ /*
 			{1, lexOperator, " ", Error.Is("invalid Operator")},
 			{1, lexOperator, "+", Operator.Is("+")},
@@ -30,29 +29,28 @@ func TestLexer_run(t *testing.T) {
 			{1, lexDay, "mon", Error.Is("invalid Day")},
 			{1, lexDay, "Mon", Day.Is("Mon")},
 			{1, lexDate, " 4", Error.Is("invalid Number")},
-			{1, lexDate, "4", Number.Is("4")},
-			{2, lexWeek, "26   1", Number.Is("1", Position{1, 6})},
-			{1, lexWeek, "     2", Number.Is("2", Position{1, 6})},
-			{1, lexWeek, "jkl", Error.Is("invalid Number")},
-			{1, lexWeek, "26", Number.Is("26")},
-			{1, lexYear, "2018", Number.Is("2018")},
-			{1, lexYear, "not a year", Error.Is("invalid Number")},*/
-		{lexSep, "-----", Separator.Is("-----"), false},
-		{lexMonth, "April  \n---\n11", Month.Is("April"), true},
-		{lexMonth, "August\n", Month.Is("August"), true},
-		{lexMonth, "not a month", Error.Is("invalid month"), true},
+			{1, lexDate, "4", Number.Is("4")},*/
+		{lexWeek, "26   1", Number.Is("26", Position{1, 1})},
+		{lexWeek, "     2", Undefined.Is("", Position{0, 0})},
+		{lexWeek, "jkl", Error.Is("invalid Number")},
+		{lexWeek, "26", Number.Is("26")},
+		{lexYear, "2018", Number.Is("2018")},
+		{lexYear, "not a year", Error.Is("invalid Number")},
+		{lexSep, "-----", Separator.Is("-----")},
+		{lexMonth, "April  \n---\n11", Month.Is("April")},
+		{lexMonth, "August\n", Month.Is("August")},
+		{lexMonth, "not a month", Error.Is("invalid month")},
 		{lexMonth, "August something more",
-			Error.Is("expect newline", Position{1, 7}), true,
+			Error.Is("expect newline", Position{1, 7}),
 		},
-		{lexMonth, "Augusty", Error.Is("invalid month"), true},
-		{lexMonth, "august", Error.Is("invalid month"), true},
-		{lexMonth, " August", Error.Is("invalid month"), true},
+		{lexMonth, "Augusty", Error.Is("invalid month")},
+		{lexMonth, "august", Error.Is("invalid month")},
+		{lexMonth, " August", Error.Is("invalid month")},
 	} {
 		input, exp := c.input, c.exp
-		got, next := c.start(NewLexer(c.input).scanner)
+		got, _ := c.start(NewLexer(c.input).scanner)
 		Assert(t, Vars{input, exp, got},
 			got.Equals(exp),
-			c.hasNext == (next != nil),
 		)
 	}
 }

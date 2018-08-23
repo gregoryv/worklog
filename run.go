@@ -75,20 +75,20 @@ func lexDate(s *Scanner, out chan Part) lexFn {
 	s.Scan(" ")
 	return lexDay
 }
-
-func lexWeek(s *Scanner, out chan Part) lexFn {
-	// todo week num is only available sometimes
+*/
+func lexWeek(s *Scanner) (p Part, next lexFn) {
+	next = nil //lexDate
 	if s.PeekIs(" ") {
 		s.ScanAll(" ")
-		return lexDate
+		return
 	}
-	out <- ScanPart(s, Number)
+	p = ScanPart(s, Number)
 	s.ScanAll(" ")
-	return lexDate
+	return
 }
-*/
+
 func lexSep(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Separator), nil //lexWeek
+	p, next = ScanPart(s, Separator), lexWeek
 	s.Scan("\n")
 	return
 }
