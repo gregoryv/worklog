@@ -10,6 +10,12 @@ type Part struct {
 	Pos Position
 }
 
+func (a *Part) Equals(b Part) bool {
+	return a.Tok == b.Tok &&
+		a.Val == b.Val &&
+		a.Pos.Equals(b.Pos)
+}
+
 func (p *Part) Errorf(format string, args ...interface{}) error {
 	p.Val = fmt.Sprintf(format, args...)
 	p.Tok = Error

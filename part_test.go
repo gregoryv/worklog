@@ -5,6 +5,25 @@ import (
 	"testing"
 )
 
+func TestPart_Equals(t *testing.T) {
+	cases := []struct {
+		a, b Part
+		exp  bool
+	}{
+		{
+			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			true,
+		},
+	}
+	for _, c := range cases {
+		got := c.a.Equals(c.b)
+		Assert(t, Vars{c.a, c.b},
+			got == c.exp,
+		)
+	}
+}
+
 func TestPart_Errorf(t *testing.T) {
 	p := Part{Tok: Number, Val: "12x3"}
 	got := p.Errorf("invalid %s", "12x").Error()

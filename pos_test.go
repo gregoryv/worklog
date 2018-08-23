@@ -19,6 +19,23 @@ func p(line, col int) Position {
 	return *p
 }
 
+func TestPosition_Equals(t *testing.T) {
+	cases := []struct {
+		a, b Position
+		exp  bool
+	}{
+		{Position{1, 1}, Position{1, 1}, true},
+		{Position{1, 1}, Position{1, 2}, false},
+		{Position{2, 1}, Position{1, 1}, false},
+	}
+	for _, c := range cases {
+		got := c.a.Equals(c.b)
+		Assert(t, Vars{c.a, c.b, got},
+			got == c.exp,
+		)
+	}
+}
+
 func TestPosition_Val(t *testing.T) {
 	p := NewPosition()
 	line, col := p.Val()

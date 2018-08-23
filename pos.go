@@ -6,11 +6,15 @@ import (
 
 type Position struct {
 	line, col int
-	last      int // last column when using NextLine so we can Back once
 }
 
 func NewPosition() *Position {
-	return &Position{line: 1, col: 1, last: 1}
+	return &Position{line: 1, col: 1}
+}
+
+func (a *Position) Equals(b Position) bool {
+	return a.line == b.line &&
+		a.col == b.col
 }
 
 func (pos *Position) Val() (line, col int) {
