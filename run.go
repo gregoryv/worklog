@@ -50,11 +50,11 @@ func lexReported(s *Scanner, out chan Part) lexFn {
 	out <- p
 	return nil
 }
-
+*/
 const validDays = "MonTueWenThuFriSatSun"
 
-func lexDay(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: Day, Pos: s.Pos()}
+func lexDay(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Tok: Day, Pos: s.Pos()}, nil //lexReported
 	val, ok := s.Scan("MTWFS")
 	if !ok {
 		p.Errorf("invalid %s", Day)
@@ -65,13 +65,12 @@ func lexDay(s *Scanner, out chan Part) lexFn {
 			p.Errorf("invalid %s", Day)
 		}
 	}
-	out <- p
 	s.ScanAll(" ")
-	return lexReported
+	return
 }
-*/
+
 func lexDate(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Number), nil //lexDay
+	p, next = ScanPart(s, Number), lexDay
 	s.Scan(" ")
 	return
 }
