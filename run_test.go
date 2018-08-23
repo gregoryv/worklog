@@ -9,7 +9,7 @@ func TestLexer_run(t *testing.T) {
 	for _, c := range []struct {
 		start   lexFn
 		input   string
-		exp     *Part
+		exp     Part
 		hasNext bool
 	}{ /*
 			{1, lexOperator, " ", Error.Is("invalid Operator")},
@@ -37,7 +37,7 @@ func TestLexer_run(t *testing.T) {
 			{1, lexWeek, "26", Number.Is("26")},
 			{1, lexYear, "2018", Number.Is("2018")},
 			{1, lexYear, "not a year", Error.Is("invalid Number")},*/
-		{lexSep, "-----", Separator.Is("-----"), true},
+		{lexSep, "-----", Separator.Is("-----"), false},
 		{lexMonth, "April  \n---\n11", Month.Is("April"), true},
 		{lexMonth, "August\n", Month.Is("August"), true},
 		{lexMonth, "not a month", Error.Is("invalid month"), true},

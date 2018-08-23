@@ -5,14 +5,30 @@ import (
 	"testing"
 )
 
+func TestPart_Defined(t *testing.T) {
+	cases := []struct {
+		part Part
+		exp  bool
+	}{
+		{Part{}, false},
+		{Part{Tok: Error}, true},
+	}
+	for _, c := range cases {
+		got := c.part.Defined()
+		Assert(t, Vars{c},
+			got == c.exp,
+		)
+	}
+}
+
 func TestPart_Equals(t *testing.T) {
 	cases := []struct {
-		a, b *Part
+		a, b Part
 		exp  bool
 	}{
 		{
-			&Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
-			&Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
 			true,
 		},
 	}
@@ -54,7 +70,7 @@ func TestPart_String(t *testing.T) {
 
 func TestNewPart(t *testing.T) {
 	part := NewPart()
-	if part == nil {
+	if &part == nil {
 		t.Fail()
 	}
 }

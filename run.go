@@ -87,7 +87,7 @@ func lexWeek(s *Scanner, out chan Part) lexFn {
 	return lexDate
 }
 */
-func lexSep(s *Scanner) (p *Part, next lexFn) {
+func lexSep(s *Scanner) (p Part, next lexFn) {
 	p, next = ScanPart(s, Separator), nil //lexWeek
 	s.Scan("\n")
 	return
@@ -96,8 +96,8 @@ func lexSep(s *Scanner) (p *Part, next lexFn) {
 const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
 	"JulyAugustSeptemberOctoberNovemberDecember"
 
-func lexMonth(s *Scanner) (p *Part, next lexFn) {
-	p, next = &Part{Tok: Month, Pos: s.Pos()}, lexSep
+func lexMonth(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Tok: Month, Pos: s.Pos()}, lexSep
 	val, ok := s.Scan("JFMASOND")
 	if !ok {
 		p.Errorf("invalid month")
@@ -109,20 +109,20 @@ func lexMonth(s *Scanner) (p *Part, next lexFn) {
 		p.Errorf("invalid month")
 		return
 	}
-	if p := skipToNextLine(s); p != nil {
+	if p := skipToNextLine(s); p.Defined() {
 		return p, next
 	}
 	return
 }
 
-func lexYear(s *Scanner) (p *Part, next lexFn) {
+func lexYear(s *Scanner) (p Part, next lexFn) {
 	p, next = ScanPart(s, Number), lexMonth
 	s.Scan(" ")
 	return
 }
 
-func ScanPart(s *Scanner, tok Token) (p *Part) {
-	p = &Part{Tok: tok, Pos: s.Pos()}
+func ScanPart(s *Scanner, tok Token) (p Part) {
+	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
 	case Number:
@@ -139,24 +139,24 @@ func ScanPart(s *Scanner, tok Token) (p *Part) {
 	return
 }
 
-func skipToNextLine(s *Scanner) *Part {
+func skipToNextLine(s *Scanner) (p Part) {
 	pos := s.Pos()
 	s.ScanAll(" \t")
 	_, ok := s.Scan("\n")
 	if !ok {
-		return &Part{Pos: pos, Val: "expect newline"}
+		p = Part{Tok: Error, Pos: pos, Val: "expect newline"}
 	}
-	return nil
+	return
 }
 
 func (l *Lexer) run(start lexFn, s *Scanner, out chan Part) {
 	// We expect to start the file with a year
 	for p, next := start(s); next != nil; p, next = next(s) {
-		if p != nil {
-			out <- *p
+		if p.Tok != Undefined {
+			out <- p
 		}
 	}
 	close(out)
 }
 
-type lexFn func(s *Scanner) (*Part, lexFn)
+type lexFn func(s *Scanner) (Part, lexFn)
