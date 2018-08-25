@@ -20,7 +20,7 @@ func lexOperator(s *Scanner, out chan Part) lexFn {
 	return nil
 }
 */
-func lexLeftParenthesis(s *Scanner) (p Part, next lexFn) {
+func lexLeftParen(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
 	val, ok := s.Scan("(")
 	if !ok {
@@ -48,7 +48,7 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 	if r == '(' {
 		s.Back()
 		p.Tok = Undefined
-		next = lexLeftParenthesis
+		next = lexLeftParen
 		return
 	}
 	// should be unreachable

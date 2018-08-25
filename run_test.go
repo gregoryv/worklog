@@ -13,12 +13,9 @@ func TestLexer_run(t *testing.T) {
 	}{ /*
 			{1, lexOperator, " ", Error.Is("invalid Operator")},
 			{1, lexOperator, "+", Operator.Is("+")},
-			{1, lexOperator, "-", Operator.Is("-")},
-			{2, lexLeftParenthesis, "(-", Operator.Is("-", Position{1, 2})},
-			{1, lexLeftParenthesis, "  (",
-				Error.Is("invalid LeftParenthesis", Position{1, 1}),
-			},
-			{1, lexLeftParenthesis, "(", LeftParenthesis.Is("(")},*/
+			{1, lexOperator, "-", Operator.Is("-")},*/
+		{lexLeftParen, "kj", Error.Is("invalid LeftParenthesis", Position{1, 1})},
+		{lexLeftParen, "(", LeftParenthesis.Is("(")},
 		{lexNote, "(8 working)", Undefined.Is("", Position{1, 1})},
 		{lexNote, "not working\n", Note.Is("not working\n", Position{1, 1})},
 		{lexNote, "not working", Note.Is("not working", Position{1, 1})},
