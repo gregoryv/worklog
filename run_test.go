@@ -11,6 +11,9 @@ func TestLexer_run(t *testing.T) {
 		input string
 		exp   Part
 	}{
+		{lexColon, "jkjk", Undefined.Is("")},
+		{lexColon, ":", Colon.Is(":")},
+
 		{lexHours, "-", Error.Is("invalid Hours")},
 		{lexHours, "", Error.Is("invalid Hours")},
 		{lexHours, "2", Hours.Is("2")},

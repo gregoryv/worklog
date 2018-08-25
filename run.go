@@ -7,6 +7,15 @@ import (
 const digits = "0123456789"
 
 func lexColon(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Colon, Pos: s.Pos()}
+	val := s.Next()
+	if val == ':' {
+		p.Val = ":"
+		return // lexMinutes
+	}
+	s.Back()
+	p.Tok = Undefined
+	next = lexNote
 	return
 }
 

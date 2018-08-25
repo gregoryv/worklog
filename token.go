@@ -15,4 +15,5 @@ const (
 	Hour
 	LeftParenthesis
 	Operator // -,+
+	Colon
 )
