@@ -16,4 +16,5 @@ const (
 	LeftParenthesis
 	Operator // -,+
 	Colon
+	Minutes
 )

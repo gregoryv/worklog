@@ -6,12 +6,19 @@ import (
 
 const digits = "0123456789"
 
+func lexMinutes(s *Scanner) (p Part, next lexFn) {
+	p = ScanPart(s, Minutes)
+	//	next = lexRightParen
+	return
+}
+
 func lexColon(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: Colon, Pos: s.Pos()}
 	val := s.Next()
 	if val == ':' {
 		p.Val = ":"
-		return // lexMinutes
+		next = lexMinutes
+		return
 	}
 	s.Back()
 	p.Tok = Undefined
@@ -158,9 +165,7 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
-	case Number:
-		valid = digits
-	case Hours:
+	case Number, Hours, Minutes:
 		valid = digits
 	case Separator:
 		valid = "-"
