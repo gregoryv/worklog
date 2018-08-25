@@ -6,20 +6,17 @@ import (
 
 const digits = "0123456789"
 
-/*
-func lexOperator(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: Operator, Pos: s.Pos()}
+func lexOperator(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Operator, Pos: s.Pos()}
 	val, ok := s.Scan("-+")
 	if !ok {
 		p.Errorf("invalid %s", Operator)
-		out <- p
 	} else {
 		p.Val = val
-		out <- p
 	}
-	return nil
+	return
 }
-*/
+
 func lexLeftParen(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
 	val, ok := s.Scan("(")
@@ -28,7 +25,8 @@ func lexLeftParen(s *Scanner) (p Part, next lexFn) {
 		return
 	}
 	p.Val = val
-	return p, nil //lexOperator
+	next = lexOperator
+	return
 }
 
 func lexNote(s *Scanner) (p Part, next lexFn) {
@@ -141,9 +139,9 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	var valid string
 	switch tok {
 	case Number:
-		valid = "0123456789"
+		valid = digits
 	case Hours:
-		valid = "0123456789"
+		valid = digits
 	case Separator:
 		valid = "-"
 	}

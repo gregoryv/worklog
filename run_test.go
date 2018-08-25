@@ -10,20 +10,21 @@ func TestLexer_run(t *testing.T) {
 		start lexFn
 		input string
 		exp   Part
-	}{ /*
-			{1, lexOperator, " ", Error.Is("invalid Operator")},
-			{1, lexOperator, "+", Operator.Is("+")},
-			{1, lexOperator, "-", Operator.Is("-")},*/
-		{lexLeftParen, "kj", Error.Is("invalid LeftParenthesis", Position{1, 1})},
+	}{
+		{lexOperator, " ", Error.Is("invalid Operator")},
+		{lexOperator, "+", Operator.Is("+")},
+		{lexOperator, "-", Operator.Is("-")},
+
+		{lexLeftParen, "kj", Error.Is("invalid LeftParenthesis")},
 		{lexLeftParen, "(", LeftParenthesis.Is("(")},
-		{lexNote, "(8 working)", Undefined.Is("", Position{1, 1})},
-		{lexNote, "not working\n", Note.Is("not working\n", Position{1, 1})},
-		{lexNote, "not working", Note.Is("not working", Position{1, 1})},
-		{lexReported, "8 what a day", Hours.Is("8", Position{1, 1})},
-		{lexReported, "6 (", Hours.Is("6", Position{1, 1})},
-		{lexReported, "6\n", Hours.Is("6", Position{1, 1})},
-		{lexReported, "\n", Undefined.Is("", Position{1, 1})},
-		{lexReported, " ", Error.Is("invalid Hours", Position{1, 1})},
+		{lexNote, "(8 working)", Undefined.Is("")},
+		{lexNote, "not working\n", Note.Is("not working\n")},
+		{lexNote, "not working", Note.Is("not working")},
+		{lexReported, "8 what a day", Hours.Is("8")},
+		{lexReported, "6 (", Hours.Is("6")},
+		{lexReported, "6\n", Hours.Is("6")},
+		{lexReported, "\n", Undefined.Is("")},
+		{lexReported, " ", Error.Is("invalid Hours")},
 
 		{lexDay, "Mo", Error.Is("invalid Day")},
 		{lexDay, "mon", Error.Is("invalid Day")},
@@ -32,7 +33,7 @@ func TestLexer_run(t *testing.T) {
 		{lexDate, " 4", Error.Is("invalid Number")},
 		{lexDate, "4", Number.Is("4")},
 
-		{lexWeek, "26   1", Number.Is("26", Position{1, 1})},
+		{lexWeek, "26   1", Number.Is("26")},
 		{lexWeek, "     2", Undefined.Is("", Position{0, 0})},
 		{lexWeek, "jkl", Error.Is("invalid Number")},
 		{lexWeek, "26", Number.Is("26")},
