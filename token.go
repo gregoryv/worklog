@@ -7,6 +7,7 @@ const (
 	Undefined Token = iota
 	Error
 	Number
+	Year
 	Hours
 	Note
 	Month

@@ -47,12 +47,15 @@ func lexHours(s *Scanner) (p Part, next lexFn) {
 func lexOperator(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: Operator, Pos: s.Pos()}
 	next = lexHours
-	val, ok := s.Scan("-+")
-	if !ok {
-		p.Errorf("invalid %s", Operator)
-	} else {
-		p.Val = val
+	if s.PeekIs("-+") {
+		p.Val = string(s.Next())
+		return
 	}
+	if s.PeekIs(digits) {
+		p.Tok = Undefined
+		return
+	}
+	p.Errorf("invalid %s", Operator)
 	return
 }
 
@@ -168,7 +171,7 @@ func lexMonth(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexYear(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Number), lexMonth
+	p, next = ScanPart(s, Year), lexMonth
 	s.Scan(" ")
 	return
 }
@@ -177,7 +180,7 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
-	case Number, Hours, Minutes:
+	case Number, Hours, Minutes, Year:
 		valid = digits
 	case Separator:
 		valid = "-"

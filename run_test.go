@@ -22,6 +22,7 @@ func TestLexer_run(t *testing.T) {
 		{lexHours, "", Error.Is("invalid Hours")},
 		{lexHours, "2", Hours.Is("2")},
 
+		{lexOperator, "8", Undefined.Is("")},
 		{lexOperator, " ", Error.Is("invalid Operator")},
 		{lexOperator, "+", Operator.Is("+")},
 		{lexOperator, "-", Operator.Is("-")},
@@ -49,8 +50,8 @@ func TestLexer_run(t *testing.T) {
 		{lexWeek, "jkl", Error.Is("invalid Number")},
 		{lexWeek, "26", Number.Is("26")},
 
-		{lexYear, "2018", Number.Is("2018")},
-		{lexYear, "not a year", Error.Is("invalid Number")},
+		{lexYear, "2018", Year.Is("2018")},
+		{lexYear, "not a year", Error.Is("invalid Year")},
 
 		{lexSep, "-----", Separator.Is("-----")},
 

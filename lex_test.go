@@ -12,7 +12,7 @@ func TestLexer_Run(t *testing.T) {
 		part Part
 		exp  string
 	}{
-		{<-out, "Number[1,1]: \"2018\""},
+		{<-out, "Year[1,1]: \"2018\""},
 	}
 	for _, c := range cases {
 		got := c.part.String()
