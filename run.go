@@ -37,8 +37,8 @@ func lexReported(s *Scanner) (p Part, next lexFn) {
 		s.Scan("\n")
 		return
 	}
-	p = ScanPart(s, Number)
-	s.ScanAll(" ")
+	p = ScanPart(s, Hours)
+	s.Scan(" ")
 	if s.PeekIs("(") {
 		return p, nil //lexLeftParenthesis
 	}
@@ -46,7 +46,8 @@ func lexReported(s *Scanner) (p Part, next lexFn) {
 		s.Scan("\n")
 		return
 	}
-	p.Errorf("invalid %s", Number)
+	// todo description is valid here as well
+	p.Errorf("invalid %s", Hours)
 	return
 }
 
@@ -124,6 +125,8 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	var valid string
 	switch tok {
 	case Number:
+		valid = "0123456789"
+	case Hours:
 		valid = "0123456789"
 	case Separator:
 		valid = "-"

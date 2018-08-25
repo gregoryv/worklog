@@ -19,10 +19,11 @@ func TestLexer_run(t *testing.T) {
 				Error.Is("invalid LeftParenthesis", Position{1, 1}),
 			},
 			{1, lexLeftParenthesis, "(", LeftParenthesis.Is("(")},*/
-		{lexReported, "6 (", Number.Is("6", Position{1, 1})},
-		{lexReported, "6\n", Number.Is("6", Position{1, 1})},
+		{lexReported, "8 what a day", Hours.Is("8", Position{1, 1})},
+		{lexReported, "6 (", Hours.Is("6", Position{1, 1})},
+		{lexReported, "6\n", Hours.Is("6", Position{1, 1})},
 		{lexReported, "\n", Undefined.Is("", Position{0, 0})},
-		{lexReported, " ", Error.Is("invalid Number", Position{1, 1})},
+		{lexReported, " ", Error.Is("invalid Hours", Position{1, 1})},
 
 		{lexDay, "Mo", Error.Is("invalid Day")},
 		{lexDay, "mon", Error.Is("invalid Day")},
