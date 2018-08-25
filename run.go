@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+const digits = "0123456789"
+
 /*
 func lexOperator(s *Scanner, out chan Part) lexFn {
 	p := Part{Tok: Operator, Pos: s.Pos()}
@@ -17,37 +19,51 @@ func lexOperator(s *Scanner, out chan Part) lexFn {
 	}
 	return nil
 }
-
-func lexLeftParenthesis(s *Scanner, out chan Part) lexFn {
-	p := Part{Tok: LeftParenthesis, Pos: s.Pos()}
+*/
+func lexLeftParenthesis(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
 	val, ok := s.Scan("(")
 	if !ok {
 		p.Errorf("invalid %s", LeftParenthesis)
-		out <- p
-		return nil
+		return
 	}
 	p.Val = val
-	out <- p
-	return lexOperator
+	return p, nil //lexOperator
 }
-*/
+
+func lexNote(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Note, Pos: s.Pos()}
+	var r rune
+	for r = s.Next(); r != '('; r = s.Next() {
+		if r == '\n' {
+			p.Val += string(r)
+			next = lexWeek
+			return
+		}
+		if r == EOS {
+			return
+		}
+		p.Val += string(r)
+	}
+	if r == '(' {
+		s.Back()
+		p.Tok = Undefined
+		next = lexLeftParenthesis
+		return
+	}
+	// should be unreachable
+	return
+}
+
 func lexReported(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{}, lexWeek
+	p, next = Part{Pos: s.Pos()}, lexWeek
 	if s.PeekIs("\n") {
 		s.Scan("\n")
+
 		return
 	}
 	p = ScanPart(s, Hours)
-	s.Scan(" ")
-	if s.PeekIs("(") {
-		return p, nil //lexLeftParenthesis
-	}
-	if s.PeekIs("\n") {
-		s.Scan("\n")
-		return
-	}
-	// todo description is valid here as well
-	p.Errorf("invalid %s", Hours)
+	next = lexNote
 	return
 }
 

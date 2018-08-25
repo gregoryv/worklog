@@ -8,6 +8,7 @@ const (
 	Error
 	Number
 	Hours
+	Note
 	Month
 	Separator
 	Day
