@@ -6,7 +6,6 @@ type Token int
 const (
 	Undefined Token = iota
 	Error
-	Number
 	Year
 	Hours
 	Note
@@ -21,4 +20,5 @@ const (
 	Colon
 	Minutes
 	Tag
+	Week
 )

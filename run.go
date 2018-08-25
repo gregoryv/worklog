@@ -157,7 +157,7 @@ func lexWeek(s *Scanner) (p Part, next lexFn) {
 		s.ScanAll(" ")
 		return
 	}
-	p = ScanPart(s, Number)
+	p = ScanPart(s, Week)
 	s.ScanAll(" ")
 	return
 }
@@ -200,7 +200,7 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
-	case Number, Hours, Minutes, Year, Date:
+	case Hours, Minutes, Year, Date, Week:
 		valid = digits
 	case Separator:
 		valid = "-"

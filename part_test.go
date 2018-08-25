@@ -27,8 +27,8 @@ func TestPart_Equals(t *testing.T) {
 		exp  bool
 	}{
 		{
-			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
-			Part{Tok: Number, Val: "1", Pos: Position{1, 1}},
+			Part{Tok: Year, Val: "1", Pos: Position{1, 1}},
+			Part{Tok: Year, Val: "1", Pos: Position{1, 1}},
 			true,
 		},
 	}
@@ -41,7 +41,7 @@ func TestPart_Equals(t *testing.T) {
 }
 
 func TestPart_Errorf(t *testing.T) {
-	p := Part{Tok: Number, Val: "12x3"}
+	p := Part{Tok: Year, Val: "12x3"}
 	got := p.Errorf("invalid %s", "12x").Error()
 	Assert(t, Vars{got, p.Val, p.Tok},
 		got == "invalid 12x",
@@ -57,7 +57,7 @@ func TestPart_String(t *testing.T) {
 		exp  string
 	}{
 		{"", Part{Tok: Error, Val: "error message"}, `Error[0,0]: "error message"`},
-		{"", Part{Tok: Number, Val: "1"}, `Number[0,0]: "1"`},
+		{"", Part{Tok: Year, Val: "1"}, `Year[0,0]: "1"`},
 		{"Undefined, run 'go generate'", Part{Tok: Token(-1), Val: ""},
 			`Token(-1)[0,0]: ""`},
 	} {

@@ -48,10 +48,10 @@ func TestLexer_run(t *testing.T) {
 		{lexDate, " 4", Error.Is("invalid Date")},
 		{lexDate, "4", Date.Is("4")},
 
-		{lexWeek, "26   1", Number.Is("26")},
+		{lexWeek, "26   1", Week.Is("26")},
 		{lexWeek, "     2", Undefined.Is("", Position{0, 0})},
-		{lexWeek, "jkl", Error.Is("invalid Number")},
-		{lexWeek, "26", Number.Is("26")},
+		{lexWeek, "jkl", Error.Is("invalid Week")},
+		{lexWeek, "26", Week.Is("26")},
 
 		{lexYear, "2018", Year.Is("2018")},
 		{lexYear, "not a year", Error.Is("invalid Year")},
@@ -88,12 +88,12 @@ func TestScanPart(t *testing.T) {
 		msg, txt string
 		tok      Token
 	}{
-		{"", "1234", Number},
+		{"", "1234", Year},
 		{"", "as1234", Error},
 	}
 	for _, c := range cases {
 		s := NewScanner(c.txt)
-		got := ScanPart(s, Number)
+		got := ScanPart(s, Year)
 		Assert(t, Vars{c, got}, c.tok == got.Tok)
 	}
 
