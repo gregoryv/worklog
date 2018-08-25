@@ -11,6 +11,9 @@ func TestLexer_run(t *testing.T) {
 		input string
 		exp   Part
 	}{
+		{lexTag, "k", Error.Is("missing RightParenthesis", Position{1, 2})},
+		{lexTag, " vacation hej)", Tag.Is("vacation hej")},
+
 		{lexMinutes, "0", Minutes.Is("0")},
 		{lexMinutes, "-10", Error.Is("invalid Minutes")},
 		{lexMinutes, "aa", Error.Is("invalid Minutes")},

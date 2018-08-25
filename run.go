@@ -4,7 +4,9 @@ import (
 	"strings"
 )
 
-const digits = "0123456789"
+const (
+	digits = "0123456789"
+)
 
 func lexRightParen(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
@@ -18,9 +20,27 @@ func lexRightParen(s *Scanner) (p Part, next lexFn) {
 	return
 }
 
+func lexTag(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Tag, Pos: s.Pos()}
+	var r rune
+	for r = s.Next(); r != ')'; r = s.Next() {
+		if r == '\n' || r == EOS {
+			p.Pos = s.Pos()
+			p.Errorf("missing %s", RightParenthesis)
+			return
+		}
+		p.Val += string(r)
+	}
+	s.Back()
+	next = lexRightParen
+	p.Val = strings.TrimSpace(p.Val)
+	return
+}
+
 func lexMinutes(s *Scanner) (p Part, next lexFn) {
 	p = ScanPart(s, Minutes)
-	//	next = lexRightParen
+	s.ScanAll(" ")
+	next = lexTag
 	return
 }
 

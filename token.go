@@ -20,4 +20,5 @@ const (
 	Operator // -,+
 	Colon
 	Minutes
+	Tag
 )
