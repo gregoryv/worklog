@@ -34,7 +34,7 @@ func TestLexer_run(t *testing.T) {
 		{lexLeftParen, "(", LeftParenthesis.Is("(")},
 		{lexNote, "(8 working)", Undefined.Is("")},
 		{lexNote, "not working\n", Note.Is("not working\n")},
-		{lexNote, "not working", Note.Is("not working")},
+		{lexNote, "  not working", Note.Is("  not working")},
 		{lexReported, "8 what a day", Hours.Is("8")},
 		{lexReported, "6 (", Hours.Is("6")},
 		{lexReported, "6\n", Hours.Is("6")},

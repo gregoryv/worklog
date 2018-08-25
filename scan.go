@@ -10,6 +10,7 @@ type Scanner struct {
 	width int
 	input string
 	line  int
+	inTag bool
 }
 
 func NewScanner(txt string) *Scanner {

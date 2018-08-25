@@ -17,6 +17,47 @@ func lexRightParen(s *Scanner) (p Part, next lexFn) {
 	}
 	p.Val = val
 	next = lexNote
+	s.inTag = false
+	s.ScanAll(" ")
+	return
+}
+
+func lexLeftParen(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
+	val, ok := s.Scan("(")
+	if !ok {
+		p.Errorf("invalid %s", LeftParenthesis)
+		return
+	}
+	p.Val = val
+	next = lexOperator
+	s.inTag = true
+	return
+}
+
+func lexNote(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Note, Pos: s.Pos()}
+	var r rune
+	for r = s.Next(); r != '('; r = s.Next() {
+		if r == '\n' {
+			p.Val += string(r)
+			next = lexWeek
+			return
+		}
+		if r == EOS {
+			return
+		}
+		p.Val += string(r)
+	}
+	if r == '(' {
+		s.Back()
+		if len(p.Val) == 0 {
+			p.Tok = Undefined
+		}
+		next = lexLeftParen
+		return
+	}
+	// should be unreachable
 	return
 }
 
@@ -40,7 +81,11 @@ func lexTag(s *Scanner) (p Part, next lexFn) {
 func lexMinutes(s *Scanner) (p Part, next lexFn) {
 	p = ScanPart(s, Minutes)
 	s.ScanAll(" ")
-	next = lexTag
+	if s.inTag {
+		next = lexTag
+	} else {
+		next = lexNote
+	}
 	return
 }
 
@@ -54,7 +99,11 @@ func lexColon(s *Scanner) (p Part, next lexFn) {
 	}
 	s.Back()
 	p.Tok = Undefined
-	next = lexNote
+	if s.inTag {
+		next = lexTag
+	} else {
+		next = lexNote
+	}
 	return
 }
 
@@ -76,42 +125,6 @@ func lexOperator(s *Scanner) (p Part, next lexFn) {
 		return
 	}
 	p.Errorf("invalid %s", Operator)
-	return
-}
-
-func lexLeftParen(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
-	val, ok := s.Scan("(")
-	if !ok {
-		p.Errorf("invalid %s", LeftParenthesis)
-		return
-	}
-	p.Val = val
-	next = lexOperator
-	return
-}
-
-func lexNote(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Note, Pos: s.Pos()}
-	var r rune
-	for r = s.Next(); r != '('; r = s.Next() {
-		if r == '\n' {
-			p.Val += string(r)
-			next = lexWeek
-			return
-		}
-		if r == EOS {
-			return
-		}
-		p.Val += string(r)
-	}
-	if r == '(' {
-		s.Back()
-		p.Tok = Undefined
-		next = lexLeftParen
-		return
-	}
-	// should be unreachable
 	return
 }
 
