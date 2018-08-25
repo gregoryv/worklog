@@ -13,6 +13,7 @@ const (
 	Month
 	Separator
 	Day
+	Date
 	Hour
 	LeftParenthesis
 	RightParenthesis

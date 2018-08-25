@@ -126,7 +126,7 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexDate(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Number), lexDay
+	p, next = ScanPart(s, Date), lexDay
 	s.Scan(" ")
 	return
 }
@@ -180,7 +180,7 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
-	case Number, Hours, Minutes, Year:
+	case Number, Hours, Minutes, Year, Date:
 		valid = digits
 	case Separator:
 		valid = "-"
