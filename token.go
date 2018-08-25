@@ -14,6 +14,7 @@ const (
 	Day
 	Hour
 	LeftParenthesis
+	RightParenthesis
 	Operator // -,+
 	Colon
 	Minutes

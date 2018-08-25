@@ -6,6 +6,18 @@ import (
 
 const digits = "0123456789"
 
+func lexRightParen(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
+	val, ok := s.Scan(")")
+	if !ok {
+		p.Errorf("invalid %s", RightParenthesis)
+		return
+	}
+	p.Val = val
+	next = lexNote
+	return
+}
+
 func lexMinutes(s *Scanner) (p Part, next lexFn) {
 	p = ScanPart(s, Minutes)
 	//	next = lexRightParen
