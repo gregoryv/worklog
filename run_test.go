@@ -11,6 +11,10 @@ func TestLexer_run(t *testing.T) {
 		input string
 		exp   Part
 	}{
+		{lexHours, "-", Error.Is("invalid Hours")},
+		{lexHours, "", Error.Is("invalid Hours")},
+		{lexHours, "2", Hours.Is("2")},
+
 		{lexOperator, " ", Error.Is("invalid Operator")},
 		{lexOperator, "+", Operator.Is("+")},
 		{lexOperator, "-", Operator.Is("-")},

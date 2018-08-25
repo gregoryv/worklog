@@ -6,8 +6,19 @@ import (
 
 const digits = "0123456789"
 
+func lexColon(s *Scanner) (p Part, next lexFn) {
+	return
+}
+
+func lexHours(s *Scanner) (p Part, next lexFn) {
+	p = ScanPart(s, Hours)
+	next = lexColon
+	return
+}
+
 func lexOperator(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: Operator, Pos: s.Pos()}
+	next = lexHours
 	val, ok := s.Scan("-+")
 	if !ok {
 		p.Errorf("invalid %s", Operator)
