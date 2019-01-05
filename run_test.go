@@ -4,6 +4,17 @@ import (
 	"testing"
 )
 
+func Test_lexMinutes_inside_tag(t *testing.T) {
+	input := "10"
+	scanner := NewLexer(input).scanner
+	scanner.inTag = true
+	got, _ := lexMinutes(scanner)
+	exp := Minutes.Is("10")
+	if got != exp {
+		t.Errorf("input %q, scanned as %q, expected %q", input, got, exp)
+	}
+}
+
 func TestLexer_run(t *testing.T) {
 	for _, c := range []struct {
 		start lexFn
@@ -70,7 +81,7 @@ func TestLexer_run(t *testing.T) {
 		input, exp := c.input, c.exp
 		got, _ := c.start(NewLexer(c.input).scanner)
 		if got != exp {
-			t.Errorf("input %q, scanned as %q, expecte %q", input, got, c.exp)
+			t.Errorf("input %q, scanned as %q, expected %q", input, got, c.exp)
 		}
 	}
 }
