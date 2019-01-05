@@ -77,6 +77,8 @@ func TestLexer_run(t *testing.T) {
 		{lexMonth, "Augusty", Error.Is("invalid month")},
 		{lexMonth, "august", Error.Is("invalid month")},
 		{lexMonth, " August", Error.Is("invalid month")},
+
+		{lexRightParen, "not", Error.Is("invalid RightParenthesis")},
 	} {
 		input, exp := c.input, c.exp
 		got, _ := c.start(NewLexer(c.input).scanner)
