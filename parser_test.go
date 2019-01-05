@@ -5,11 +5,9 @@ import (
 )
 
 func ExampleParser_Dump() {
-	par := NewParser()
-	sheet := `2018 January
+	NewParser().Dump([]byte(`2018 January
 ----------
-1  1 Mon 8 (4 semester) was in thailand (2 pool)`
-	par.Dump([]byte(sheet))
+1  1 Mon 8 (4 semester) was in thailand (2 pool)`))
 	// output:
 	// Year[1,1]: "2018"
 	// Month[1,6]: "January"
@@ -30,18 +28,22 @@ func ExampleParser_Dump() {
 	// RightParenthesis[3,48]: ")"
 }
 
-func TestParser_Sum(t *testing.T) {
-	par := NewParser()
-	sheet := `2018 January
+var parserTestSheet = `2018 January
 ----------
-1  1 Mon 8 (4 semester) thailand (2 pool)`
-	gotHH, gotMM := par.Sum([]byte(sheet))
-	expHH, expMM := 8, 0
-	if gotHH != expHH {
-		t.Errorf("%q, expected %q", gotHH, expHH)
-	}
-	if gotMM != expMM {
-		t.Errorf("%q, expected %q", gotMM, expMM)
-	}
+1  1 Mon 8 (4 vacation) was in thailand (2 pool)`
 
+func TestParser_Sum_hours(t *testing.T) {
+	got, _ := NewParser().Sum([]byte(parserTestSheet))
+	exp := 8
+	if got != exp {
+		t.Errorf("%q, expected %q", got, exp)
+	}
+}
+
+func TestParser_Sum_min(t *testing.T) {
+	_, got := NewParser().Sum([]byte(parserTestSheet))
+	exp := 0
+	if got != exp {
+		t.Errorf("%q, expected %q", got, exp)
+	}
 }
