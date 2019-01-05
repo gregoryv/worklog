@@ -49,15 +49,11 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 		}
 		p.Val += string(r)
 	}
-	if r == '(' {
-		s.Back()
-		if len(p.Val) == 0 {
-			p.Tok = Undefined
-		}
-		next = lexLeftParen
-		return
+	s.Back()
+	if len(p.Val) == 0 {
+		p.Tok = Undefined
 	}
-	// should be unreachable
+	next = lexLeftParen
 	return
 }
 
