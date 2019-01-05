@@ -2,7 +2,6 @@ package timesheet
 
 import (
 	"fmt"
-	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -28,10 +27,12 @@ func TestScanner_Scan(t *testing.T) {
 
 	for _, c := range cases {
 		letter, ok := s.Scan(c.valid)
-		Assert(t, Vars{c, letter, ok},
-			c.ok == ok,
-			c.letter == letter,
-		)
+		if letter != c.letter {
+			t.Errorf("%q, expected %q", letter, c.letter)
+		}
+		if ok != c.ok {
+			t.Errorf("%v, expected %v", ok, c.ok)
+		}
 	}
 }
 
@@ -48,10 +49,13 @@ func TestScanner_ScanAll(t *testing.T) {
 	}
 	for _, c := range cases {
 		got, ok := c.s.ScanAll(c.valid)
-		Assert(t, Vars{c, got, ok},
-			c.part == got,
-			c.ok == ok,
-		)
+		exp := c.part
+		if got != exp {
+			t.Errorf("%q, expected %q", got, exp)
+		}
+		if ok != c.ok {
+			t.Errorf("%v, expected %v", ok, c.ok)
+		}
 	}
 }
 
@@ -107,11 +111,15 @@ func TestScanner_Next(t *testing.T) {
 		r := s.Next()
 		pos := s.Pos()
 		line, _ := pos.Val()
-		Assert(t, Vars{c, line, r},
-			c.exp == r,
-			c.line == line,
-			c.index == s.index,
-		)
+		if r != c.exp {
+			t.Errorf("%q, expected %q", r, c.exp)
+		}
+		if line != c.line {
+			t.Errorf("%q, expected %q", line, c.line)
+		}
+		if s.index != c.index {
+			t.Errorf("%q, expected %q", s.index, c.index)
+		}
 	}
 }
 
@@ -123,21 +131,29 @@ func TestScanner_Back(t *testing.T) {
 	c := ScanCase{'a', 1, 1}
 	pos := s.Pos()
 	line, _ := pos.Val()
-	Assert(t, Vars{c, r, line},
-		c.exp == r,
-		c.line == line,
-		c.index == s.index,
-	)
+	if r != c.exp {
+		t.Errorf("%q, expected %q", r, c.exp)
+	}
+	if line != c.line {
+		t.Errorf("%q, expected %q", line, c.line)
+	}
+	if s.index != c.index {
+		t.Errorf("%q, expected %q", s.index, c.index)
+	}
 	// Back over a newline
 	s = NewScanner("\na")
 	s.Next()
 	s.Back()
 	pos = s.Pos()
 	line, _ = pos.Val()
-	Assert(t, Vars{line, s.index},
-		line == 1,
-		s.index == 0,
-	)
+	exp := 1
+	if line != exp {
+		t.Errorf("%q, expected %q", line, exp)
+	}
+	exp = 0
+	if s.index != exp {
+		t.Errorf("%q, expected %q", s.index, exp)
+	}
 }
 
 func TestScanner_PeekIs(t *testing.T) {
@@ -152,9 +168,10 @@ func TestScanner_PeekIs(t *testing.T) {
 	} {
 		s := NewScanner(c.txt)
 		got := s.PeekIs(c.valid)
-		Assert(t, Vars{c, got},
-			c.exp == got,
-		)
+		exp := c.exp
+		if got != exp {
+			t.Errorf("%v, expected %v", got, exp)
+		}
 	}
 }
 
@@ -162,11 +179,16 @@ func TestScanner_Peek(t *testing.T) {
 	s := NewScanner("12")
 	r := s.Peek()
 	c := ScanCase{'1', 1, 0}
+	if r != c.exp {
+		t.Errorf("%q, expected %q", r, c.exp)
+	}
 	pos := s.Pos()
 	line, _ := pos.Val()
-	Assert(t, Vars{c, line},
-		c.exp == r,
-		c.line == line,
-		c.index == s.index,
-	)
+
+	if line != c.line {
+		t.Errorf("%q, expected %q", line, c.line)
+	}
+	if s.index != c.index {
+		t.Errorf("%q, expected %q", s.index, c.index)
+	}
 }

@@ -1,7 +1,6 @@
 package timesheet
 
 import (
-	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -70,9 +69,9 @@ func TestLexer_run(t *testing.T) {
 	} {
 		input, exp := c.input, c.exp
 		got, _ := c.start(NewLexer(c.input).scanner)
-		Assert(t, Vars{input, exp, got},
-			got.Equals(exp),
-		)
+		if got != exp {
+			t.Errorf("input %q, scanned as %q, expecte %q", input, got, c.exp)
+		}
 	}
 }
 
@@ -86,7 +85,7 @@ func skipParts(i int, out chan Part) (p Part) {
 func TestScanPart(t *testing.T) {
 	cases := []struct {
 		msg, txt string
-		tok      Token
+		exp      Token
 	}{
 		{"", "1234", Year},
 		{"", "as1234", Error},
@@ -94,7 +93,10 @@ func TestScanPart(t *testing.T) {
 	for _, c := range cases {
 		s := NewScanner(c.txt)
 		got := ScanPart(s, Year)
-		Assert(t, Vars{c, got}, c.tok == got.Tok)
+		exp := c.exp
+		if got.Tok != exp {
+			t.Errorf("%q, expected %q", got, exp)
+		}
 	}
 
 }

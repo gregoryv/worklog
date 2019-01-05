@@ -2,7 +2,6 @@ package timesheet
 
 import (
 	"fmt"
-	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -30,19 +29,25 @@ func TestPosition_Equals(t *testing.T) {
 	}
 	for _, c := range cases {
 		got := c.a.Equals(c.b)
-		Assert(t, Vars{c.a, c.b, got},
-			got == c.exp,
-		)
+		exp := c.exp
+		if got != exp {
+			t.Errorf("%v, expected %v", got, exp)
+		}
+
 	}
 }
 
 func TestPosition_Val(t *testing.T) {
 	p := NewPosition()
 	line, col := p.Val()
-	Assert(t, Vars{line, col},
-		line == 1,
-		col == 1,
-	)
+	expLine := 1
+	if line != expLine {
+		t.Errorf("%q, expected %q", line, expLine)
+	}
+	expCol := 1
+	if col != expCol {
+		t.Errorf("%q, expected %q", col, expCol)
+	}
 }
 
 func ExamplePosition_String() {

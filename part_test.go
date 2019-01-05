@@ -1,7 +1,6 @@
 package timesheet
 
 import (
-	. "github.com/gregoryv/qual"
 	"testing"
 )
 
@@ -15,9 +14,10 @@ func TestPart_Defined(t *testing.T) {
 	}
 	for _, c := range cases {
 		got := c.part.Defined()
-		Assert(t, Vars{c},
-			got == c.exp,
-		)
+		exp := c.exp
+		if got != exp {
+			t.Errorf("%v, expected %v", got, exp)
+		}
 	}
 }
 
@@ -34,20 +34,26 @@ func TestPart_Equals(t *testing.T) {
 	}
 	for _, c := range cases {
 		got := c.a.Equals(c.b)
-		Assert(t, Vars{c.a, c.b},
-			got == c.exp,
-		)
+		exp := c.exp
+		if got != exp {
+			t.Errorf("%v, expected %v", got, exp)
+		}
 	}
 }
 
 func TestPart_Errorf(t *testing.T) {
 	p := Part{Tok: Year, Val: "12x3"}
 	got := p.Errorf("invalid %s", "12x").Error()
-	Assert(t, Vars{got, p.Val, p.Tok},
-		got == "invalid 12x",
-		p.Val == "invalid 12x",
-		p.Tok == Error,
-	)
+	exp := "invalid 12x"
+	if got != "invalid 12x" {
+		t.Errorf("%q, expected %q", got, exp)
+	}
+	if p.Tok != Error {
+		t.Errorf("%v, expected %v", p.Tok, Error)
+	}
+	if p.Val != exp {
+		t.Errorf("%q, expected %q", p.Val, exp)
+	}
 }
 
 func TestPart_String(t *testing.T) {
@@ -62,15 +68,16 @@ func TestPart_String(t *testing.T) {
 			`Token(-1)[0,0]: ""`},
 	} {
 		got := c.part.String()
-		Assert(t, Vars{c.msg, c.exp, got},
-			c.exp == got,
-		)
+		exp := c.exp
+		if got != exp {
+			t.Errorf("%q, expected %q", got, exp)
+		}
 	}
 }
 
 func TestNewPart(t *testing.T) {
-	part := NewPart()
-	if &part == nil {
+	got := NewPart()
+	if &got == nil {
 		t.Fail()
 	}
 }
