@@ -21,6 +21,7 @@ case $filename in
 esac
 
 go install ./cmd/worklog
-go test -coverprofile /tmp/c.out ./...
+go test -coverprofile /tmp/c.out .
+go test ./cmd/worklog
 uncover /tmp/c.out
 #go test -v -run=TestParser_SumTagged_error
