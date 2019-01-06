@@ -25,7 +25,7 @@ func TestParser_SumTagged_errors(t *testing.T) {
 1  1 Mon 8 (4 vacation) (2 pool`)
 
 	got, err := NewParser().SumTagged(sheet)
-	exp := 0
+	exp := 1
 	if len(got) != exp {
 		t.Errorf("%v, expected %v", len(got), exp)
 	}

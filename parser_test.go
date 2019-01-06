@@ -49,28 +49,29 @@ func TestParser_SumReported(t *testing.T) {
 ----------
 1  1 Sun
    2 Mon +8 (4 vacation) was in thailand (+2:30 pool)
-   3 Tue 4:10 (4 vacation) was in thailand`)
+   3 Tue 4:10 (4 vacation) was in thailand
+   4 Wed -1`)
 
 	got, err := NewParser().SumReported(sheet)
 	if err != nil {
 		t.Fatalf("%s\n%s", err, string(sheet))
 	}
-	exp := time.Duration((12*60 + 10) * time.Minute)
+	exp := time.Duration((11*60 + 10) * time.Minute)
 	if got != exp {
 		t.Errorf("%v, expected %v", got, exp)
 	}
 }
 
 func TestParser_SumReported_error(t *testing.T) {
-	sheet := []byte(`2018 January
+	sheet := `2018 January
 ----------
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
-   2 Tu 4:10 (4 vacation)`) // should be Tue not Tu
+   2 Tu 4:10 (4 vacation)` // should be Tue not Tu
 
-	got, err := NewParser().SumReported(sheet)
-	exp := time.Duration(0)
+	got, err := NewParser().SumReported([]byte(sheet))
+	exp := time.Duration(8 * time.Hour) // only first day has been counted
 	if got != exp {
-		t.Errorf("%v, expected %v", got, exp)
+		t.Errorf("\n%v\n%v, expected %v", sheet, got, exp)
 	}
 	if err == nil {
 		t.Errorf("Expected error from SumReported\n%v\n", string(sheet))
