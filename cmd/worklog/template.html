@@ -1,6 +1,7 @@
 <html>
   <body>
-    {{range .Sheets}}<h1>{{.Period}}</h1>
+    <h1>Worklog of {{.Employee}}</h1>
+    {{range .Sheets}}<h2>{{.Period}}</h2>
     {{end}}
   </body>
 </html>

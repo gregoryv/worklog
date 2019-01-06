@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	employee := flag.String("e", "", "Name of Employee")
 	html := flag.String("html", "", "Html template")
 	textTemplate := flag.String("text", "", "Text template")
 	flag.Usage = usage
@@ -23,6 +24,7 @@ func main() {
 
 	p := timesheet.NewParser()
 	view := NewView()
+	view.Employee = *employee
 	for _, path := range filePaths {
 		body, err := ioutil.ReadFile(path)
 		fatal(err, path)
@@ -42,11 +44,14 @@ func main() {
 }
 
 type View struct {
-	Sheets []timesheet.Sheet
+	Employee string
+	Sheets   []timesheet.Sheet
 }
 
 func NewView() *View {
-	return &View{make([]timesheet.Sheet, 0)}
+	return &View{
+		Sheets: make([]timesheet.Sheet, 0),
+	}
 }
 
 func fatal(err error, path string) {
