@@ -1,9 +1,23 @@
 package timesheet
 
 import (
+	"bytes"
 	"testing"
 	"time"
 )
+
+func TestRender(t *testing.T) {
+	w := bytes.NewBufferString("")
+	Render(w, 2019, 1, 8)
+	p := NewParser()
+	sheet, err := p.Parse(w.Bytes())
+	if err != nil {
+		t.Errorf("%v\n%v", err, w.String())
+	}
+	if sheet.Period != "2019 January" {
+		t.Errorf("Wrong period: %s", sheet.Period)
+	}
+}
 
 func TestParser_Parse(t *testing.T) {
 	p := NewParser()

@@ -2,6 +2,7 @@ package timesheet
 
 import (
 	"fmt"
+	"io"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,6 +17,32 @@ type Sheet struct {
 
 func NewSheet() *Sheet {
 	return &Sheet{Reported: Tagged{0, "reported"}}
+}
+
+func Render(w io.Writer, year int, month time.Month, hours int) {
+	period := fmt.Sprintf("%v %v", year, time.Month(month))
+	fmt.Fprintf(w, "%s\n", period)
+	fmt.Fprint(w, strings.Repeat("-", len(period)), "\n")
+
+	tmp := time.Date(year, time.Month(month), 1, 23, 0, 0, 0, time.UTC)
+	var lastWeek int
+	for nextMonth := month + 1; nextMonth != tmp.Month(); tmp = tmp.Add(24 * time.Hour) {
+		_, week := tmp.ISOWeek()
+		if lastWeek != week {
+			fmt.Fprintf(w, "%2v ", week)
+			lastWeek = week
+		} else {
+			fmt.Fprint(w, "   ")
+		}
+
+		fmt.Fprintf(w, "%+2v %3s", tmp.Day(), tmp.Weekday().String()[:3])
+		switch tmp.Weekday() {
+		case 0, 6:
+		default:
+			fmt.Fprint(w, " ", hours)
+		}
+		fmt.Fprint(w, "\n")
+	}
 }
 
 func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
