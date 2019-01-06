@@ -47,12 +47,13 @@ func ExampleParser_Dump_bad() {
 func TestParser_SumReported(t *testing.T) {
 	sheet := []byte(`2018 January
 ----------
-1  1 Mon +8 (4 vacation) was in thailand (+2:30 pool)
-   2 Tue 4:10 (4 vacation) was in thailand`)
+1  1 Sun
+   2 Mon +8 (4 vacation) was in thailand (+2:30 pool)
+   3 Tue 4:10 (4 vacation) was in thailand`)
 
 	got, err := NewParser().SumReported(sheet)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("%s\n%s", err, string(sheet))
 	}
 	exp := time.Duration((12*60 + 10) * time.Minute)
 	if got != exp {

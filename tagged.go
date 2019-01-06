@@ -15,8 +15,12 @@ type Tagged struct {
 func (tagged Tagged) String() string {
 	dur := tagged.Duration
 	hh := dur.Truncate(time.Hour)
-	mm := dur - hh
-	return fmt.Sprintf("%02v:%02v %s", hh.Hours(), mm.Minutes(), tagged.Tag)
+	var operator time.Duration = 1
+	if hh < 0 {
+		operator = -1
+	}
+	mm := (dur - hh) * operator
+	return fmt.Sprintf("%v:%02v %s", hh.Hours(), mm.Minutes(), tagged.Tag)
 }
 
 func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {

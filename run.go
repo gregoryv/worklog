@@ -88,7 +88,7 @@ func lexDate(s *Scanner) (p Part, next lexFn) {
 	return
 }
 
-const validDays = "MonTueWenThuFriSatSun"
+const validDays = "MonTueWedThuFriSatSun"
 
 func lexDay(s *Scanner) (p Part, next lexFn) {
 	p, next = Part{Tok: Day, Pos: s.Pos()}, lexHours
@@ -96,7 +96,7 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	if !ok {
 		p.Errorf("invalid %s", Day)
 	} else {
-		rest, _ := s.ScanAll("aehniortu")
+		rest, _ := s.ScanAll("aedhniortu")
 		p.Val = val + rest
 		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
 			p.Errorf("invalid %s", Day)
@@ -105,6 +105,10 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	s.Scan(" ")
 	if s.PeekIs("-+") {
 		next = lexOperator
+	}
+	if s.PeekIs("\n") { // no hours reported
+		s.Scan("\n")
+		next = lexWeek
 	}
 	return
 }

@@ -9,18 +9,13 @@ func TestParser_SumTagged(t *testing.T) {
 	sheet := []byte(`2018 January
 ----------
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
-   2 Tue 4:10 (4 vacation) was in thailand (-1 pool)`)
+   2 Tue 4:10 (4 vacation) was in thailand (-1 pool) (-2:10 flex)`)
 
-	got, _ := NewParser().SumTagged(sheet)
-	if len(got) != 2 {
-		t.Errorf("%v, expected %v", got, 2)
-	}
-	{
-		got := fmt.Sprintf("%v", got)
-		exp := "[01:30 pool 08:00 vacation]"
-		if got != exp {
-			t.Errorf("%v, expected %v", got, exp)
-		}
+	tagged, _ := NewParser().SumTagged(sheet)
+	got := fmt.Sprintf("%v", tagged)
+	exp := "[-2:10 flex 1:30 pool 8:00 vacation]"
+	if got != exp {
+		t.Errorf("%v, expected %v", got, exp)
 	}
 }
 

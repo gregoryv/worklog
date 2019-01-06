@@ -25,7 +25,13 @@ func main() {
 
 		reported, err := p.SumReported(body)
 		fatal(err)
-		fmt.Println(reported)
+		tag := timesheet.Tagged{reported, "reported"}
+		fmt.Println(tag.String())
+		tagged, err := p.SumTagged(body)
+		fatal(err)
+		for _, tag := range tagged {
+			fmt.Println(tag.String())
+		}
 	}
 }
 
