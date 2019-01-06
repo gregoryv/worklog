@@ -8,6 +8,7 @@ func Test_oklines(t *testing.T) {
 	// not the first two
 	lines := []string{
 		"52 24 Mon   Christmas",
+		" 1  1 Tue 8",
 	}
 	for _, line := range lines {
 		lex := NewLexer(line)

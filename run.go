@@ -67,6 +67,7 @@ func lexSep(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexWeek(s *Scanner) (p Part, next lexFn) {
+	s.Scan(" ") // eg. for week numbers 1-9
 	next = lexDate
 	r := s.Next()
 	if r == EOS {
