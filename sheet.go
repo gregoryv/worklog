@@ -26,7 +26,7 @@ func Render(w io.Writer, year int, month time.Month, hours int) {
 
 	tmp := time.Date(year, time.Month(month), 1, 23, 0, 0, 0, time.UTC)
 	var lastWeek int
-	for nextMonth := month + 1; nextMonth != tmp.Month(); tmp = tmp.Add(24 * time.Hour) {
+	for month := tmp.Month(); month == tmp.Month(); tmp = tmp.Add(24 * time.Hour) {
 		_, week := tmp.ISOWeek()
 		if lastWeek != week {
 			fmt.Fprintf(w, "%2v ", week)
