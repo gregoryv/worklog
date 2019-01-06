@@ -103,76 +103,21 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 		}
 	}
 	s.Scan(" ")
-	return
-}
-
-func lexRightParen(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
-	val, ok := s.Scan(")")
-	if !ok {
-		p.Errorf("invalid %s", RightParenthesis)
-		return
+	if s.PeekIs("-+") {
+		next = lexOperator
 	}
-	p.Val = val
-	next = lexNote
-	s.inTag = false
-	s.ScanAll(" ")
-	return
-}
-
-func lexLeftParen(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: LeftParenthesis, Pos: s.Pos()}
-	val, ok := s.Scan("(")
-	if !ok {
-		p.Errorf("invalid %s", LeftParenthesis)
-		return
-	}
-	p.Val = val
-	next = lexOperator
-	s.inTag = true
-	return
-}
-
-func lexNote(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Note, Pos: s.Pos()}
-	var r rune
-	for r = s.Next(); r != '('; r = s.Next() {
-		if r == '\n' {
-			if p.Val == "" { // skip notes with only newline
-				p.Tok = Undefined
-				p.Val += string(r)
-			}
-			next = lexWeek
-			return
-		}
-		if r == EOS {
-			return
-		}
-		p.Val += string(r)
-	}
-	// found a left parenthesis
-	s.Back()
-	if len(p.Val) == 0 {
-		p.Tok = Undefined
-	}
-	next = lexLeftParen
 	return
 }
 
 const digits = "0123456789"
 
 func lexOperator(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Operator, Pos: s.Pos()}
-	next = lexHours
-	if s.PeekIs("-+") {
-		p.Val = string(s.Next())
-		return
+	p, next = Part{Tok: Operator, Pos: s.Pos()}, lexHours
+	r, ok := s.Scan("+-")
+	p.Val = string(r)
+	if !ok {
+		p.Errorf("invalid %s", Operator)
 	}
-	if s.PeekIs(digits) {
-		p.Tok = Undefined
-		return
-	}
-	p.Errorf("invalid %s", Operator)
 	return
 }
 
@@ -207,6 +152,62 @@ func lexMinutes(s *Scanner) (Part, lexFn) {
 		return p, lexTag
 	}
 	return p, lexNote
+}
+
+func lexRightParen(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
+	val, ok := s.Scan(")")
+	if !ok {
+		p.Errorf("invalid %s", RightParenthesis)
+		return
+	}
+	p.Val = val
+	next = lexNote
+	s.inTag = false
+	s.ScanAll(" ")
+	return
+}
+
+func lexLeftParen(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Tok: LeftParenthesis, Pos: s.Pos()}, lexHours
+	val, ok := s.Scan("(")
+	if !ok {
+		p.Errorf("invalid %s", LeftParenthesis)
+		return
+	}
+	s.Scan(" ")
+	p.Val = val
+	if s.PeekIs("+-") {
+		next = lexOperator
+	}
+	s.inTag = true
+	return
+}
+
+func lexNote(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Note, Pos: s.Pos()}
+	var r rune
+	for r = s.Next(); r != '('; r = s.Next() {
+		if r == '\n' {
+			if p.Val == "" { // skip notes with only newline
+				p.Tok = Undefined
+				p.Val += string(r)
+			}
+			next = lexWeek
+			return
+		}
+		if r == EOS {
+			return
+		}
+		p.Val += string(r)
+	}
+	// found a left parenthesis
+	s.Back()
+	if len(p.Val) == 0 {
+		p.Tok = Undefined
+	}
+	next = lexLeftParen
+	return
 }
 
 func lexTag(s *Scanner) (p Part, next lexFn) {

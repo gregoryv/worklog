@@ -36,10 +36,9 @@ func TestLexer_run(t *testing.T) {
 		{lexHours, "", Error.Is("invalid Hours")},
 		{lexHours, "2", Hours.Is("2")},
 
-		{lexOperator, "8", Undefined.Is("")},
-		{lexOperator, " ", Error.Is("invalid Operator")},
 		{lexOperator, "+", Operator.Is("+")},
 		{lexOperator, "-", Operator.Is("-")},
+		{lexOperator, "k", Error.Is("invalid Operator")},
 
 		{lexLeftParen, "kj", Error.Is("invalid LeftParenthesis")},
 		{lexLeftParen, "(", LeftParenthesis.Is("(")},
