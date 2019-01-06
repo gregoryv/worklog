@@ -8,7 +8,9 @@ nameonly="${filename%.*}"
 
 case $extension in
     go)
+	goimports -w $path
         gofmt -w $path
+	go vet
         ;;
 esac
 
@@ -18,6 +20,7 @@ case $filename in
 	;;
 esac
 
-go vet
 go test -coverprofile /tmp/c.out .
 uncover /tmp/c.out
+#go test -v -run=TestParser_SumTagged_error
+go install ./cmd/worklog

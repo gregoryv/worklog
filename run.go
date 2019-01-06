@@ -213,7 +213,7 @@ func lexTag(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: Tag, Pos: s.Pos()}
 	var r rune
 	for r = s.Next(); r != ')'; r = s.Next() {
-		if r == '\n' || r == EOS {
+		if r == '\n' || r == EOS || r == '(' {
 			p.Pos = s.Pos()
 			p.Errorf("missing %s", RightParenthesis)
 			return

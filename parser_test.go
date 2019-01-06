@@ -1,7 +1,6 @@
 package timesheet
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
@@ -42,6 +41,7 @@ func ExampleParser_Dump_bad() {
 	// Error[1,6]: "invalid Date"
 	// Error[1,6]: "invalid Day"
 	// Error[1,6]: "invalid Hours"
+	// Note[1,6]: "nosuchmonth"
 }
 
 func TestParser_SumReported(t *testing.T) {
@@ -50,29 +50,9 @@ func TestParser_SumReported(t *testing.T) {
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
    2 Tue 4:10 (4 vacation) was in thailand`)
 
-	got := NewParser().SumPreported(sheet)
-	min := 60 * time.Second
-	exp := time.Duration((12*60 + 10) * min)
+	got, _ := NewParser().SumReported(sheet)
+	exp := time.Duration((12*60 + 10) * time.Minute)
 	if got != exp {
 		t.Errorf("%v, expected %v", got, exp)
-	}
-}
-
-func TestParser_SumTagged(t *testing.T) {
-	sheet := []byte(`2018 January
-----------
-1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
-   2 Tue 4:10 (4 vacation) was in thailand (-1 pool)`)
-
-	got := NewParser().SumTagged(sheet)
-	if len(got) != 2 {
-		t.Errorf("%v, expected %v", got, 2)
-	}
-	{
-		got := fmt.Sprintf("%v", got)
-		exp := "[01:30 pool 08:00 vacation]"
-		if got != exp {
-			t.Errorf("%v, expected %v", got, exp)
-		}
 	}
 }

@@ -21,11 +21,15 @@ func (l *Lexer) Run() chan Part {
 type lexFn func(s *Scanner) (p Part, next lexFn)
 
 func (l *Lexer) run(start lexFn, s *Scanner, C chan Part) {
-	for p, next := start(s); next != nil; p, next = next(s) {
-		// Only report interesting tokens
+	p, next := start(s)
+	for {
 		if p.Tok != Undefined {
 			C <- p
 		}
+		if next == nil {
+			break
+		}
+		p, next = next(s)
 	}
 	close(C)
 }
