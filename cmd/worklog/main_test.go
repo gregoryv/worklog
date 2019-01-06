@@ -6,9 +6,9 @@ import (
 )
 
 func TestFeature(t *testing.T) {
-	out, err := exec.Command("worklog", "../../201506.timesheet").Output()
+	out, err := exec.Command("worklog", "../../201506.timesheet").CombinedOutput()
 	if err != nil {
-		t.Fatal(err)
+		t.Fatal(err, string(out))
 	}
 	got := string(out)
 	exp := "2015 June 174:30 reported (7:00 conference) (-1:30 flex) (1:00 travel)\n"

@@ -10,6 +10,9 @@ import (
 )
 
 func main() {
+	html := flag.String("html", "", "Html template")
+	textTemplate := flag.String("text", "", "Text template")
+	flag.Usage = usage
 	flag.Parse()
 
 	filePaths := flag.Args()
@@ -19,14 +22,31 @@ func main() {
 	}
 
 	p := timesheet.NewParser()
+	view := NewView()
 	for _, path := range filePaths {
 		body, err := ioutil.ReadFile(path)
 		fatal(err, path)
 
 		sheet, err := p.Parse(body)
 		fatal(err, path)
-		fmt.Println(sheet)
+		view.Sheets = append(view.Sheets, *sheet)
 	}
+	if *html != "" {
+		err := renderHtml(os.Stdout, view, *html)
+		fatal(err, *html)
+		return
+	}
+
+	err := renderText(os.Stdout, view, *textTemplate)
+	fatal(err, *textTemplate)
+}
+
+type View struct {
+	Sheets []timesheet.Sheet
+}
+
+func NewView() *View {
+	return &View{make([]timesheet.Sheet, 0)}
 }
 
 func fatal(err error, path string) {
@@ -34,4 +54,9 @@ func fatal(err error, path string) {
 		fmt.Println(path, err)
 		os.Exit(1)
 	}
+}
+
+func usage() {
+	fmt.Printf("Usage: %s TIMESHEET...\n", os.Args[0])
+	flag.PrintDefaults()
 }
