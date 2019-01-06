@@ -1,6 +1,9 @@
 package timesheet
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestParser_Parse(t *testing.T) {
 	p := NewParser()
@@ -18,6 +21,17 @@ func TestParser_Parse(t *testing.T) {
 	}
 	exp := "2018 January"
 	if sheet.Period != exp {
-		t.Errorf("%q, expected %q", sheet.Period, exp)
+		t.Errorf("\n%q, expected\n%q", sheet.Period, exp)
+	}
+}
+
+func TestSheet_String(t *testing.T) {
+	sheet := NewSheet()
+	sheet.Period = "1977 January"
+	sheet.Tags = []Tagged{{time.Hour, "flex"}}
+	got := sheet.String()
+	exp := "1977 January 0:00 reported (1:00 flex)"
+	if got != exp {
+		t.Errorf("\n%q, expected\n%q", got, exp)
 	}
 }

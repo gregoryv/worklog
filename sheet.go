@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -13,8 +14,12 @@ type Sheet struct {
 	Tags     []Tagged
 }
 
+func NewSheet() *Sheet {
+	return &Sheet{Reported: Tagged{0, "reported"}}
+}
+
 func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
-	sheet = &Sheet{}
+	sheet = NewSheet()
 	lex := NewLexer(string(body))
 	out := lex.Run()
 	tagDur := make(map[string]time.Duration, 0)
@@ -71,4 +76,17 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 	sort.Sort(byTag(tagged))
 	sheet.Tags = tagged
 	return
+}
+
+func (sheet *Sheet) String() string {
+	return fmt.Sprintf("%s %s %s", sheet.Period, sheet.Reported,
+		strings.Join(inParenthesis(sheet.Tags), " "))
+}
+
+func inParenthesis(tags []Tagged) []string {
+	res := make([]string, 0)
+	for _, tag := range tags {
+		res = append(res, fmt.Sprintf("(%s)", tag))
+	}
+	return res
 }
