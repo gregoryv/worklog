@@ -49,7 +49,7 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 			operator = 1
 		case Hours:
 			h, _ := strconv.Atoi(p.Val)
-			hh := time.Duration(h*60*60*operator) * time.Second
+			hh := time.Duration(h*operator) * time.Hour
 			if inTag {
 				dur += hh
 			} else {
@@ -57,7 +57,7 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 			}
 		case Minutes:
 			m, _ := strconv.Atoi(p.Val)
-			mm := time.Duration(m*60*operator) * time.Second
+			mm := time.Duration(m*operator) * time.Minute
 			if inTag {
 				dur += mm
 			} else {
