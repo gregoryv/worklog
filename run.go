@@ -103,14 +103,13 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 		}
 	}
 	s.Scan(" ")
-	if s.PeekIs("-+") {
+	switch {
+	case s.PeekIs("-+"):
 		next = lexOperator
-	}
-	if s.PeekIs("\n") { // no hours reported
+	case s.PeekIs("\n"): // no hours reported
 		s.Scan("\n")
 		next = lexWeek
-	}
-	if s.PeekIs(digits) {
+	case s.PeekIs(digits):
 		next = lexHours
 	}
 	return
