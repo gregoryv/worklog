@@ -2,6 +2,7 @@ package timesheet
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -111,5 +112,14 @@ func (par *Parser) SumTagged(body []byte) []Tagged {
 	for tag, dur := range tagDur {
 		tagged = append(tagged, Tagged{dur, tag})
 	}
+	sort.Sort(byTag(tagged))
 	return tagged
+}
+
+type byTag []Tagged
+
+func (by byTag) Len() int           { return len(by) }
+func (by byTag) Less(i, j int) bool { return by[i].Tag < by[j].Tag }
+func (by byTag) Swap(i, j int) {
+	by[i], by[j] = by[j], by[i]
 }

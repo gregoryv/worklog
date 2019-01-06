@@ -70,7 +70,7 @@ func TestParser_SumTagged(t *testing.T) {
 	}
 	{
 		got := fmt.Sprintf("%v", got)
-		exp := "[08:00 vacation 01:30 pool]"
+		exp := "[01:30 pool 08:00 vacation]"
 		if got != exp {
 			t.Errorf("%v, expected %v", got, exp)
 		}
