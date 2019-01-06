@@ -30,6 +30,18 @@ func ExampleParser_Dump() {
 	// RightParenthesis[3,51]: ")"
 }
 
+func ExampleParser_Dump_bad() {
+	NewParser().Dump([]byte(`2018 nosuchmonth`))
+	// output:
+	// Year[1,1]: "2018"
+	// Error[1,6]: "invalid Month"
+	// Error[1,6]: "invalid Separator"
+	// Error[1,6]: "invalid Week"
+	// Error[1,6]: "invalid Date"
+	// Error[1,6]: "invalid Day"
+	// Error[1,6]: "invalid Hours"
+}
+
 var parserTestSheet = `2018 January
 ----------
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)

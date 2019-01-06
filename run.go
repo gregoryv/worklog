@@ -35,13 +35,13 @@ func lexMonth(s *Scanner) (p Part, next lexFn) {
 	p, next = Part{Tok: Month, Pos: s.Pos()}, lexSep
 	val, ok := s.Scan("JFMASOND")
 	if !ok {
-		p.Errorf("invalid month")
+		p.Errorf("invalid %s", Month)
 		return
 	}
 	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
 	p.Val = val + rest
 	if !strings.Contains(validMonths, p.Val) {
-		p.Errorf("invalid month")
+		p.Errorf("invalid %s", Month)
 		return
 	}
 	if p := skipToNextLine(s); p.Defined() {

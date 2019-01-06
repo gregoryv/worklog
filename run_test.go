@@ -65,13 +65,13 @@ func TestLexer_run(t *testing.T) {
 
 		{lexMonth, "April  \n---\n11", Month.Is("April")},
 		{lexMonth, "August\n", Month.Is("August")},
-		{lexMonth, "not a month", Error.Is("invalid month")},
+		{lexMonth, "not a month", Error.Is("invalid Month")},
 		{lexMonth, "August something more",
 			Error.Is("expect newline", Position{1, 7}),
 		},
-		{lexMonth, "Augusty", Error.Is("invalid month")},
-		{lexMonth, "august", Error.Is("invalid month")},
-		{lexMonth, " August", Error.Is("invalid month")},
+		{lexMonth, "Augusty", Error.Is("invalid Month")},
+		{lexMonth, "august", Error.Is("invalid Month")},
+		{lexMonth, " August", Error.Is("invalid Month")},
 
 		{lexRightParen, "not", Error.Is("invalid RightParenthesis")},
 	} {
