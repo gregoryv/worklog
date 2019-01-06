@@ -27,6 +27,10 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 		switch p.Tok {
 		case LeftParenthesis, RightParenthesis:
 			inTag = !inTag
+		case Year:
+			sheet.Period += p.Val
+		case Month:
+			sheet.Period += " " + p.Val
 		case Operator:
 			if p.Val == "-" {
 				operator = -1
