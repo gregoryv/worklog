@@ -3,6 +3,7 @@ package timesheet
 import (
 	"fmt"
 	"strconv"
+	"time"
 )
 
 type Parser struct{}
@@ -23,11 +24,11 @@ func (par *Parser) Dump(body []byte) {
 	}
 }
 
-func (par *Parser) Sum(body []byte) (hh, mm int) {
+func (par *Parser) SumPreported(body []byte) (dur time.Duration) {
 	lex := NewLexer(string(body))
 	out := lex.Run()
-	var sum int
-	var inTag bool
+
+	inTag := false
 	for {
 		p, more := <-out
 		if !more {
@@ -41,18 +42,16 @@ func (par *Parser) Sum(body []byte) (hh, mm int) {
 		case Hours:
 			if !inTag {
 				h, _ := strconv.Atoi(p.Val)
-				sum += (60 * h)
+				dur += time.Duration(h*60*60) * time.Second
 			}
 		case Minutes:
 			if !inTag {
 				m, _ := strconv.Atoi(p.Val)
-				sum += m
+				dur += time.Duration(m*60) * time.Second
 			}
 		case Error:
 			fmt.Println("Error", p.Val)
 		}
 	}
-	hh = sum / 60
-	mm = sum - 60*hh
 	return
 }

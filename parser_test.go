@@ -2,6 +2,7 @@ package timesheet
 
 import (
 	"testing"
+	"time"
 )
 
 func ExampleParser_Dump() {
@@ -42,22 +43,15 @@ func ExampleParser_Dump_bad() {
 	// Error[1,6]: "invalid Hours"
 }
 
-var parserTestSheet = `2018 January
+func TestParser_Sum(t *testing.T) {
+	sheet := []byte(`2018 January
 ----------
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
-   2 Tue 4:10 (4 vacation) was in thailand`
+   2 Tue 4:10 (4 vacation) was in thailand`)
 
-func TestParser_Sum_hours(t *testing.T) {
-	got, _ := NewParser().Sum([]byte(parserTestSheet))
-	exp := 12
-	if got != exp {
-		t.Errorf("%v, expected %v", got, exp)
-	}
-}
-
-func TestParser_Sum_min(t *testing.T) {
-	_, got := NewParser().Sum([]byte(parserTestSheet))
-	exp := 10
+	got := NewParser().SumPreported(sheet)
+	min := 60 * time.Second
+	exp := time.Duration((12*60 + 10) * min)
 	if got != exp {
 		t.Errorf("%v, expected %v", got, exp)
 	}
