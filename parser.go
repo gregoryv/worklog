@@ -48,9 +48,11 @@ func (par *Parser) Sum(body []byte) (hh, mm int) {
 				m, _ := strconv.Atoi(p.Val)
 				sum += m
 			}
+		case Error:
+			fmt.Println("Error", p.Val)
 		}
 	}
 	hh = sum / 60
-	mm = sum % 60
+	mm = sum - 60*hh
 	return
 }

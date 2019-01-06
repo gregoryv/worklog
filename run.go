@@ -4,6 +4,92 @@ import (
 	"strings"
 )
 
+func lexYear(s *Scanner) (p Part, next lexFn) {
+	p, next = ScanPart(s, Year), lexMonth
+	s.Scan(" ")
+	return
+}
+
+const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
+	"JulyAugustSeptemberOctoberNovemberDecember"
+
+func lexMonth(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Tok: Month, Pos: s.Pos()}, lexSep
+	val, ok := s.Scan("JFMASOND")
+	if !ok {
+		p.Errorf("invalid month")
+		return
+	}
+	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
+	p.Val = val + rest
+	if !strings.Contains(validMonths, p.Val) {
+		p.Errorf("invalid month")
+		return
+	}
+	if p := skipToNextLine(s); p.Defined() {
+		return p, next
+	}
+	return
+}
+
+func lexSep(s *Scanner) (p Part, next lexFn) {
+	p, next = ScanPart(s, Separator), lexWeek
+	s.Scan("\n")
+	return
+}
+
+func lexWeek(s *Scanner) (p Part, next lexFn) {
+	next = lexDate
+	r := s.Next()
+	if r == EOS {
+		return p, nil
+	}
+	s.Back()
+	if s.PeekIs(" ") {
+		s.ScanAll(" ")
+		return
+	}
+	p = ScanPart(s, Week)
+	s.ScanAll(" ")
+	return
+}
+
+func lexDate(s *Scanner) (p Part, next lexFn) {
+	p, next = ScanPart(s, Date), lexDay
+	s.Scan(" ")
+	return
+}
+
+const validDays = "MonTueWenThuFriSatSun"
+
+func lexDay(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Tok: Day, Pos: s.Pos()}, lexHours
+	val, ok := s.Scan("MTWFS")
+	if !ok {
+		p.Errorf("invalid %s", Day)
+	} else {
+		rest, _ := s.ScanAll("aehniortu")
+		p.Val = val + rest
+		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
+			p.Errorf("invalid %s", Day)
+		}
+	}
+	s.Scan(" ")
+	return
+}
+
+func lexReported(s *Scanner) (p Part, next lexFn) {
+	p, next = Part{Pos: s.Pos()}, lexWeek
+	if s.PeekIs("\n") {
+		s.Scan("\n")
+
+		return
+	}
+	p = ScanPart(s, Hours)
+	next = lexNote
+	return
+}
+
 const (
 	digits = "0123456789"
 )
@@ -40,7 +126,10 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 	var r rune
 	for r = s.Next(); r != '('; r = s.Next() {
 		if r == '\n' {
-			p.Val += string(r)
+			if p.Val == "" { // skip notes with only newline
+				p.Tok = Undefined
+				p.Val += string(r)
+			}
 			next = lexWeek
 			return
 		}
@@ -49,63 +138,12 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 		}
 		p.Val += string(r)
 	}
+	// found a left parenthesis
 	s.Back()
 	if len(p.Val) == 0 {
 		p.Tok = Undefined
 	}
 	next = lexLeftParen
-	return
-}
-
-func lexTag(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Tag, Pos: s.Pos()}
-	var r rune
-	for r = s.Next(); r != ')'; r = s.Next() {
-		if r == '\n' || r == EOS {
-			p.Pos = s.Pos()
-			p.Errorf("missing %s", RightParenthesis)
-			return
-		}
-		p.Val += string(r)
-	}
-	s.Back()
-	next = lexRightParen
-	p.Val = strings.TrimSpace(p.Val)
-	return
-}
-
-func lexMinutes(s *Scanner) (p Part, next lexFn) {
-	p = ScanPart(s, Minutes)
-	s.ScanAll(" ")
-	if s.inTag {
-		next = lexTag
-	} else {
-		next = lexNote
-	}
-	return
-}
-
-func lexColon(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Colon, Pos: s.Pos()}
-	val := s.Next()
-	if val == ':' {
-		p.Val = ":"
-		next = lexMinutes
-		return
-	}
-	s.Back()
-	p.Tok = Undefined
-	if s.inTag {
-		next = lexTag
-	} else {
-		next = lexNote
-	}
-	return
-}
-
-func lexHours(s *Scanner) (p Part, next lexFn) {
-	p = ScanPart(s, Hours)
-	next = lexColon
 	return
 }
 
@@ -124,84 +162,53 @@ func lexOperator(s *Scanner) (p Part, next lexFn) {
 	return
 }
 
-func lexReported(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Pos: s.Pos()}, lexWeek
-	if s.PeekIs("\n") {
-		s.Scan("\n")
-
-		return
-	}
+func lexHours(s *Scanner) (p Part, next lexFn) {
 	p = ScanPart(s, Hours)
-	next = lexNote
-	return
-}
-
-const validDays = "MonTueWenThuFriSatSun"
-
-func lexDay(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Day, Pos: s.Pos()}, lexReported
-	val, ok := s.Scan("MTWFS")
-	if !ok {
-		p.Errorf("invalid %s", Day)
-	} else {
-		rest, _ := s.ScanAll("aehniortu")
-		p.Val = val + rest
-		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
-			p.Errorf("invalid %s", Day)
-		}
+	if s.PeekIs(":") {
+		return p, lexColon
 	}
-	s.Scan(" ")
-	return
-}
-
-func lexDate(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Date), lexDay
-	s.Scan(" ")
-	return
-}
-
-func lexWeek(s *Scanner) (p Part, next lexFn) {
-	next = lexDate
-	if s.PeekIs(" ") {
-		s.ScanAll(" ")
-		return
-	}
-	p = ScanPart(s, Week)
 	s.ScanAll(" ")
-	return
+	if s.inTag {
+		return p, lexTag
+	}
+	return p, lexNote
 }
 
-func lexSep(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Separator), lexWeek
-	s.Scan("\n")
-	return
-}
-
-const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
-	"JulyAugustSeptemberOctoberNovemberDecember"
-
-func lexMonth(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Month, Pos: s.Pos()}, lexSep
-	val, ok := s.Scan("JFMASOND")
-	if !ok {
-		p.Errorf("invalid month")
+func lexColon(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Colon, Pos: s.Pos()}
+	next = lexMinutes
+	r := s.Next()
+	if r != ':' {
+		p.Tok = Undefined
 		return
 	}
-	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
-	p.Val = val + rest
-	if !strings.Contains(validMonths, p.Val) {
-		p.Errorf("invalid month")
-		return
-	}
-	if p := skipToNextLine(s); p.Defined() {
-		return p, next
-	}
+	p.Val = string(r)
 	return
 }
 
-func lexYear(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Year), lexMonth
-	s.Scan(" ")
+func lexMinutes(s *Scanner) (Part, lexFn) {
+	p := ScanPart(s, Minutes)
+	s.ScanAll(" ")
+	if s.inTag {
+		return p, lexTag
+	}
+	return p, lexNote
+}
+
+func lexTag(s *Scanner) (p Part, next lexFn) {
+	p = Part{Tok: Tag, Pos: s.Pos()}
+	var r rune
+	for r = s.Next(); r != ')'; r = s.Next() {
+		if r == '\n' || r == EOS {
+			p.Pos = s.Pos()
+			p.Errorf("missing %s", RightParenthesis)
+			return
+		}
+		p.Val += string(r)
+	}
+	s.Back()
+	next = lexRightParen
+	p.Val = strings.TrimSpace(p.Val)
 	return
 }
 

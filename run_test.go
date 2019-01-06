@@ -43,7 +43,7 @@ func TestLexer_run(t *testing.T) {
 		{lexLeftParen, "kj", Error.Is("invalid LeftParenthesis")},
 		{lexLeftParen, "(", LeftParenthesis.Is("(")},
 		{lexNote, "(8 working)", Undefined.Is("")},
-		{lexNote, "not working\n", Note.Is("not working\n")},
+		{lexNote, "not working\n", Note.Is("not working")},
 		{lexNote, "  not working", Note.Is("  not working")},
 		{lexReported, "8 what a day", Hours.Is("8")},
 		{lexReported, "6 (", Hours.Is("6")},
@@ -83,7 +83,7 @@ func TestLexer_run(t *testing.T) {
 		input, exp := c.input, c.exp
 		got, _ := c.start(NewLexer(c.input).scanner)
 		if got != exp {
-			t.Errorf("input %q, scanned as %q, expected %q", input, got, c.exp)
+			t.Errorf("%q, scanned as\n%q, expected\n%q", input, got, c.exp)
 		}
 	}
 }
