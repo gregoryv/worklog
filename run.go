@@ -4,11 +4,27 @@ import (
 	"strings"
 )
 
-type lexFn func(s *Scanner) (p Part, next lexFn)
-
 func lexYear(s *Scanner) (p Part, next lexFn) {
 	p, next = ScanPart(s, Year), lexMonth
 	s.Scan(" ")
+	return
+}
+
+func ScanPart(s *Scanner, tok Token) (p Part) {
+	p = Part{Tok: tok, Pos: s.Pos()}
+	var valid string
+	switch tok {
+	case Hours, Minutes, Year, Date, Week:
+		valid = digits
+	case Separator:
+		valid = "-"
+	}
+	val, ok := s.ScanAll(valid)
+	if !ok {
+		p.Errorf("invalid %s", tok)
+	} else {
+		p.Val = val
+	}
 	return
 }
 
@@ -208,32 +224,4 @@ func lexTag(s *Scanner) (p Part, next lexFn) {
 	next = lexRightParen
 	p.Val = strings.TrimSpace(p.Val)
 	return
-}
-
-func ScanPart(s *Scanner, tok Token) (p Part) {
-	p = Part{Tok: tok, Pos: s.Pos()}
-	var valid string
-	switch tok {
-	case Hours, Minutes, Year, Date, Week:
-		valid = digits
-	case Separator:
-		valid = "-"
-	}
-	val, ok := s.ScanAll(valid)
-	if !ok {
-		p.Errorf("invalid %s", tok)
-	} else {
-		p.Val = val
-	}
-	return
-}
-
-func (l *Lexer) run(start lexFn, s *Scanner, out chan Part) {
-	// We expect to start the file with a year
-	for p, next := start(s); next != nil; p, next = next(s) {
-		if p.Tok != Undefined {
-			out <- p
-		}
-	}
-	close(out)
 }
