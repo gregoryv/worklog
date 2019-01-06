@@ -45,11 +45,6 @@ func TestLexer_run(t *testing.T) {
 		{lexNote, "(8 working)", Undefined.Is("")},
 		{lexNote, "not working\n", Note.Is("not working")},
 		{lexNote, "  not working", Note.Is("  not working")},
-		{lexReported, "8 what a day", Hours.Is("8")},
-		{lexReported, "6 (", Hours.Is("6")},
-		{lexReported, "6\n", Hours.Is("6")},
-		{lexReported, "\n", Undefined.Is("")},
-		{lexReported, " ", Error.Is("invalid Hours")},
 
 		{lexDay, "Mo", Error.Is("invalid Day")},
 		{lexDay, "mon", Error.Is("invalid Day")},

@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+type lexFn func(s *Scanner) (p Part, next lexFn)
+
 func lexYear(s *Scanner) (p Part, next lexFn) {
 	p, next = ScanPart(s, Year), lexMonth
 	s.Scan(" ")
@@ -28,6 +30,16 @@ func lexMonth(s *Scanner) (p Part, next lexFn) {
 	}
 	if p := skipToNextLine(s); p.Defined() {
 		return p, next
+	}
+	return
+}
+
+func skipToNextLine(s *Scanner) (p Part) {
+	pos := s.Pos()
+	s.ScanAll(" \t")
+	_, ok := s.Scan("\n")
+	if !ok {
+		p = Part{Tok: Error, Pos: pos, Val: "expect newline"}
 	}
 	return
 }
@@ -77,22 +89,6 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	s.Scan(" ")
 	return
 }
-
-func lexReported(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Pos: s.Pos()}, lexWeek
-	if s.PeekIs("\n") {
-		s.Scan("\n")
-
-		return
-	}
-	p = ScanPart(s, Hours)
-	next = lexNote
-	return
-}
-
-const (
-	digits = "0123456789"
-)
 
 func lexRightParen(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
@@ -146,6 +142,8 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 	next = lexLeftParen
 	return
 }
+
+const digits = "0123456789"
 
 func lexOperator(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: Operator, Pos: s.Pos()}
@@ -230,16 +228,6 @@ func ScanPart(s *Scanner, tok Token) (p Part) {
 	return
 }
 
-func skipToNextLine(s *Scanner) (p Part) {
-	pos := s.Pos()
-	s.ScanAll(" \t")
-	_, ok := s.Scan("\n")
-	if !ok {
-		p = Part{Tok: Error, Pos: pos, Val: "expect newline"}
-	}
-	return
-}
-
 func (l *Lexer) run(start lexFn, s *Scanner, out chan Part) {
 	// We expect to start the file with a year
 	for p, next := start(s); next != nil; p, next = next(s) {
@@ -249,5 +237,3 @@ func (l *Lexer) run(start lexFn, s *Scanner, out chan Part) {
 	}
 	close(out)
 }
-
-type lexFn func(s *Scanner) (Part, lexFn)
