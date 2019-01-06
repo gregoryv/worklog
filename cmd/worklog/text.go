@@ -12,8 +12,8 @@ func renderText(w io.Writer, view *View, templatePath string) error {
 		t, err = template.ParseFiles(templatePath)
 	} else {
 		t = template.New("default")
-		t, err = t.Parse(`{{range .Sheets}}{{.}}{{end}}
-`)
+		t, err = t.Parse(`{{range .Sheets}}{{.}}
+{{end}}`)
 	}
 	if err != nil {
 		return err
