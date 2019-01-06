@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	employee := flag.String("e", "", "Name of Employee")
+	employee := flag.String("employee", "", "Name of Employee")
 	html := flag.String("html", "", "Html template")
 	textTemplate := flag.String("text", "", "Text template")
 	flag.Usage = usage
