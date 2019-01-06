@@ -40,7 +40,6 @@ func ExampleParser_Dump_bad() {
 	// Error[1,6]: "invalid Week"
 	// Error[1,6]: "invalid Date"
 	// Error[1,6]: "invalid Day"
-	// Error[1,6]: "invalid Hours"
 	// Note[1,6]: "nosuchmonth"
 }
 

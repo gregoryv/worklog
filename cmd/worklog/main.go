@@ -21,17 +21,17 @@ func main() {
 	p := timesheet.NewParser()
 	for _, path := range filePaths {
 		body, err := ioutil.ReadFile(path)
-		fatal(err)
+		fatal(err, path)
 
 		sheet, err := p.Parse(body)
-		fatal(err)
+		fatal(err, path)
 		fmt.Println(sheet)
 	}
 }
 
-func fatal(err error) {
+func fatal(err error, path string) {
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(path, err)
 		os.Exit(1)
 	}
 }

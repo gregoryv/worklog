@@ -4,6 +4,27 @@ import (
 	"testing"
 )
 
+func Test_oklines(t *testing.T) {
+	// not the first two
+	lines := []string{
+		"52 24 Mon   Christmas",
+	}
+	for _, line := range lines {
+		lex := NewLexer(line)
+		out := lex.C
+		go lex.run(lexWeek, lex.scanner, out)
+		for {
+			p, more := <-out
+			if p.Tok == Error {
+				t.Errorf("%q, got %q", line, p.Val)
+			}
+			if !more {
+				break
+			}
+		}
+	}
+}
+
 func Test_lexMinutes_inside_tag(t *testing.T) {
 	input := "10"
 	scanner := NewLexer(input).scanner

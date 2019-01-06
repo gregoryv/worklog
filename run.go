@@ -91,7 +91,7 @@ func lexDate(s *Scanner) (p Part, next lexFn) {
 const validDays = "MonTueWedThuFriSatSun"
 
 func lexDay(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Day, Pos: s.Pos()}, lexHours
+	p, next = Part{Tok: Day, Pos: s.Pos()}, lexNote
 	val, ok := s.Scan("MTWFS")
 	if !ok {
 		p.Errorf("invalid %s", Day)
@@ -109,6 +109,9 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	if s.PeekIs("\n") { // no hours reported
 		s.Scan("\n")
 		next = lexWeek
+	}
+	if s.PeekIs(digits) {
+		next = lexHours
 	}
 	return
 }
