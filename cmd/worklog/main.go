@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"path"
+	"path/filepath"
 
 	timesheet "github.com/gregoryv/go-timesheet"
 )
@@ -13,6 +14,8 @@ func main() {
 	employee := flag.String("employee", "", "Name of Employee")
 	html := flag.String("html", "", "Html template")
 	textTemplate := flag.String("text", "", "Text template")
+	origin := ""
+	flag.StringVar(&origin, "origin", origin, "Original timesheets, eg. for comparing reported")
 	flag.Usage = usage
 	flag.Parse()
 
@@ -22,14 +25,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	p := timesheet.NewParser()
+	if origin != "" {
+		originalPaths, err := filepath.Glob(path.Join(origin, "*.timesheet"))
+		fatal(err, origin)
+		for _, path := range originalPaths {
+			fmt.Println(filepath.Base(path))
+		}
+	}
+
 	view := NewView()
 	view.Employee = *employee
 	for _, path := range filePaths {
-		body, err := ioutil.ReadFile(path)
-		fatal(err, path)
-
-		sheet, err := p.Parse(body)
+		sheet, err := timesheet.Load(path)
 		fatal(err, path)
 		view.Sheets = append(view.Sheets, *sheet)
 	}

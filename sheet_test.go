@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+func TestLoad(t *testing.T) {
+	_, err := Load("201506.timesheet")
+	if err != nil {
+		t.Errorf("Load failed: %v", err)
+	}
+	_, err = Load("nosuchfile")
+	if err == nil {
+		t.Error("Expected Load to fail")
+	}
+}
+
 func TestRender(t *testing.T) {
 	w := bytes.NewBufferString("")
 	Render(w, 2019, 1, 8)

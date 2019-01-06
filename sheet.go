@@ -3,6 +3,7 @@ package timesheet
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,6 +18,15 @@ type Sheet struct {
 
 func NewSheet() *Sheet {
 	return &Sheet{Reported: Tagged{0, "reported"}}
+}
+
+func Load(filepath string) (sheet *Sheet, err error) {
+	p := NewParser()
+	body, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return
+	}
+	return p.Parse(body)
 }
 
 func Render(w io.Writer, year int, month time.Month, hours int) {
