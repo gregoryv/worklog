@@ -34,10 +34,10 @@ func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {
 	return sheet.Tags, err
 }
 
-type byTag []Tagged
+type ByTag []Tagged
 
-func (by byTag) Len() int           { return len(by) }
-func (by byTag) Less(i, j int) bool { return by[i].Tag < by[j].Tag }
-func (by byTag) Swap(i, j int) {
+func (by ByTag) Len() int           { return len(by) }
+func (by ByTag) Less(i, j int) bool { return by[i].Tag < by[j].Tag }
+func (by ByTag) Swap(i, j int) {
 	by[i], by[j] = by[j], by[i]
 }

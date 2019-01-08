@@ -6,6 +6,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
+	"strings"
 	"time"
 
 	timesheet "github.com/gregoryv/go-timesheet"
@@ -72,7 +74,26 @@ func (view *View) SumReported() string {
 	for _, sheet := range view.Sheets {
 		reported += sheet.Reported.Duration
 	}
-	return fmt.Sprintf("%-14s %7s", "Sum:", timesheet.FormatHHMM(reported))
+	return fmt.Sprintf("%-14s %7s %s", "Sum:", timesheet.FormatHHMM(reported),
+		strings.Join(timesheet.InParenthesis(view.SumTagged()), " "))
+}
+
+func (view *View) SumTagged() []timesheet.Tagged {
+	sum := make(map[string]time.Duration)
+	for _, sheet := range view.Sheets {
+		for _, tag := range sheet.Tags {
+			if _, exists := sum[tag.Tag]; !exists {
+				sum[tag.Tag] = 0
+			}
+			sum[tag.Tag] += tag.Duration
+		}
+	}
+	tags := make([]timesheet.Tagged, 0)
+	for k, v := range sum {
+		tags = append(tags, timesheet.Tagged{v, k})
+	}
+	sort.Sort(timesheet.ByTag(tags))
+	return tags
 }
 
 func fatal(err error, path string) {

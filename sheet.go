@@ -110,17 +110,17 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 	for tag, dur := range tagDur {
 		tagged = append(tagged, Tagged{dur, tag})
 	}
-	sort.Sort(byTag(tagged))
+	sort.Sort(ByTag(tagged))
 	sheet.Tags = tagged
 	return
 }
 
 func (sheet *Sheet) String() string {
 	return fmt.Sprintf("%-14s %7s %s", sheet.Period, sheet.Reported,
-		strings.Join(inParenthesis(sheet.Tags), " "))
+		strings.Join(InParenthesis(sheet.Tags), " "))
 }
 
-func inParenthesis(tags []Tagged) []string {
+func InParenthesis(tags []Tagged) []string {
 	res := make([]string, 0)
 	for _, tag := range tags {
 		res = append(res, fmt.Sprintf("(%s)", tag))
