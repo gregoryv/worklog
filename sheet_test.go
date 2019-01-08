@@ -55,7 +55,7 @@ func TestSheet_String(t *testing.T) {
 	sheet.Period = "1977 January"
 	sheet.Tags = []Tagged{{time.Hour, "flex"}}
 	got := sheet.String()
-	exp := "1977 January   0:00 (1:00 flex)"
+	exp := "1977 January      0:00 (1:00 flex)"
 	if got != exp {
 		t.Errorf("\n%q, expected\n%q", got, exp)
 	}

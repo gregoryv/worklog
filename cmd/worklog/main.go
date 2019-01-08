@@ -67,12 +67,12 @@ func (view *View) Append(sheet *timesheet.Sheet) {
 	view.Sheets = append(view.Sheets, *sheet)
 }
 
-func (view *View) Reported() string {
+func (view *View) SumReported() string {
 	var reported time.Duration
 	for _, sheet := range view.Sheets {
 		reported += sheet.Reported.Duration
 	}
-	return timesheet.FormatHHMM(reported)
+	return fmt.Sprintf("%-14s %7s", "Sum:", timesheet.FormatHHMM(reported))
 }
 
 func fatal(err error, path string) {
