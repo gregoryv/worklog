@@ -18,7 +18,11 @@ func (tagged Tagged) String() string {
 		operator = -1
 	}
 	mm := (dur - hh) * operator
-	return fmt.Sprintf("%v:%02v %s", hh.Hours(), mm.Minutes(), tagged.Tag)
+	durstr := fmt.Sprintf("%v:%02v", hh.Hours(), mm.Minutes())
+	if tagged.Tag != "" {
+		return durstr + " " + tagged.Tag
+	}
+	return durstr
 }
 
 func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {

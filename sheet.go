@@ -17,7 +17,7 @@ type Sheet struct {
 }
 
 func NewSheet() *Sheet {
-	return &Sheet{Reported: Tagged{0, "reported"}}
+	return &Sheet{Reported: Tagged{0, ""}}
 }
 
 func Load(filepath string) (sheet *Sheet, err error) {
@@ -116,7 +116,7 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 }
 
 func (sheet *Sheet) String() string {
-	return fmt.Sprintf("%s %s %s", sheet.Period, sheet.Reported,
+	return fmt.Sprintf("%-14s %s %s", sheet.Period, sheet.Reported,
 		strings.Join(inParenthesis(sheet.Tags), " "))
 }
 

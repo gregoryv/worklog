@@ -25,6 +25,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// todo how to use the original for expected reported time
 	if origin != "" {
 		originalPaths, err := filepath.Glob(path.Join(origin, "*.timesheet"))
 		fatal(err, origin)
