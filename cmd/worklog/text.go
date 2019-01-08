@@ -13,7 +13,9 @@ func renderText(w io.Writer, view *View, templatePath string) error {
 	} else {
 		t = template.New("default")
 		t, err = t.Parse(`{{range .Sheets}}{{.}}
-{{end}}`)
+{{end}}
+Sum:           {{with .Reported}}{{.}}{{end}}
+`)
 	}
 	if err != nil {
 		return err

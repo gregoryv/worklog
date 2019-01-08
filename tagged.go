@@ -11,18 +11,22 @@ type Tagged struct {
 }
 
 func (tagged Tagged) String() string {
-	dur := tagged.Duration
+	str := FormatHHMM(tagged.Duration)
+	if tagged.Tag != "" {
+		return str + " " + tagged.Tag
+	}
+	return str
+}
+
+func FormatHHMM(dur time.Duration) string {
 	hh := dur.Truncate(time.Hour)
 	var operator time.Duration = 1
 	if hh < 0 {
 		operator = -1
 	}
 	mm := (dur - hh) * operator
-	durstr := fmt.Sprintf("%v:%02v", hh.Hours(), mm.Minutes())
-	if tagged.Tag != "" {
-		return durstr + " " + tagged.Tag
-	}
-	return durstr
+	return fmt.Sprintf("%v:%02v", hh.Hours(), mm.Minutes())
+
 }
 
 func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {

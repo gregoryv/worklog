@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	timesheet "github.com/gregoryv/go-timesheet"
 )
@@ -39,7 +40,7 @@ func main() {
 	for _, path := range filePaths {
 		sheet, err := timesheet.Load(path)
 		fatal(err, path)
-		view.Sheets = append(view.Sheets, *sheet)
+		view.Append(sheet)
 	}
 	if *html != "" {
 		err := renderHtml(os.Stdout, view, *html)
@@ -60,6 +61,18 @@ func NewView() *View {
 	return &View{
 		Sheets: make([]timesheet.Sheet, 0),
 	}
+}
+
+func (view *View) Append(sheet *timesheet.Sheet) {
+	view.Sheets = append(view.Sheets, *sheet)
+}
+
+func (view *View) Reported() string {
+	var reported time.Duration
+	for _, sheet := range view.Sheets {
+		reported += sheet.Reported.Duration
+	}
+	return timesheet.FormatHHMM(reported)
 }
 
 func fatal(err error, path string) {
