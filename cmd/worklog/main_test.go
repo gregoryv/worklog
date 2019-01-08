@@ -16,7 +16,11 @@ func TestFeature(t *testing.T) {
 	exp := `
 2015 June       174:30 (7:00 conference) (-1:30 flex) (1:00 travel)
 
-Sum:            174:30 (7:00 conference) (-1:30 flex) (1:00 travel)
+Sum:            174:30
+                  7:00 conference
+                 -1:30 flex
+                  1:00 travel
+
 `
 	assert := asserter.New(t)
 	assert().Equals(got, exp)
