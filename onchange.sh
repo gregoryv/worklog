@@ -20,9 +20,9 @@ case $filename in
 	;;
 esac
 
-go install ./cmd/worklog
-go install ./cmd/gensheet
-go test -coverprofile /tmp/c.out .
+go install github.com/gregoryv/go-timesheet/...
 go test ./cmd/worklog
+go test -coverprofile /tmp/c.out .
 uncover /tmp/c.out
-#go test -v -run=TestParser_SumTagged_error
+
+worklog -origin assets/orig2018 assets/2018*.timesheet
