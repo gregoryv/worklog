@@ -27,12 +27,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	// todo move view into a timesheet.Report | Book | Ledger
+	origView := NewView()
 	// todo how to use the original for expected reported time
 	if origin != "" {
 		originalPaths, err := filepath.Glob(path.Join(origin, "*.timesheet"))
 		fatal(err, origin)
 		for _, path := range originalPaths {
-			fmt.Println(filepath.Base(path))
+			sheet, err := timesheet.Load(path)
+			fatal(err, path)
+			origView.Append(sheet)
 		}
 	}
 
