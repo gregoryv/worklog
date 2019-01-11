@@ -39,16 +39,6 @@ func (r *Report) Reported() time.Duration {
 	return r.reported
 }
 
-func (r *Report) SumReported() string {
-	var tags string
-	for _, tag := range r.Tags() {
-		tags += fmt.Sprintf("%22s %s\n", FormatHHMM(tag.Duration), tag.Tag)
-	}
-
-	return fmt.Sprintf("%-14s %7s\n%s", "Sum:",
-		FormatHHMM(r.reported), tags)
-}
-
 // Tags returns a sorted and summarized list of tags
 func (r *Report) Tags() []Tagged {
 	tags := make([]Tagged, 0)
@@ -57,4 +47,15 @@ func (r *Report) Tags() []Tagged {
 	}
 	sort.Sort(ByTag(tags))
 	return tags
+}
+
+// TODO Move this to text view somehow
+func (r *Report) SumReported() string {
+	var tags string
+	for _, tag := range r.Tags() {
+		tags += fmt.Sprintf("%22s %s\n", FormatHHMM(tag.Duration), tag.Tag)
+	}
+
+	return fmt.Sprintf("%-14s %7s\n%s", "Sum:",
+		FormatHHMM(r.reported), tags)
 }
