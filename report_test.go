@@ -45,7 +45,7 @@ func Test_tag_summary(t *testing.T) {
 	r := newTestReport()
 	tags := r.Tags()
 	assert := asserter.New(t)
-	assert().Equals(len(tags), 3)
+	assert().Equals(len(tags), 2)
 }
 
 func Test_find_in_report(t *testing.T) {

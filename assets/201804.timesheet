@@ -3,19 +3,19 @@
 13  1 Sun
 14  2 Mon 
     3 Tue 8
-    4 Wed 7 (-1 flex)
+    4 Wed 7 
     5 Thu 8
     6 Fri 8
     7 Sat
     8 Sun
-15  9 Mon 7:30 (-0:30 flex)
-   10 Tue 7 (-1:00 flex)
-   11 Wed 7 (-1:00 flex)
+15  9 Mon 7:30 
+   10 Tue 7 
+   11 Wed 7 
    12 Thu 8
    13 Fri 8
    14 Sat
    15 Sun
-16 16 Mon 7 (-1:00 flex)
+16 16 Mon 7 
    17 Tue 8
    18 Wed 8
    19 Thu 8
@@ -25,7 +25,7 @@
 17 23 Mon 8 (8:00 VAB)
    24 Tue 8 (8:00 VAB)
    25 Wed 8
-   26 Thu 7:30 (-0:30 flex)
+   26 Thu 7:30 
    27 Fri 8
    28 Sat 2 (2 presentation) ej debiterbar
    29 Sun 2 (2 presentation) ej debiterbar
