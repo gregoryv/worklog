@@ -21,9 +21,14 @@ func NewReport() *Report {
 	}
 }
 
-func (report *Report) Append(sheet *Sheet) {
+func (report *Report) Append(sheet *Sheet) (sheetCount int, err error) {
 	report.Sheets = append(report.Sheets, *sheet)
 	report.reported += sheet.Reported.Duration
+	return len(report.Sheets), nil
+}
+
+func (report *Report) Reported() time.Duration {
+	return report.reported
 }
 
 func (report *Report) SumReported() string {
