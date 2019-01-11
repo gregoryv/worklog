@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+
+	timesheet "github.com/gregoryv/go-timesheet"
 )
 
-func renderHtml(w io.Writer, view *View, templatePath string) error {
+func renderHtml(w io.Writer, report *timesheet.Report, templatePath string) error {
 	if templatePath == "" {
 		return fmt.Errorf("Missing template")
 	}
@@ -14,5 +16,5 @@ func renderHtml(w io.Writer, view *View, templatePath string) error {
 	if err != nil {
 		return err
 	}
-	return t.Execute(w, view)
+	return t.Execute(w, report)
 }
