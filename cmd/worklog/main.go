@@ -35,9 +35,8 @@ func main() {
 		if origin != "" {
 			tspath := path.Join(origin, path.Base(tspath))
 			esheet, err := timesheet.Load(tspath)
-			expect.Append(esheet)
-			if err != nil {
-				// log perhaps
+			if err == nil {
+				expect.Append(esheet)
 			}
 		}
 	}
@@ -82,7 +81,6 @@ func diff(rep, exp time.Duration) string {
 	diff := rep - exp
 	var d string
 	switch {
-	case diff == rep:
 	case diff < 0:
 		d = timesheet.FormatHHMM(diff)
 	case diff > 0:
