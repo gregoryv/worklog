@@ -42,10 +42,11 @@ func main() {
 		}
 	}
 	view := &ReportView{
-		Expected: hhmm(expect.Reported()),
-		Reported: hhmm(report.Reported()),
-		Diff:     diff(report.Reported(), expect.Reported()),
-		Tags:     report.Tags(),
+		Expected:       hhmm(expect.Reported()),
+		Reported:       hhmm(report.Reported()),
+		ReportedIndent: fmt.Sprintf("%22s", ""),
+		Diff:           diff(report.Reported(), expect.Reported()),
+		Tags:           convertToTagView(report.Tags()),
 	}
 	sheetViews := make([]SheetView, 0)
 	for _, sheet := range report.Sheets {
@@ -81,6 +82,7 @@ func diff(rep, exp time.Duration) string {
 	diff := rep - exp
 	var d string
 	switch {
+	case diff == rep:
 	case diff < 0:
 		d = timesheet.FormatHHMM(diff)
 	case diff > 0:
