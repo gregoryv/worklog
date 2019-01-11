@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-func renderHtml(w io.Writer, view *View, templatePath string) error {
+func renderHtml(w io.Writer, view *ReportView, templatePath string) error {
 	if templatePath == "" {
 		return fmt.Errorf("Missing template")
 	}

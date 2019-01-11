@@ -1,21 +1,18 @@
 package main
 
-import (
-	"fmt"
+import timesheet "github.com/gregoryv/go-timesheet"
 
-	timesheet "github.com/gregoryv/go-timesheet"
-)
-
-type View struct {
-	timesheet.Report
+type ReportView struct {
+	Sheets   []SheetView
+	Expected string
+	Reported string
+	Diff     string
+	Tags     []timesheet.Tagged
 }
 
-func (r *View) SumReported() string {
-	var tags string
-	for _, tag := range r.Tags() {
-		tags += fmt.Sprintf("%22s %s\n", timesheet.FormatHHMM(tag.Duration), tag.Tag)
-	}
-
-	return fmt.Sprintf("%-14s %7s\n%s", "Sum:",
-		timesheet.FormatHHMM(r.Reported()), tags)
+type SheetView struct {
+	Period   string
+	Expected string
+	Reported string
+	Tags     []timesheet.Tagged
 }

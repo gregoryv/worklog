@@ -8,19 +8,16 @@ import (
 )
 
 func TestFeature(t *testing.T) {
-	out, err := exec.Command("worklog", "../../201506.timesheet").CombinedOutput()
+	out, err := exec.Command("worklog", "-origin", "../../assets/orig2018",
+		"../../assets/201801.timesheet").CombinedOutput()
 	if err != nil {
 		t.Fatal(err, string(out))
 	}
 	got := string(append([]byte("\n"), out...))
 	exp := `
-2015 June       174:30 (7:00 conference) (-1:30 flex) (1:00 travel)
+2018 January 179:30/172:00 (7:30 flex) (8:00 semester)
 
-Sum:            174:30
-                  7:00 conference
-                 -1:30 flex
-                  1:00 travel
-
+179:30 +7:30
 `
 	assert := asserter.New(t)
 	assert().Equals(got, exp)

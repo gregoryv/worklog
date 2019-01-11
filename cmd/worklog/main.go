@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 
 	timesheet "github.com/gregoryv/go-timesheet"
 )
@@ -25,27 +24,48 @@ func main() {
 		os.Exit(1)
 	}
 
-	// todo move view into a timesheet.Report | Book | Ledger
-	origReport := timesheet.NewReport()
-	// todo how to use the original for expected reported time
-	if origin != "" {
-		originalPaths, err := filepath.Glob(path.Join(origin, "*.timesheet"))
-		fatal(err, origin)
-		for _, path := range originalPaths {
-			sheet, err := timesheet.Load(path)
-			fatal(err, path)
-			origReport.Append(sheet)
-		}
-	}
-
+	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	report.Employee = *employee
-	for _, path := range filePaths {
-		sheet, err := timesheet.Load(path)
-		fatal(err, path)
+	for _, tspath := range filePaths {
+		sheet, err := timesheet.Load(tspath)
+		fatal(err, tspath)
 		report.Append(sheet)
+		if origin != "" {
+			tspath := path.Join(origin, path.Base(tspath))
+			esheet, err := timesheet.Load(tspath)
+			expect.Append(esheet)
+			if err != nil {
+				// log perhaps
+			}
+		}
 	}
-	view := &View{*report}
+	view := &ReportView{
+		Expected: timesheet.FormatHHMM(expect.Reported()),
+		Reported: timesheet.FormatHHMM(report.Reported()),
+	}
+	diff := report.Reported() - expect.Reported()
+	switch {
+	case diff > 0:
+		view.Diff = "+" + timesheet.FormatHHMM(diff)
+	case diff < 0:
+		view.Diff = "-" + timesheet.FormatHHMM(diff)
+	}
+	sheetViews := make([]SheetView, 0)
+	for _, sheet := range report.Sheets {
+		view := SheetView{
+			Period:   sheet.Period,
+			Reported: timesheet.FormatHHMM(sheet.Reported.Duration),
+			Tags:     sheet.Tags,
+		}
+		exp, _ := expect.FindByPeriod(sheet.Period)
+		if exp != nil {
+			view.Expected = timesheet.FormatHHMM(exp.Reported.Duration)
+		}
+		sheetViews = append(sheetViews, view)
+	}
+	view.Sheets = sheetViews
+
 	if *html != "" {
 		err := renderHtml(os.Stdout, view, *html)
 		fatal(err, *html)

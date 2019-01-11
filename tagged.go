@@ -20,13 +20,21 @@ func (tagged Tagged) String() string {
 
 func FormatHHMM(dur time.Duration) string {
 	hh := dur.Truncate(time.Hour)
-	var operator time.Duration = 1
-	if hh < 0 {
-		operator = -1
+	mm := abs(dur) - abs(hh)
+	operator := ""
+	if dur < 0 {
+		operator = "-"
 	}
-	mm := (dur - hh) * operator
-	return fmt.Sprintf("%v:%02v", hh.Hours(), mm.Minutes())
+	hh = abs(hh)
+	mm = abs(mm)
+	return fmt.Sprintf("%v%v:%02v", operator, hh.Hours(), mm.Minutes())
+}
 
+func abs(dur time.Duration) time.Duration {
+	if dur < 0 {
+		return -1 * dur
+	}
+	return dur
 }
 
 func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {

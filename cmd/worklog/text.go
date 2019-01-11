@@ -5,16 +5,16 @@ import (
 	"text/template"
 )
 
-func renderText(w io.Writer, view *View, templatePath string) error {
+func renderText(w io.Writer, view *ReportView, templatePath string) error {
 	var t *template.Template
 	var err error
 	if templatePath != "" {
 		t, err = template.ParseFiles(templatePath)
 	} else {
 		t = template.New("default")
-		t, err = t.Parse(`{{range .Sheets}}{{.}}
+		t, err = t.Parse(`{{range .Sheets}}{{.Period}} {{.Reported}}/{{.Expected}}{{range .Tags}} ({{.}}){{end}}
 {{end}}
-{{with .SumReported}}{{.}}{{end}}
+{{.Reported}} {{.Diff}}
 `)
 	}
 	if err != nil {
