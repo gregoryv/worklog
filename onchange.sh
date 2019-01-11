@@ -25,4 +25,4 @@ go test ./cmd/worklog
 go test -coverprofile /tmp/c.out .
 uncover /tmp/c.out
 
-worklog -origin assets/orig2018 assets/2018*.timesheet
+worklog -origin assets/orig2018 assets/201*.timesheet

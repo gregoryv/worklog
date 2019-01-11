@@ -15,10 +15,10 @@ func TestFeature(t *testing.T) {
 	}
 	got := string(append([]byte("\n"), out...))
 	exp := `
-2018 January 179:30 +7:30 (15:30 flex) (8:00 semester)
+2018 January 179:30 +7:30 (7:30 flex) (8:00 semester)
 
 179:30 +7:30
-15:30 flex
+7:30 flex
 8:00 semester
 `
 	assert := asserter.New(t)

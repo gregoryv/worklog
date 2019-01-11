@@ -46,10 +46,12 @@ func Render(w io.Writer, year int, month time.Month, hours int) {
 		}
 
 		fmt.Fprintf(w, "%+2v %3s", tmp.Day(), tmp.Weekday().String()[:3])
-		switch tmp.Weekday() {
-		case 0, 6:
-		default:
-			fmt.Fprint(w, " ", hours)
+		if hours > 0 {
+			switch tmp.Weekday() {
+			case 0, 6:
+			default:
+				fmt.Fprint(w, " ", hours)
+			}
 		}
 		fmt.Fprint(w, "\n")
 	}

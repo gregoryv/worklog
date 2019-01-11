@@ -12,9 +12,11 @@ import (
 
 func main() {
 	year := time.Now().Year()
-	flag.IntVar(&year, "y", year, "Year, four digits")
 	month := int(time.Now().Month())
+	hours := 8
+	flag.IntVar(&year, "y", year, "Year, four digits")
 	flag.IntVar(&month, "m", month, "Month, 1-12")
+	flag.IntVar(&hours, "w", hours, "Default workhours")
 	out := ""
 	flag.StringVar(&out, "o", out, "Save timesheets in directory, use with -m -1")
 	flag.Parse()
@@ -30,7 +32,7 @@ func main() {
 			filepath := path.Join(out, fmt.Sprintf("%v%02v.timesheet", year, m))
 			file, err := os.Create(filepath)
 			fatal(err)
-			timesheet.Render(file, year, time.Month(m), 8)
+			timesheet.Render(file, year, time.Month(m), hours)
 			file.Close()
 			m++
 			if m == 13 {
@@ -39,7 +41,7 @@ func main() {
 		}
 		return
 	}
-	timesheet.Render(os.Stdout, year, time.Month(month), 8)
+	timesheet.Render(os.Stdout, year, time.Month(month), hours)
 }
 
 func fatal(err error) {
