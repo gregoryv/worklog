@@ -15,7 +15,8 @@ func renderText(w io.Writer, view *ReportView, templatePath string) error {
 		t, err = t.Parse(`{{range .Sheets}}{{.Period}} {{.Reported}} {{.Diff}}{{range .Tags}} ({{.}}){{end}}
 {{end}}
 {{.Reported}} {{.Diff}}
-`)
+{{range .Tags}}{{.}}
+{{end}}`)
 	}
 	if err != nil {
 		return err

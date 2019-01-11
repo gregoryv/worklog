@@ -45,6 +45,7 @@ func main() {
 		Expected: timesheet.FormatHHMM(expect.Reported()),
 		Reported: timesheet.FormatHHMM(report.Reported()),
 		Diff:     diff(report.Reported(), expect.Reported()),
+		Tags:     report.Tags(),
 	}
 	sheetViews := make([]SheetView, 0)
 	for _, sheet := range report.Sheets {
