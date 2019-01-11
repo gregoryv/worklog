@@ -45,13 +45,14 @@ func main() {
 		fatal(err, path)
 		report.Append(sheet)
 	}
+	view := &View{*report}
 	if *html != "" {
-		err := renderHtml(os.Stdout, report, *html)
+		err := renderHtml(os.Stdout, view, *html)
 		fatal(err, *html)
 		return
 	}
 
-	err := renderText(os.Stdout, report, *textTemplate)
+	err := renderText(os.Stdout, view, *textTemplate)
 	fatal(err, *textTemplate)
 }
 

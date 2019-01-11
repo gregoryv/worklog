@@ -49,13 +49,11 @@ func (r *Report) Tags() []Tagged {
 	return tags
 }
 
-// TODO Move this to text view somehow
-func (r *Report) SumReported() string {
-	var tags string
-	for _, tag := range r.Tags() {
-		tags += fmt.Sprintf("%22s %s\n", FormatHHMM(tag.Duration), tag.Tag)
+func (r *Report) FindByPeriod(period string) (*Sheet, error) {
+	for _, sheet := range r.Sheets {
+		if sheet.Period == period {
+			return &sheet, nil
+		}
 	}
-
-	return fmt.Sprintf("%-14s %7s\n%s", "Sum:",
-		FormatHHMM(r.reported), tags)
+	return nil, fmt.Errorf("Sheet not found: %q", period)
 }

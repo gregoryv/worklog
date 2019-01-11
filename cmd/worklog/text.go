@@ -3,11 +3,9 @@ package main
 import (
 	"io"
 	"text/template"
-
-	timesheet "github.com/gregoryv/go-timesheet"
 )
 
-func renderText(w io.Writer, report *timesheet.Report, templatePath string) error {
+func renderText(w io.Writer, view *View, templatePath string) error {
 	var t *template.Template
 	var err error
 	if templatePath != "" {
@@ -22,5 +20,5 @@ func renderText(w io.Writer, report *timesheet.Report, templatePath string) erro
 	if err != nil {
 		return err
 	}
-	return t.Execute(w, report)
+	return t.Execute(w, view)
 }

@@ -48,6 +48,18 @@ func Test_tag_summary(t *testing.T) {
 	assert().Equals(len(tags), 3)
 }
 
+func Test_find_in_report(t *testing.T) {
+	r := newTestReport()
+	period := "2018 January"
+	sheet, err := r.FindByPeriod(period)
+	assert := asserter.New(t)
+	assert(err == nil).Fatal(err)
+	assert().Equals(sheet.Period, period)
+
+	_, err = r.FindByPeriod("whoops")
+	assert(err != nil).Fail()
+}
+
 func newTestReport() (r *Report) {
 	r = NewReport()
 	r.Append(jan)
