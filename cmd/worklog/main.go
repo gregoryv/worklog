@@ -42,16 +42,16 @@ func main() {
 		}
 	}
 	view := &ReportView{
-		Expected: timesheet.FormatHHMM(expect.Reported()),
-		Reported: timesheet.FormatHHMM(report.Reported()),
+		Expected: hhmm(expect.Reported()),
+		Reported: hhmm(report.Reported()),
 		Diff:     diff(report.Reported(), expect.Reported()),
 		Tags:     report.Tags(),
 	}
 	sheetViews := make([]SheetView, 0)
 	for _, sheet := range report.Sheets {
 		view := SheetView{
-			Period:   sheet.Period,
-			Reported: timesheet.FormatHHMM(sheet.Reported.Duration),
+			Period:   fmt.Sprintf("%-14s", sheet.Period),
+			Reported: hhmm(sheet.Reported.Duration),
 			Tags:     sheet.Tags,
 		}
 		exp, _ := expect.FindByPeriod(sheet.Period)
@@ -73,15 +73,20 @@ func main() {
 	fatal(err, *textTemplate)
 }
 
+func hhmm(dur time.Duration) string {
+	return fmt.Sprintf("%7s", timesheet.FormatHHMM(dur))
+}
+
 func diff(rep, exp time.Duration) string {
 	diff := rep - exp
+	var d string
 	switch {
 	case diff < 0:
-		return timesheet.FormatHHMM(diff)
+		d = timesheet.FormatHHMM(diff)
 	case diff > 0:
-		return "+" + timesheet.FormatHHMM(diff)
+		d = "+" + timesheet.FormatHHMM(diff)
 	}
-	return ""
+	return fmt.Sprintf("%7s", d)
 }
 
 func fatal(err error, path string) {
