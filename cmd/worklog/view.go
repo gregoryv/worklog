@@ -14,5 +14,6 @@ type SheetView struct {
 	Period   string
 	Expected string
 	Reported string
+	Diff     string
 	Tags     []timesheet.Tagged
 }

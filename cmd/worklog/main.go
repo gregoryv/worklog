@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	timesheet "github.com/gregoryv/go-timesheet"
 )
@@ -43,13 +44,7 @@ func main() {
 	view := &ReportView{
 		Expected: timesheet.FormatHHMM(expect.Reported()),
 		Reported: timesheet.FormatHHMM(report.Reported()),
-	}
-	diff := report.Reported() - expect.Reported()
-	switch {
-	case diff > 0:
-		view.Diff = "+" + timesheet.FormatHHMM(diff)
-	case diff < 0:
-		view.Diff = "-" + timesheet.FormatHHMM(diff)
+		Diff:     diff(report.Reported(), expect.Reported()),
 	}
 	sheetViews := make([]SheetView, 0)
 	for _, sheet := range report.Sheets {
@@ -61,6 +56,7 @@ func main() {
 		exp, _ := expect.FindByPeriod(sheet.Period)
 		if exp != nil {
 			view.Expected = timesheet.FormatHHMM(exp.Reported.Duration)
+			view.Diff = diff(sheet.Reported.Duration, exp.Reported.Duration)
 		}
 		sheetViews = append(sheetViews, view)
 	}
@@ -74,6 +70,17 @@ func main() {
 
 	err := renderText(os.Stdout, view, *textTemplate)
 	fatal(err, *textTemplate)
+}
+
+func diff(rep, exp time.Duration) string {
+	diff := rep - exp
+	switch {
+	case diff < 0:
+		return timesheet.FormatHHMM(diff)
+	case diff > 0:
+		return "+" + timesheet.FormatHHMM(diff)
+	}
+	return ""
 }
 
 func fatal(err error, path string) {
