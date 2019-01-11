@@ -33,13 +33,24 @@ func Test_making_a_report(t *testing.T) {
 }
 
 func Test_summarize_reports(t *testing.T) {
-	report := NewReport()
-	report.Append(jan)
-	report.Append(feb)
-
+	report := newTestReport()
 	total := report.Reported()
-	assert := asserter.New(t)
 	exp := 179*time.Hour + 30*time.Minute // jan
 	exp += 155 * time.Hour                // feb
+	assert := asserter.New(t)
 	assert().Equals(total, exp)
+}
+
+func Test_tag_summary(t *testing.T) {
+	r := newTestReport()
+	tags := r.Tags()
+	assert := asserter.New(t)
+	assert().Equals(len(tags), 3)
+}
+
+func newTestReport() (r *Report) {
+	r = NewReport()
+	r.Append(jan)
+	r.Append(feb)
+	return
 }
