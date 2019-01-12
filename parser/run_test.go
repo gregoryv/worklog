@@ -8,7 +8,8 @@ func Test_ok_lines(t *testing.T) {
 	for _, line := range []string{
 		"52 24 Mon   Christmas",
 		" 1  1 Tue 8",
-		"    1 Tue 8",
+		"    1 Tue 8 (+1 flex)",
+		"    1 Tue 8 (+1 flex) comment (0:30 vacation)",
 	} {
 		okLine(t, line, lexWeek)
 	}
@@ -18,6 +19,7 @@ func Test_badly_formatted_lines(t *testing.T) {
 	for _, line := range []string{
 		"Mon   Christmas",
 		"tis",
+		"\n",
 	} {
 		badLine(t, line, lexWeek)
 	}
