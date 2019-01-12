@@ -1,8 +1,7 @@
-package timesheet
+package parser
 
 import (
 	"fmt"
-	"time"
 )
 
 type Parser struct{}
@@ -21,9 +20,4 @@ func (par *Parser) Dump(body []byte) {
 		}
 		fmt.Println(p)
 	}
-}
-
-func (par *Parser) SumReported(body []byte) (dur time.Duration, err error) {
-	sheet, err := par.Parse(body)
-	return sheet.Reported.Duration, err
 }

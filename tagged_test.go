@@ -5,13 +5,13 @@ import (
 	"testing"
 )
 
-func TestParser_SumTagged(t *testing.T) {
+func TestSumTagged(t *testing.T) {
 	sheet := []byte(`2018 January
 ----------
 1  1 Mon 8 (4 vacation) was in thailand (2:30 pool)
    2 Tue 4:10 (4 vacation) was in thailand (-1 pool) (-2:10 flex)`)
 
-	tagged, _ := NewParser().SumTagged(sheet)
+	tagged, _ := SumTagged(sheet)
 	got := fmt.Sprintf("%v", tagged)
 	exp := "[-2:10 flex 1:30 pool 8:00 vacation]"
 	if got != exp {
@@ -19,13 +19,13 @@ func TestParser_SumTagged(t *testing.T) {
 	}
 }
 
-func TestParser_SumTagged_errors(t *testing.T) {
+func TestSumTagged_errors(t *testing.T) {
 	sheet := []byte(`2018 January
 ----------
 1  1 Mon 8 (4 vacation) (2 pool`)
 
-	got, err := NewParser().SumTagged(sheet)
-	exp := 1
+	got, err := SumTagged(sheet)
+	exp := 0
 	if len(got) != exp {
 		t.Errorf("%v, expected %v", len(got), exp)
 	}

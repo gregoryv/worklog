@@ -1,4 +1,4 @@
-package timesheet
+package parser
 
 type Lexer struct {
 	scanner *Scanner

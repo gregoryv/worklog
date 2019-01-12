@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gregoryv/go-timesheet/parser"
 )
 
 type Sheet struct {
@@ -21,12 +23,11 @@ func NewSheet() *Sheet {
 }
 
 func Load(filepath string) (sheet *Sheet, err error) {
-	p := NewParser()
 	body, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		return
 	}
-	return p.Parse(body)
+	return Parse(body)
 }
 
 func Render(w io.Writer, year int, month time.Month, hours int) {
@@ -57,9 +58,9 @@ func Render(w io.Writer, year int, month time.Month, hours int) {
 	}
 }
 
-func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
+func Parse(body []byte) (sheet *Sheet, err error) {
 	sheet = NewSheet()
-	lex := NewLexer(string(body))
+	lex := parser.NewLexer(string(body))
 	out := lex.Run()
 	tagDur := make(map[string]time.Duration, 0)
 	var dur time.Duration // for tags
@@ -69,24 +70,24 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 	for {
 		p, more := <-out
 		switch p.Tok {
-		case LeftParenthesis, RightParenthesis:
+		case parser.LeftParenthesis, parser.RightParenthesis:
 			inTag = !inTag
-		case Year:
+		case parser.Year:
 			sheet.Period += p.Val
-		case Month:
+		case parser.Month:
 			sheet.Period += " " + p.Val
-		case Operator:
+		case parser.Operator:
 			if p.Val == "-" {
 				operator = -1
 			}
-		case Tag:
+		case parser.Tag:
 			if _, exists := tagDur[p.Val]; !exists {
 				tagDur[p.Val] = 0
 			}
 			tagDur[p.Val] += dur
 			dur = 0
 			operator = 1
-		case Hours:
+		case parser.Hours:
 			h, _ := strconv.Atoi(p.Val)
 			hh := time.Duration(h*operator) * time.Hour
 			if inTag {
@@ -94,7 +95,7 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 			} else {
 				sheet.Reported.Duration += hh
 			}
-		case Minutes:
+		case parser.Minutes:
 			m, _ := strconv.Atoi(p.Val)
 			mm := time.Duration(m*operator) * time.Minute
 			if inTag {
@@ -102,7 +103,7 @@ func (par *Parser) Parse(body []byte) (sheet *Sheet, err error) {
 			} else {
 				sheet.Reported.Duration += mm
 			}
-		case Error:
+		case parser.Error:
 			err = fmt.Errorf("%s", p)
 		}
 		if !more || err != nil {

@@ -20,8 +20,7 @@ func TestLoad(t *testing.T) {
 func TestRender(t *testing.T) {
 	w := bytes.NewBufferString("")
 	Render(w, 2019, 1, 8)
-	p := NewParser()
-	sheet, err := p.Parse(w.Bytes())
+	sheet, err := Parse(w.Bytes())
 	if err != nil {
 		t.Errorf("%v\n%v", err, w.String())
 	}
@@ -30,9 +29,8 @@ func TestRender(t *testing.T) {
 	}
 }
 
-func TestParser_Parse(t *testing.T) {
-	p := NewParser()
-	sheet, err := p.Parse([]byte(`2018 January
+func TestParse(t *testing.T) {
+	sheet, err := Parse([]byte(`2018 January
 ----------
 1  1 Sun
    2 Mon +8 (4 vacation) was in thailand (+2:30 pool)

@@ -22,8 +22,8 @@ esac
 
 go install github.com/gregoryv/go-timesheet/...
 go test ./cmd/worklog
-go test -coverprofile /tmp/c.out .
-uncover /tmp/c.out
+go test ./...
+go test -coverprofile /tmp/c.out .; uncover /tmp/c.out
 
 worklog -origin assets/orig2018 assets/201*.timesheet
 #worklog assets/201*.timesheet

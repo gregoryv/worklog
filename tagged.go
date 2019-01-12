@@ -37,9 +37,12 @@ func abs(dur time.Duration) time.Duration {
 	return dur
 }
 
-func (par *Parser) SumTagged(body []byte) ([]Tagged, error) {
-	sheet, err := par.Parse(body)
-	return sheet.Tags, err
+func SumTagged(body []byte) (tags []Tagged, err error) {
+	sheet, err := Parse(body)
+	if err != nil {
+		return
+	}
+	return sheet.Tags, nil
 }
 
 type ByTag []Tagged
