@@ -2,6 +2,8 @@ package parser
 
 import (
 	"testing"
+
+	"github.com/gregoryv/go-timesheet/token"
 )
 
 func Test_ok_lines(t *testing.T) {
@@ -11,7 +13,7 @@ func Test_ok_lines(t *testing.T) {
 		"    1 Tue 8 (+1 flex)",
 		"    1 Tue 8 (+1 flex) comment (0:30 vacation)",
 	} {
-		if tok := parse(line, lexWeek); tok == Error {
+		if tok := parse(line, lexWeek); tok == token.Error {
 			t.Errorf("%s failed %v", line, tok)
 		}
 	}
@@ -23,19 +25,19 @@ func Test_badly_formatted_lines(t *testing.T) {
 		"tis",
 		"\n",
 	} {
-		if tok := parse(line, lexWeek); tok != Error {
+		if tok := parse(line, lexWeek); tok != token.Error {
 			t.Errorf("%s expected to fail", line)
 		}
 	}
 }
 
-func parse(line string, start lexFn) (tok Token) {
+func parse(line string, start lexFn) (tok token.Token) {
 	lex := NewLexer(line)
 	out := lex.C
 	go lex.run(start, lex.scanner, out)
 	for {
 		p, more := <-out
-		if p.Tok == Error {
+		if p.Tok == token.Error {
 			tok = p.Tok
 		}
 		if !more {

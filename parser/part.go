@@ -2,16 +2,18 @@ package parser
 
 import (
 	"fmt"
+
+	"github.com/gregoryv/go-timesheet/token"
 )
 
 type Part struct {
-	Tok Token
+	Tok token.Token
 	Val string
 	Pos Position
 }
 
 func (p *Part) Defined() bool {
-	return p.Tok != Undefined
+	return p.Tok != token.Undefined
 }
 
 func (a Part) Equals(b Part) bool {
@@ -22,7 +24,7 @@ func (a Part) Equals(b Part) bool {
 
 func (p *Part) Errorf(format string, args ...interface{}) error {
 	p.Val = fmt.Sprintf(format, args...)
-	p.Tok = Error
+	p.Tok = token.Error
 	return fmt.Errorf(p.Val)
 }
 
@@ -32,11 +34,4 @@ func (p Part) String() string {
 
 func NewPart() Part {
 	return Part{}
-}
-
-func (tok Token) Is(val string, optional ...Position) Part {
-	if len(optional) > 0 {
-		return Part{tok, val, optional[0]}
-	}
-	return Part{tok, val, Position{1, 1}}
 }

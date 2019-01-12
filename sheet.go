@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gregoryv/go-timesheet/parser"
+	"github.com/gregoryv/go-timesheet/token"
 )
 
 type Sheet struct {
@@ -70,24 +71,24 @@ func Parse(body []byte) (sheet *Sheet, err error) {
 	for {
 		p, more := <-out
 		switch p.Tok {
-		case parser.LeftParenthesis, parser.RightParenthesis:
+		case token.LeftParenthesis, token.RightParenthesis:
 			inTag = !inTag
-		case parser.Year:
+		case token.Year:
 			sheet.Period += p.Val
-		case parser.Month:
+		case token.Month:
 			sheet.Period += " " + p.Val
-		case parser.Operator:
+		case token.Operator:
 			if p.Val == "-" {
 				operator = -1
 			}
-		case parser.Tag:
+		case token.Tag:
 			if _, exists := tagDur[p.Val]; !exists {
 				tagDur[p.Val] = 0
 			}
 			tagDur[p.Val] += dur
 			dur = 0
 			operator = 1
-		case parser.Hours:
+		case token.Hours:
 			h, _ := strconv.Atoi(p.Val)
 			hh := time.Duration(h*operator) * time.Hour
 			if inTag {
@@ -95,7 +96,7 @@ func Parse(body []byte) (sheet *Sheet, err error) {
 			} else {
 				sheet.Reported.Duration += hh
 			}
-		case parser.Minutes:
+		case token.Minutes:
 			m, _ := strconv.Atoi(p.Val)
 			mm := time.Duration(m*operator) * time.Minute
 			if inTag {
@@ -103,7 +104,7 @@ func Parse(body []byte) (sheet *Sheet, err error) {
 			} else {
 				sheet.Reported.Duration += mm
 			}
-		case parser.Error:
+		case token.Error:
 			err = fmt.Errorf("%s", p)
 		}
 		if !more || err != nil {

@@ -2,21 +2,23 @@ package parser
 
 import (
 	"strings"
+
+	"github.com/gregoryv/go-timesheet/token"
 )
 
 func lexYear(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Year), lexMonth
+	p, next = ScanPart(s, token.Year), lexMonth
 	s.Scan(" ")
 	return
 }
 
-func ScanPart(s *Scanner, tok Token) (p Part) {
+func ScanPart(s *Scanner, tok token.Token) (p Part) {
 	p = Part{Tok: tok, Pos: s.Pos()}
 	var valid string
 	switch tok {
-	case Hours, Minutes, Year, Date, Week:
+	case token.Hours, token.Minutes, token.Year, token.Date, token.Week:
 		valid = digits
-	case Separator:
+	case token.Separator:
 		valid = "-"
 	}
 	val, ok := s.ScanAll(valid)
@@ -32,16 +34,17 @@ const validMonths = "JanuaryFebruaryMarchAprilMayJune" +
 	"JulyAugustSeptemberOctoberNovemberDecember"
 
 func lexMonth(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Month, Pos: s.Pos()}, lexSep
+	m := token.Month
+	p, next = Part{Tok: m, Pos: s.Pos()}, lexSep
 	val, ok := s.Scan("JFMASOND")
 	if !ok {
-		p.Errorf("invalid %s", Month)
+		p.Errorf("invalid %s", m)
 		return
 	}
 	rest, _ := s.ScanAll("abcdefghijklmnopqrstuvxyz")
 	p.Val = val + rest
 	if !strings.Contains(validMonths, p.Val) {
-		p.Errorf("invalid %s", Month)
+		p.Errorf("invalid %s", m)
 		return
 	}
 	if p := skipToNextLine(s); p.Defined() {
@@ -55,13 +58,13 @@ func skipToNextLine(s *Scanner) (p Part) {
 	s.ScanAll(" \t")
 	_, ok := s.Scan("\n")
 	if !ok {
-		p = Part{Tok: Error, Pos: pos, Val: "expect newline"}
+		p = Part{Tok: token.Error, Pos: pos, Val: "expect newline"}
 	}
 	return
 }
 
 func lexSep(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Separator), lexWeek
+	p, next = ScanPart(s, token.Separator), lexWeek
 	s.Scan("\n")
 	return
 }
@@ -78,13 +81,13 @@ func lexWeek(s *Scanner) (p Part, next lexFn) {
 		s.ScanAll(" ")
 		return
 	}
-	p = ScanPart(s, Week)
+	p = ScanPart(s, token.Week)
 	s.ScanAll(" ")
 	return
 }
 
 func lexDate(s *Scanner) (p Part, next lexFn) {
-	p, next = ScanPart(s, Date), lexDay
+	p, next = ScanPart(s, token.Date), lexDay
 	s.Scan(" ")
 	return
 }
@@ -92,15 +95,15 @@ func lexDate(s *Scanner) (p Part, next lexFn) {
 const validDays = "MonTueWedThuFriSatSun"
 
 func lexDay(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Day, Pos: s.Pos()}, lexNote
+	p, next = Part{Tok: token.Day, Pos: s.Pos()}, lexNote
 	val, ok := s.Scan("MTWFS")
 	if !ok {
-		p.Errorf("invalid %s", Day)
+		p.Errorf("invalid %s", token.Day)
 	} else {
 		rest, _ := s.ScanAll("aedhniortu")
 		p.Val = val + rest
 		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
-			p.Errorf("invalid %s", Day)
+			p.Errorf("invalid %s", token.Day)
 		}
 	}
 	s.Scan(" ")
@@ -119,17 +122,17 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 const digits = "0123456789"
 
 func lexOperator(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: Operator, Pos: s.Pos()}, lexHours
+	p, next = Part{Tok: token.Operator, Pos: s.Pos()}, lexHours
 	r, ok := s.Scan("+-")
 	p.Val = string(r)
 	if !ok {
-		p.Errorf("invalid %s", Operator)
+		p.Errorf("invalid %s", token.Operator)
 	}
 	return
 }
 
 func lexHours(s *Scanner) (p Part, next lexFn) {
-	p = ScanPart(s, Hours)
+	p = ScanPart(s, token.Hours)
 	if s.PeekIs(":") {
 		return p, lexColon
 	}
@@ -141,11 +144,11 @@ func lexHours(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexColon(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Colon, Pos: s.Pos()}
+	p = Part{Tok: token.Colon, Pos: s.Pos()}
 	next = lexMinutes
 	r := s.Next()
 	if r != ':' {
-		p.Tok = Undefined
+		p.Tok = token.Undefined
 		return
 	}
 	p.Val = string(r)
@@ -153,7 +156,7 @@ func lexColon(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexMinutes(s *Scanner) (Part, lexFn) {
-	p := ScanPart(s, Minutes)
+	p := ScanPart(s, token.Minutes)
 	s.ScanAll(" ")
 	if s.inTag {
 		return p, lexTag
@@ -162,10 +165,10 @@ func lexMinutes(s *Scanner) (Part, lexFn) {
 }
 
 func lexRightParen(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: RightParenthesis, Pos: s.Pos()}
+	p = Part{Tok: token.RightParenthesis, Pos: s.Pos()}
 	val, ok := s.Scan(")")
 	if !ok {
-		p.Errorf("invalid %s", RightParenthesis)
+		p.Errorf("invalid %s", token.RightParenthesis)
 		return
 	}
 	p.Val = val
@@ -176,10 +179,10 @@ func lexRightParen(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexLeftParen(s *Scanner) (p Part, next lexFn) {
-	p, next = Part{Tok: LeftParenthesis, Pos: s.Pos()}, lexHours
+	p, next = Part{Tok: token.LeftParenthesis, Pos: s.Pos()}, lexHours
 	val, ok := s.Scan("(")
 	if !ok {
-		p.Errorf("invalid %s", LeftParenthesis)
+		p.Errorf("invalid %s", token.LeftParenthesis)
 		return
 	}
 	s.Scan(" ")
@@ -192,12 +195,12 @@ func lexLeftParen(s *Scanner) (p Part, next lexFn) {
 }
 
 func lexNote(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Note, Pos: s.Pos()}
+	p = Part{Tok: token.Note, Pos: s.Pos()}
 	var r rune
 	for r = s.Next(); r != '('; r = s.Next() {
 		if r == '\n' {
 			if p.Val == "" { // skip notes with only newline
-				p.Tok = Undefined
+				p.Tok = token.Undefined
 				p.Val += string(r)
 			}
 			next = lexWeek
@@ -211,19 +214,19 @@ func lexNote(s *Scanner) (p Part, next lexFn) {
 	// found a left parenthesis
 	s.Back()
 	if len(p.Val) == 0 {
-		p.Tok = Undefined
+		p.Tok = token.Undefined
 	}
 	next = lexLeftParen
 	return
 }
 
 func lexTag(s *Scanner) (p Part, next lexFn) {
-	p = Part{Tok: Tag, Pos: s.Pos()}
+	p = Part{Tok: token.Tag, Pos: s.Pos()}
 	var r rune
 	for r = s.Next(); r != ')'; r = s.Next() {
 		if r == '\n' || r == EOS || r == '(' {
 			p.Pos = s.Pos()
-			p.Errorf("missing %s", RightParenthesis)
+			p.Errorf("missing %s", token.RightParenthesis)
 			return
 		}
 		p.Val += string(r)
