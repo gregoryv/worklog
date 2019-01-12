@@ -11,7 +11,9 @@ func Test_ok_lines(t *testing.T) {
 		"    1 Tue 8 (+1 flex)",
 		"    1 Tue 8 (+1 flex) comment (0:30 vacation)",
 	} {
-		okLine(t, line, lexWeek)
+		if tok := parse(line, lexWeek); tok == Error {
+			t.Errorf("%s failed %v", line, tok)
+		}
 	}
 }
 
@@ -21,42 +23,24 @@ func Test_badly_formatted_lines(t *testing.T) {
 		"tis",
 		"\n",
 	} {
-		badLine(t, line, lexWeek)
+		if tok := parse(line, lexWeek); tok != Error {
+			t.Errorf("%s expected to fail", line)
+		}
 	}
 }
 
-func badLine(t *testing.T, line string, start lexFn) {
-	t.Helper()
-	lex := NewLexer(line)
-	out := lex.C
-	go lex.run(start, lex.scanner, out)
-	var gotErr bool
-	for {
-		p, more := <-out
-		if p.Tok == Error {
-			gotErr = true
-		}
-		if !more {
-			break
-		}
-	}
-	if !gotErr {
-		t.Errorf("%q expected to fail", line)
-	}
-}
-
-func okLine(t *testing.T, line string, start lexFn) {
-	t.Helper()
+func parse(line string, start lexFn) (tok Token) {
 	lex := NewLexer(line)
 	out := lex.C
 	go lex.run(start, lex.scanner, out)
 	for {
 		p, more := <-out
 		if p.Tok == Error {
-			t.Errorf("%q, got %q", line, p.Val)
+			tok = p.Tok
 		}
 		if !more {
 			break
 		}
 	}
+	return
 }
