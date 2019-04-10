@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gregoryv/go-timesheet/token"
@@ -58,28 +59,14 @@ func TestPart_Errorf(t *testing.T) {
 	}
 }
 
-func TestPart_String(t *testing.T) {
-	for _, c := range []struct {
-		msg  string
-		part Part
-		exp  string
-	}{
-		{"", Part{Tok: token.Error, Val: "error message"}, `Error[0,0]: "error message"`},
-		{"", Part{Tok: token.Year, Val: "1"}, `Year[0,0]: "1"`},
-		{"Undefined, run 'go generate'", Part{Tok: token.Token(-1), Val: ""},
-			`Token(-1)[0,0]: ""`},
-	} {
-		got := c.part.String()
-		exp := c.exp
-		if got != exp {
-			t.Errorf("%q, expected %q", got, exp)
-		}
-	}
-}
-
-func TestNewPart(t *testing.T) {
-	got := NewPart()
-	if &got == nil {
-		t.Fail()
-	}
+func ExamplePart_String() {
+	fmt.Printf("%s\n%s\n%s",
+		Part{Tok: token.Error, Val: "error message"},
+		Part{Tok: token.Year, Val: "1"},
+		Part{Tok: token.Token(-1), Val: ""},
+	)
+	// output:
+	// Error[0,0]: "error message"
+	// Year[0,0]: "1"
+	// Token(-1)[0,0]: ""
 }
