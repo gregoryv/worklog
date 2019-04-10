@@ -1,1 +1,42 @@
 go-timesheet - package for parsing the [timesheet fileformat](https://github.com/gregoryv/timesheet-file-format)
+
+## Quick Start
+
+    go get -u github.com/gregoryv/go-timesheet/...
+	gensheet -h
+
+This package contains parser and commands for manipulating timesheet
+files.
+
+Let's face it, timesheets are extremely boring to fill out so I
+decided to fix that. Check out
+the
+[timesheet fileformat](https://github.com/gregoryv/timesheet-file-format),
+it's readable, lightweight and versatile enough to accommodate most
+situations.
+
+By default the command `gensheet` generates an 8 hour working day
+timesheet already filled out, assuming you will be working each
+weekday. Save it, put it under version control, do what you want with
+it.
+
+To summarize your timesheets use the `worklog` command.
+
+## Summarize one timesheet
+
+    worklog 201801.timesheet
+
+The output summarizes all tagged values in that timesheet.
+
+    2018 January    179:30   (8:00 semester)
+
+                           +179:30
+                                  8:00 semester
+## Expected vs. actual worked hours
+
+    worklog -origin expected/ 201801.timesheet
+
+The output summarizes all tagged values and reported time and
+calculates how much overtime you have put in if any. The `expected`
+directory is assumed to contain a timesheet with the same name to
+compare with.
