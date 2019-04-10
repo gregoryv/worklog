@@ -1,2 +1,4 @@
 github.com/gregoryv/asserter v0.0.0-20190107225103-362c9498ddfe h1:44a8no9J32pE5vdH/TGwcSPtn8axpsa3XSiofqu5li8=
 github.com/gregoryv/asserter v0.0.0-20190107225103-362c9498ddfe/go.mod h1:iLD46IKZjjleTkmDikemRaDZQldDrq8uwTnygV/hC/M=
+github.com/gregoryv/find v0.0.0-20180328085109-1bbc2d70c482 h1:vNaLR+zpGH8Z49Wx8Q1AMOIfD59QAmjtV/43PkvHwlk=
+github.com/gregoryv/find v0.0.0-20180328085109-1bbc2d70c482/go.mod h1:/xxQlO62bzxhyabf2iKJzGJa+VAJy25spLI/6ICTrxU=
