@@ -14,8 +14,6 @@ import (
 )
 
 func main() {
-	employee := flag.String("employee", "", "Name of Employee")
-	html := flag.String("html", "", "Html template")
 	textTemplate := flag.String("text", "", "Text template")
 	origin := ""
 	flag.StringVar(&origin, "origin", origin, "Original timesheets, eg. for comparing reported")
@@ -30,7 +28,6 @@ func main() {
 
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
-	report.Employee = *employee
 	for _, tspath := range filePaths {
 		sheet, err := timesheet.Load(tspath)
 		fatal(err, tspath)
@@ -65,12 +62,6 @@ func main() {
 		sheetViews = append(sheetViews, view)
 	}
 	view.Sheets = sheetViews
-
-	if *html != "" {
-		err := renderHtml(os.Stdout, view, *html)
-		fatal(err, *html)
-		return
-	}
 
 	err := renderText(os.Stdout, view, *textTemplate)
 	fatal(err, *textTemplate)

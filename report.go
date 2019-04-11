@@ -10,8 +10,7 @@ import (
 )
 
 type Report struct {
-	Employee string
-	Sheets   []Sheet
+	Sheets []Sheet
 
 	reported time.Duration
 	tags     map[string]time.Duration
