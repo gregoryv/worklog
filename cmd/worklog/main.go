@@ -7,6 +7,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"time"
@@ -26,12 +27,21 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+	err := writeText(os.Stdout, *textTemplate, origin, filePaths)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
 
+func writeText(w io.Writer, textTemplate, origin string, filePaths []string) error {
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	for _, tspath := range filePaths {
 		sheet, err := timesheet.Load(tspath)
-		fatal(err, tspath)
+		if err != nil {
+			return err
+		}
 		report.Append(sheet)
 		if origin != "" {
 			tspath := path.Join(origin, path.Base(tspath))
@@ -46,7 +56,7 @@ func main() {
 		Reported:       hhmm(report.Reported()),
 		ReportedIndent: fmt.Sprintf("%22s", ""),
 		Diff:           diff(report.Reported(), expect.Reported()),
-		Tags:           convertToTagView(report.Tags()),
+		Tags:           ConvertToTagView(report.Tags()),
 	}
 	sheetViews := make([]SheetView, 0)
 	for _, sheet := range report.Sheets {
@@ -64,8 +74,7 @@ func main() {
 	}
 	view.Sheets = sheetViews
 
-	err := renderText(os.Stdout, view, *textTemplate)
-	fatal(err, *textTemplate)
+	return renderText(w, view, textTemplate)
 }
 
 func hhmm(dur time.Duration) string {
@@ -82,13 +91,6 @@ func diff(rep, exp time.Duration) string {
 		d = "+" + timesheet.FormatHHMM(diff)
 	}
 	return fmt.Sprintf("%7s", d)
-}
-
-func fatal(err error, path string) {
-	if err != nil {
-		fmt.Println(path, err)
-		os.Exit(1)
-	}
 }
 
 func usage() {

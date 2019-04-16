@@ -28,7 +28,7 @@ type TagView struct {
 	Tag      string
 }
 
-func convertToTagView(tags []timesheet.Tagged) []TagView {
+func ConvertToTagView(tags []timesheet.Tagged) []TagView {
 	view := make([]TagView, len(tags))
 	for i, t := range tags {
 		view[i] = TagView{

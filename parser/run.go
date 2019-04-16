@@ -112,7 +112,7 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	}
 	s.Scan(" ")
 	switch {
-	case s.PeekIs("-+"):
+	case s.PeekIs("+-"):
 		next = lexOperator
 	case s.PeekIs("\n"): // no hours reported
 		s.Scan("\n")
@@ -127,11 +127,8 @@ const digits = "0123456789"
 
 func lexOperator(s *Scanner) (p Part, next lexFn) {
 	p, next = Part{Tok: token.Operator, Pos: s.Pos()}, lexHours
-	r, ok := s.Scan("+-")
+	r, _ := s.Scan("+-")
 	p.Val = string(r)
-	if !ok {
-		p.Errorf("invalid %s", token.Operator)
-	}
 	return
 }
 
@@ -151,10 +148,6 @@ func lexColon(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: token.Colon, Pos: s.Pos()}
 	next = lexMinutes
 	r := s.Next()
-	if r != ':' {
-		p.Tok = token.Undefined
-		return
-	}
 	p.Val = string(r)
 	return
 }
@@ -170,11 +163,7 @@ func lexMinutes(s *Scanner) (Part, lexFn) {
 
 func lexRightParen(s *Scanner) (p Part, next lexFn) {
 	p = Part{Tok: token.RightParenthesis, Pos: s.Pos()}
-	val, ok := s.Scan(")")
-	if !ok {
-		p.Errorf("invalid %s", token.RightParenthesis)
-		return
-	}
+	val, _ := s.Scan(")") // Only called from lexNote if already seen
 	p.Val = val
 	next = lexNote
 	s.inTag = false
@@ -184,11 +173,8 @@ func lexRightParen(s *Scanner) (p Part, next lexFn) {
 
 func lexLeftParen(s *Scanner) (p Part, next lexFn) {
 	p, next = Part{Tok: token.LeftParenthesis, Pos: s.Pos()}, lexHours
-	val, ok := s.Scan("(")
-	if !ok {
-		p.Errorf("invalid %s", token.LeftParenthesis)
-		return
-	}
+	val, _ := s.Scan("(") // Can't fail as it's only called from
+	// lexNote if already seen
 	s.Scan(" ")
 	p.Val = val
 	if s.PeekIs("+-") {

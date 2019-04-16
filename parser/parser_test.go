@@ -31,13 +31,9 @@ func ExampleParser_Dump() {
 }
 
 func ExampleParser_Dump_bad() {
-	NewParser().Dump([]byte(`2018 nosuchmonth`))
+	NewParser().Dump([]byte(`2018 Janhuary`))
 	// output:
 	// Year[1,1]: "2018"
 	// Error[1,6]: "invalid Month"
-	// Error[1,6]: "invalid Separator"
-	// Error[1,6]: "invalid Week"
-	// Error[1,6]: "invalid Date"
-	// Error[1,6]: "invalid Day"
-	// Note[1,6]: "nosuchmonth"
+	// Error[1,14]: "invalid Separator"
 }

@@ -35,7 +35,3 @@ func (p *Part) Errorf(format string, args ...interface{}) error {
 func (p Part) String() string {
 	return fmt.Sprintf("%s[%s]: %q", p.Tok, p.Pos.String(), p.Val)
 }
-
-func NewPart() Part {
-	return Part{}
-}
