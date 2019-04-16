@@ -1,6 +1,7 @@
 // Copyright (c) 2019 Gregory Vinčić. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can
 // be found in the LICENSE file.
+
 package timesheet
 
 import (
@@ -20,7 +21,8 @@ func Test_check_license_in_go_files(t *testing.T) {
 	missing := make([]string, 0)
 	pattern := `// Copyright (c) 2019 Gregory Vinčić. All rights reserved.
 // Use of this source code is governed by a MIT-style license that can
-// be found in the LICENSE file.`
+// be found in the LICENSE file.
+`
 	for e := result.Front(); e != nil; e = e.Next() {
 		if file, ok := e.Value.(string); ok {
 			body, err := ioutil.ReadFile(file)
