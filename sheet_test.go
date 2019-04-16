@@ -11,7 +11,7 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	_, err := Load("201506.timesheet")
+	_, err := Load("testdata/201506.timesheet")
 	if err != nil {
 		t.Errorf("Load failed: %v", err)
 	}
