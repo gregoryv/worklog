@@ -8,18 +8,11 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/gregoryv/asserter"
 	"github.com/gregoryv/golden"
 )
 
 func Test_writeText(t *testing.T) {
 	w := bytes.NewBufferString("")
 	writeText(w, "", "../../testdata/orig", []string{"../../testdata/201506.timesheet"})
-	got := w.String()
-	exp := golden.LoadString()
-	if got != exp {
-		assert := asserter.New(t)
-		assert().Equals(got, exp)
-	}
-	golden.SaveString(t, got)
+	golden.Assert(t, w.String())
 }
