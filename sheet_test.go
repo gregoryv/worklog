@@ -23,7 +23,7 @@ func TestLoad(t *testing.T) {
 
 func TestRender(t *testing.T) {
 	w := bytes.NewBufferString("")
-	Render(w, 2019, 1, 8)
+	RenderTo(w, 2019, 1, 8)
 	sheet, err := Parse(w.Bytes())
 	if err != nil {
 		t.Errorf("%v\n%v", err, w.String())

@@ -36,7 +36,7 @@ func main() {
 			filepath := path.Join(out, fmt.Sprintf("%v%02v.timesheet", year, m))
 			file, err := os.Create(filepath)
 			fatal(err)
-			timesheet.Render(file, year, time.Month(m), hours)
+			timesheet.RenderTo(file, year, time.Month(m), hours)
 			file.Close()
 			m++
 			if m == 13 {
@@ -45,7 +45,7 @@ func main() {
 		}
 		return
 	}
-	timesheet.Render(os.Stdout, year, time.Month(month), hours)
+	timesheet.RenderTo(os.Stdout, year, time.Month(month), hours)
 }
 
 func fatal(err error) {

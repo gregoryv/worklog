@@ -35,7 +35,7 @@ func Load(filepath string) (sheet *Sheet, err error) {
 	return Parse(body)
 }
 
-func Render(w io.Writer, year int, month time.Month, hours int) {
+func RenderTo(w io.Writer, year int, month time.Month, hours int) {
 	period := fmt.Sprintf("%v %v", year, time.Month(month))
 	fmt.Fprintf(w, "%s\n", period)
 	fmt.Fprint(w, strings.Repeat("-", len(period)), "\n")
