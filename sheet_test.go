@@ -5,7 +5,6 @@
 package timesheet
 
 import (
-	"bytes"
 	"testing"
 	"time"
 )
@@ -22,8 +21,7 @@ func TestLoad(t *testing.T) {
 }
 
 func TestRender(t *testing.T) {
-	w := bytes.NewBufferString("")
-	RenderTo(w, 2019, 1, 8)
+	w := Render(2019, 1, 8)
 	sheet, err := Parse(w.Bytes())
 	if err != nil {
 		t.Errorf("%v\n%v", err, w.String())

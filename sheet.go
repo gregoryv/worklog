@@ -5,6 +5,7 @@
 package timesheet
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -33,6 +34,12 @@ func Load(filepath string) (sheet *Sheet, err error) {
 		return
 	}
 	return Parse(body)
+}
+
+func Render(year int, month time.Month, hours int) *bytes.Buffer {
+	var buf bytes.Buffer
+	RenderTo(&buf, year, month, hours)
+	return &buf
 }
 
 func RenderTo(w io.Writer, year int, month time.Month, hours int) {
