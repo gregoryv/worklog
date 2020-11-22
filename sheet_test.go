@@ -10,11 +10,17 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	_, err := Load("testdata/201506.timesheet")
-	if err != nil {
-		t.Errorf("Load failed: %v", err)
+	valid := []string{
+		"testdata/201506.timesheet",
+		"testdata/202010.timesheet",
 	}
-	_, err = Load("nosuchfile")
+	for _, valid := range valid {
+		_, err := Load(valid)
+		if err != nil {
+			t.Errorf("Load failed: %v", err)
+		}
+	}
+	_, err := Load("nosuchfile")
 	if err == nil {
 		t.Error("Expected Load to fail")
 	}
