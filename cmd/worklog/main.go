@@ -17,26 +17,26 @@ import (
 	timesheet "github.com/gregoryv/go-timesheet"
 )
 
-var sh cmdline.Shell = cmdline.NewShellOS()
-
-var verbose bool
-
 func main() {
-	flag.BoolVar(&verbose, "verbose", false, "print progress to stderr")
-	origin := ""
-	flag.StringVar(&origin, "origin", origin, "Original timesheets, eg. for comparing reported")
-	flag.Usage = usage
-	flag.Parse()
+	var (
+		cli     = cmdline.NewBasicParser()
+		verbose = cli.Flag("--verbose")
+		origin  = cli.Option("--origin",
+			"Original timesheets, for comparing reported").String("")
+	)
+	cli.Parse()
 
-	filePaths := flag.Args()
+	cmd := Worklog{
+		out:     os.Stdout,
+		verbose: verbose,
+		origin:  origin,
+	}
+	filePaths := cli.Args()
 	if len(filePaths) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
-	cmd := Worklog{
-		out: os.Stdout,
-	}
-	err := cmd.run(origin, filePaths)
+	err := cmd.run(filePaths)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -45,13 +45,16 @@ func main() {
 
 type Worklog struct {
 	out io.Writer
+
+	verbose bool
+	origin  string
 }
 
-func (me *Worklog) run(origin string, filePaths []string) error {
+func (me *Worklog) run(filePaths []string) error {
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	for _, tspath := range filePaths {
-		if verbose {
+		if me.verbose {
 			fmt.Fprintln(os.Stderr, tspath)
 		}
 		sheet, err := timesheet.Load(tspath)
@@ -59,8 +62,8 @@ func (me *Worklog) run(origin string, filePaths []string) error {
 			return err
 		}
 		report.Append(sheet)
-		if origin != "" {
-			tspath := path.Join(origin, path.Base(tspath))
+		if me.origin != "" {
+			tspath := path.Join(me.origin, path.Base(tspath))
 			esheet, err := timesheet.Load(tspath)
 			if err == nil {
 				expect.Append(esheet)
