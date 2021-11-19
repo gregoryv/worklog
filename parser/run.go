@@ -96,7 +96,20 @@ func lexDate(s *Scanner) (p Part, next lexFn) {
 	return
 }
 
-const validDays = "MonTueWedThuFriSatSun"
+var validDays = map[string]struct{}{
+	"Mon": {},
+	"Tue": {},
+	"Wed": {},
+	"Thu": {},
+	"Fri": {},
+	"Sat": {},
+	"Sun": {},
+}
+
+func isValidDay(v string) bool {
+	_, found := validDays[v]
+	return found
+}
 
 func lexDay(s *Scanner) (p Part, next lexFn) {
 	p, next = Part{Tok: token.Day, Pos: s.Pos()}, lexNote
@@ -106,7 +119,7 @@ func lexDay(s *Scanner) (p Part, next lexFn) {
 	} else {
 		rest, _ := s.ScanAll("aedhniortu")
 		p.Val = val + rest
-		if len(p.Val) != 3 || !strings.Contains(validDays, p.Val) {
+		if len(p.Val) != 3 || !isValidDay(p.Val) {
 			p.Errorf("invalid %s", token.Day)
 		}
 	}
