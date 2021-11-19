@@ -7,7 +7,7 @@ package parser
 import (
 	"fmt"
 
-	"github.com/gregoryv/go-timesheet/token"
+	"github.com/gregoryv/worklog/token"
 )
 
 type Part struct {

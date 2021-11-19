@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gregoryv/go-timesheet/token"
+	"github.com/gregoryv/worklog/token"
 )
 
 func TestPart_Defined(t *testing.T) {

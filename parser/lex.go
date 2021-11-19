@@ -4,7 +4,7 @@
 
 package parser
 
-import "github.com/gregoryv/go-timesheet/token"
+import "github.com/gregoryv/worklog/token"
 
 type Lexer struct {
 	scanner *Scanner

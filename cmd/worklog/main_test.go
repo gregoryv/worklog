@@ -12,12 +12,12 @@ import (
 	"time"
 
 	"github.com/gregoryv/asserter"
-	timesheet "github.com/gregoryv/go-timesheet"
 	"github.com/gregoryv/golden"
+	timesheet "github.com/gregoryv/worklog"
 )
 
 func TestFeature(t *testing.T) {
-	out, err := exec.Command("worklog", "-origin", "../../assets/orig2018",
+	out, err := exec.Command("worklog", "--origin", "../../assets/orig2018",
 		"../../assets/201801.timesheet").CombinedOutput()
 	assert := asserter.New(t)
 	assert(err == nil).Fatal(err, string(out))

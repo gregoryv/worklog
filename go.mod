@@ -1,4 +1,4 @@
-module github.com/gregoryv/go-timesheet
+module github.com/gregoryv/worklog
 
 go 1.14
 

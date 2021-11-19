@@ -11,7 +11,7 @@ import (
 	"path"
 	"time"
 
-	timesheet "github.com/gregoryv/go-timesheet"
+	timesheet "github.com/gregoryv/worklog"
 )
 
 func main() {

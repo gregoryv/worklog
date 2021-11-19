@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/gregoryv/cmdline"
-	timesheet "github.com/gregoryv/go-timesheet"
+	timesheet "github.com/gregoryv/worklog"
 )
 
 func main() {

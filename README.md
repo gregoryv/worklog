@@ -1,13 +1,13 @@
-[![Build Status](https://travis-ci.org/gregoryv/go-timesheet.svg?branch=master)](https://travis-ci.org/gregoryv/go-timesheet)
-[![codecov](https://codecov.io/gh/gregoryv/go-timesheet/branch/master/graph/badge.svg)](https://codecov.io/gh/gregoryv/go-timesheet)
-[![Maintainability](https://api.codeclimate.com/v1/badges/83083a5e52d4ffad3288/maintainability)](https://codeclimate.com/github/gregoryv/go-timesheet/maintainability)
+[![Build Status](https://travis-ci.org/gregoryv/worklog.svg?branch=master)](https://travis-ci.org/gregoryv/worklog)
+[![codecov](https://codecov.io/gh/gregoryv/worklog/branch/master/graph/badge.svg)](https://codecov.io/gh/gregoryv/worklog)
+[![Maintainability](https://api.codeclimate.com/v1/badges/83083a5e52d4ffad3288/maintainability)](https://codeclimate.com/github/gregoryv/worklog/maintainability)
 
 
-[go-timesheet](https://godoc.org/github.com/gregoryv/go-timesheet) - package for parsing the [timesheet fileformat](https://github.com/gregoryv/timesheet-file-format)
+[worklog](https://godoc.org/github.com/gregoryv/worklog) - package for parsing the [timesheet fileformat](https://github.com/gregoryv/timesheet-file-format)
 
 ## Quick Start
 
-    go get -u github.com/gregoryv/go-timesheet/...
+    go get -u github.com/gregoryv/worklog/...
 	gensheet -h
 
 This package contains parser and commands for manipulating timesheet

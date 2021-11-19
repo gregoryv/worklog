@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gregoryv/go-timesheet/parser"
-	"github.com/gregoryv/go-timesheet/token"
+	"github.com/gregoryv/worklog/parser"
+	"github.com/gregoryv/worklog/token"
 )
 
 type Sheet struct {

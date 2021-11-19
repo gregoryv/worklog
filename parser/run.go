@@ -7,7 +7,7 @@ package parser
 import (
 	"strings"
 
-	"github.com/gregoryv/go-timesheet/token"
+	"github.com/gregoryv/worklog/token"
 )
 
 func lexYear(s *Scanner) (p Part, next lexFn) {

@@ -7,7 +7,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/gregoryv/go-timesheet/token"
+	"github.com/gregoryv/worklog/token"
 )
 
 func Test_bad_beginnings(t *testing.T) {
