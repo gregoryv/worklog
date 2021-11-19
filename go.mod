@@ -1,6 +1,6 @@
 module github.com/gregoryv/worklog
 
-go 1.14
+go 1.17
 
 require (
 	github.com/gregoryv/asserter v0.4.1
