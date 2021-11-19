@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/gregoryv/worklog.svg?branch=master)](https://travis-ci.org/gregoryv/worklog)
-[![codecov](https://codecov.io/gh/gregoryv/worklog/branch/master/graph/badge.svg)](https://codecov.io/gh/gregoryv/worklog)
+[![Build Status](https://travis-ci.org/gregoryv/worklog.svg?branch=main)](https://travis-ci.org/gregoryv/worklog)
+[![codecov](https://codecov.io/gh/gregoryv/worklog/branch/main/graph/badge.svg)](https://codecov.io/gh/gregoryv/worklog)
 [![Maintainability](https://api.codeclimate.com/v1/badges/83083a5e52d4ffad3288/maintainability)](https://codeclimate.com/github/gregoryv/worklog/maintainability)
 
 
