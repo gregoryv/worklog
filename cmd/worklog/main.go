@@ -13,8 +13,11 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/gregoryv/cmdline"
 	timesheet "github.com/gregoryv/go-timesheet"
 )
+
+var sh cmdline.Shell = cmdline.NewShellOS()
 
 var verbose bool
 
@@ -31,14 +34,21 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	err := writeText(os.Stdout, *textTemplate, origin, filePaths)
+	cmd := Worklog{
+		out: os.Stdout,
+	}
+	err := cmd.run(*textTemplate, origin, filePaths)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func writeText(w io.Writer, textTemplate, origin string, filePaths []string) error {
+type Worklog struct {
+	out io.Writer
+}
+
+func (me *Worklog) run(textTemplate, origin string, filePaths []string) error {
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	for _, tspath := range filePaths {
@@ -81,7 +91,7 @@ func writeText(w io.Writer, textTemplate, origin string, filePaths []string) err
 	}
 	view.Sheets = sheetViews
 
-	return renderText(w, view, textTemplate)
+	return renderText(me.out, view, textTemplate)
 }
 
 func hhmm(dur time.Duration) string {

@@ -35,8 +35,9 @@ func Example_ConvertToTagView() {
 	//output: 0:01 vacation
 }
 
-func Test_writeText(t *testing.T) {
-	w := bytes.NewBufferString("")
-	writeText(w, "", "../../testdata/orig", []string{"../../testdata/201506.timesheet"})
-	golden.Assert(t, w.String())
+func TestWorklog_run(t *testing.T) {
+	var buf bytes.Buffer
+	cmd := Worklog{out: &buf}
+	cmd.run("", "../../testdata/orig", []string{"../../testdata/201506.timesheet"})
+	golden.AssertWith(t, buf.String(), "./testdata/worklog.txt")
 }
