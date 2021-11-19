@@ -7,8 +7,8 @@
 
 ## Quick Start
 
-    go get -u github.com/gregoryv/worklog/...
-	gensheet -h
+    $ go get -u github.com/gregoryv/worklog/...
+	$ gensheet -h
 
 This package contains parser and commands for manipulating timesheet
 files.
@@ -29,10 +29,7 @@ To summarize your timesheets use the `worklog` command.
 
 ## Summarize one timesheet
 
-    worklog 201801.timesheet
-
-The output summarizes all tagged values in that timesheet.
-
+    $ worklog 201801.timesheet
     2018 January    179:30   (8:00 semester)
 
                    +179:30
