@@ -15,8 +15,11 @@ import (
 	timesheet "github.com/gregoryv/go-timesheet"
 )
 
+var verbose bool
+
 func main() {
 	textTemplate := flag.String("text", "", "Text template")
+	flag.BoolVar(&verbose, "verbose", false, "print progress to stderr")
 	origin := ""
 	flag.StringVar(&origin, "origin", origin, "Original timesheets, eg. for comparing reported")
 	flag.Usage = usage
@@ -38,6 +41,9 @@ func writeText(w io.Writer, textTemplate, origin string, filePaths []string) err
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	for _, tspath := range filePaths {
+		if verbose {
+			fmt.Fprintln(os.Stderr, tspath)
+		}
 		sheet, err := timesheet.Load(tspath)
 		if err != nil {
 			return err
@@ -81,6 +87,7 @@ func hhmm(dur time.Duration) string {
 	return fmt.Sprintf("%7s", timesheet.FormatHHMM(dur))
 }
 
+// diff returns difference between reported and expected duration
 func diff(rep, exp time.Duration) string {
 	diff := rep - exp
 	var d string
