@@ -3,7 +3,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/83083a5e52d4ffad3288/maintainability)](https://codeclimate.com/github/gregoryv/worklog/maintainability)
 
 
-[worklog](https://godoc.org/github.com/gregoryv/worklog) - package for parsing the [timesheet fileformat](https://github.com/gregoryv/timesheet-file-format)
+[worklog](https://godoc.org/github.com/gregoryv/worklog) - package for working with the [timesheet fileformat](https://github.com/gregoryv/timesheet-file-format)
 
 ## Quick Start
 
@@ -35,8 +35,8 @@ The output summarizes all tagged values in that timesheet.
 
     2018 January    179:30   (8:00 semester)
 
-                           +179:30
-                                  8:00 semester
+                   +179:30
+                              8:00 semester
 ## Expected vs. actual worked hours
 
     worklog -origin expected/ 201801.timesheet
