@@ -11,7 +11,7 @@ import (
 	"path"
 	"time"
 
-	timesheet "github.com/gregoryv/worklog"
+	worklog "github.com/gregoryv/worklog"
 )
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 			filepath := path.Join(out, fmt.Sprintf("%v%02v.timesheet", year, m))
 			file, err := os.Create(filepath)
 			fatal(err)
-			timesheet.RenderTo(file, year, time.Month(m), hours)
+			worklog.RenderTo(file, year, time.Month(m), hours)
 			file.Close()
 			m++
 			if m == 13 {
@@ -45,7 +45,7 @@ func main() {
 		}
 		return
 	}
-	timesheet.RenderTo(os.Stdout, year, time.Month(month), hours)
+	worklog.RenderTo(os.Stdout, year, time.Month(month), hours)
 }
 
 func fatal(err error) {

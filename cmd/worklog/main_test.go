@@ -13,7 +13,7 @@ import (
 
 	"github.com/gregoryv/asserter"
 	"github.com/gregoryv/golden"
-	timesheet "github.com/gregoryv/worklog"
+	worklog "github.com/gregoryv/worklog"
 )
 
 func TestFeature(t *testing.T) {
@@ -28,8 +28,8 @@ func TestFeature(t *testing.T) {
 }
 
 func Example_ConvertToTagView() {
-	tag := timesheet.Tagged{60 * time.Second, "vacation"}
-	in := []timesheet.Tagged{tag}
+	tag := worklog.Tagged{60 * time.Second, "vacation"}
+	in := []worklog.Tagged{tag}
 	out := ConvertToTagView(in)
 	fmt.Println(out[0].Duration, out[0].Tag)
 	//output: 0:01 vacation

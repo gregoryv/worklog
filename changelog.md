@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [unreleased]
 
+- Fix package name
+
 ## [0.4.0] - 2021-11-19
 
 - Rename package to worklog
@@ -16,6 +18,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.1.0] - 2019-04-16
 ### Added
 
-- gensheet command for timesheet generation
+- gensheet command for worklog generation
 - worklog command for summarizing one or more timesheets
 - parser from go cover tool

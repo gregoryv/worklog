@@ -8,3 +8,8 @@ require (
 	github.com/gregoryv/find v0.2.0
 	github.com/gregoryv/golden v0.6.1
 )
+
+require (
+	github.com/gregoryv/nexus v0.5.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+)

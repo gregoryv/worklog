@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/gregoryv/cmdline"
-	timesheet "github.com/gregoryv/worklog"
+	worklog "github.com/gregoryv/worklog"
 )
 
 func main() {
@@ -51,20 +51,20 @@ type Worklog struct {
 }
 
 func (me *Worklog) run(filePaths []string) error {
-	expect := timesheet.NewReport()
-	report := timesheet.NewReport()
+	expect := worklog.NewReport()
+	report := worklog.NewReport()
 	for _, tspath := range filePaths {
 		if me.verbose {
 			fmt.Fprintln(os.Stderr, tspath)
 		}
-		sheet, err := timesheet.Load(tspath)
+		sheet, err := worklog.Load(tspath)
 		if err != nil {
 			return err
 		}
 		report.Append(sheet)
 		if me.origin != "" {
 			tspath := path.Join(me.origin, path.Base(tspath))
-			esheet, err := timesheet.Load(tspath)
+			esheet, err := worklog.Load(tspath)
 			if err == nil {
 				expect.Append(esheet)
 			}
@@ -86,7 +86,7 @@ func (me *Worklog) run(filePaths []string) error {
 		}
 		exp, _ := expect.FindByPeriod(sheet.Period)
 		if exp != nil {
-			view.Expected = timesheet.FormatHHMM(exp.Reported.Duration)
+			view.Expected = worklog.FormatHHMM(exp.Reported.Duration)
 			view.Diff = diff(sheet.Reported.Duration, exp.Reported.Duration)
 		}
 		sheetViews = append(sheetViews, view)
@@ -97,7 +97,7 @@ func (me *Worklog) run(filePaths []string) error {
 }
 
 func hhmm(dur time.Duration) string {
-	return fmt.Sprintf("%7s", timesheet.FormatHHMM(dur))
+	return fmt.Sprintf("%7s", worklog.FormatHHMM(dur))
 }
 
 // diff returns difference between reported and expected duration
@@ -106,9 +106,9 @@ func diff(rep, exp time.Duration) string {
 	var d string
 	switch {
 	case diff < 0:
-		d = timesheet.FormatHHMM(diff)
+		d = worklog.FormatHHMM(diff)
 	case diff > 0:
-		d = "+" + timesheet.FormatHHMM(diff)
+		d = "+" + worklog.FormatHHMM(diff)
 	}
 	return fmt.Sprintf("%7s", d)
 }
@@ -132,7 +132,7 @@ type SheetView struct {
 	Expected string
 	Reported string
 	Diff     string
-	Tags     []timesheet.Tagged
+	Tags     []worklog.Tagged
 }
 
 type TagView struct {
@@ -140,7 +140,7 @@ type TagView struct {
 	Tag      string
 }
 
-func ConvertToTagView(tags []timesheet.Tagged) []TagView {
+func ConvertToTagView(tags []worklog.Tagged) []TagView {
 	view := make([]TagView, len(tags))
 	for i, t := range tags {
 		view[i] = TagView{
