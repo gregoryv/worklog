@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"text/template"
 	"time"
 
 	timesheet "github.com/gregoryv/go-timesheet"
@@ -103,4 +104,56 @@ func diff(rep, exp time.Duration) string {
 func usage() {
 	fmt.Printf("Usage: %s TIMESHEET...\n", os.Args[0])
 	flag.PrintDefaults()
+}
+
+type ReportView struct {
+	Sheets         []SheetView
+	Expected       string
+	Reported       string
+	ReportedIndent string
+	Diff           string
+	Tags           []TagView
+}
+
+type SheetView struct {
+	Period   string
+	Expected string
+	Reported string
+	Diff     string
+	Tags     []timesheet.Tagged
+}
+
+type TagView struct {
+	Duration string
+	Tag      string
+}
+
+func ConvertToTagView(tags []timesheet.Tagged) []TagView {
+	view := make([]TagView, len(tags))
+	for i, t := range tags {
+		view[i] = TagView{
+			Duration: hhmm(t.Duration),
+			Tag:      t.Tag,
+		}
+	}
+	return view
+}
+
+func renderText(w io.Writer, view *ReportView, templatePath string) error {
+	var t *template.Template
+	var err error
+	if templatePath != "" {
+		t, err = template.ParseFiles(templatePath)
+	} else {
+		t = template.New("default")
+		t, err = t.Parse(`{{range .Sheets}}{{.Period}} {{.Reported}} {{.Diff}} {{range .Tags}} ({{.}}){{end}}
+{{end}}
+{{printf "%22s" .ReportedIndent}} {{.Diff}}
+{{range .Tags}}{{printf "%30s" ""}} {{.Duration}} {{.Tag}}
+{{end}}`)
+	}
+	if err != nil {
+		return err
+	}
+	return t.Execute(w, view)
 }

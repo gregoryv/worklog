@@ -6,10 +6,14 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/gregoryv/asserter"
+	timesheet "github.com/gregoryv/go-timesheet"
+	"github.com/gregoryv/golden"
 )
 
 func TestFeature(t *testing.T) {
@@ -21,4 +25,18 @@ func TestFeature(t *testing.T) {
 	period := "2018 January"
 	year := bytes.Index(out, []byte(period))
 	assert(year == 0).Errorf("Did not start with %q", period)
+}
+
+func Example_ConvertToTagView() {
+	tag := timesheet.Tagged{60 * time.Second, "vacation"}
+	in := []timesheet.Tagged{tag}
+	out := ConvertToTagView(in)
+	fmt.Println(out[0].Duration, out[0].Tag)
+	//output: 0:01 vacation
+}
+
+func Test_writeText(t *testing.T) {
+	w := bytes.NewBufferString("")
+	writeText(w, "", "../../testdata/orig", []string{"../../testdata/201506.timesheet"})
+	golden.Assert(t, w.String())
 }
