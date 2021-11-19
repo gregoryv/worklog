@@ -22,7 +22,6 @@ var sh cmdline.Shell = cmdline.NewShellOS()
 var verbose bool
 
 func main() {
-	textTemplate := flag.String("text", "", "Text template")
 	flag.BoolVar(&verbose, "verbose", false, "print progress to stderr")
 	origin := ""
 	flag.StringVar(&origin, "origin", origin, "Original timesheets, eg. for comparing reported")
@@ -37,7 +36,7 @@ func main() {
 	cmd := Worklog{
 		out: os.Stdout,
 	}
-	err := cmd.run(*textTemplate, origin, filePaths)
+	err := cmd.run(origin, filePaths)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -48,7 +47,7 @@ type Worklog struct {
 	out io.Writer
 }
 
-func (me *Worklog) run(textTemplate, origin string, filePaths []string) error {
+func (me *Worklog) run(origin string, filePaths []string) error {
 	expect := timesheet.NewReport()
 	report := timesheet.NewReport()
 	for _, tspath := range filePaths {
@@ -91,7 +90,7 @@ func (me *Worklog) run(textTemplate, origin string, filePaths []string) error {
 	}
 	view.Sheets = sheetViews
 
-	return renderText(me.out, view, textTemplate)
+	return renderText(me.out, view)
 }
 
 func hhmm(dur time.Duration) string {
@@ -149,19 +148,13 @@ func ConvertToTagView(tags []timesheet.Tagged) []TagView {
 	return view
 }
 
-func renderText(w io.Writer, view *ReportView, templatePath string) error {
-	var t *template.Template
-	var err error
-	if templatePath != "" {
-		t, err = template.ParseFiles(templatePath)
-	} else {
-		t = template.New("default")
-		t, err = t.Parse(`{{range .Sheets}}{{.Period}} {{.Reported}} {{.Diff}} {{range .Tags}} ({{.}}){{end}}
+func renderText(w io.Writer, view *ReportView) error {
+	t, err := template.New("default").Parse(`{{range .Sheets}}{{.Period}} {{.Reported}} {{.Diff}} {{range .Tags}} ({{.}}){{end}}
 {{end}}
 {{printf "%22s" .ReportedIndent}} {{.Diff}}
 {{range .Tags}}{{printf "%30s" ""}} {{.Duration}} {{.Tag}}
 {{end}}`)
-	}
+
 	if err != nil {
 		return err
 	}

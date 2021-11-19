@@ -38,6 +38,8 @@ func Example_ConvertToTagView() {
 func TestWorklog_run(t *testing.T) {
 	var buf bytes.Buffer
 	cmd := Worklog{out: &buf}
-	cmd.run("", "../../testdata/orig", []string{"../../testdata/201506.timesheet"})
+	originals := "../../testdata/orig"
+	timesheets := []string{"../../testdata/201506.timesheet"}
+	cmd.run(originals, timesheets)
 	golden.AssertWith(t, buf.String(), "./testdata/worklog.txt")
 }
