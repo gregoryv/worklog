@@ -5,7 +5,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -33,7 +32,7 @@ func main() {
 	}
 	filenames := cli.Args()
 	if len(filenames) == 0 {
-		flag.Usage()
+		fmt.Println("Missing files, try --help")
 		os.Exit(1)
 	}
 	err := cmd.Run(filenames...)
@@ -111,11 +110,6 @@ func diff(rep, exp time.Duration) string {
 		d = "+" + worklog.FormatHHMM(diff)
 	}
 	return fmt.Sprintf("%7s", d)
-}
-
-func usage() {
-	fmt.Printf("Usage: %s TIMESHEET...\n", os.Args[0])
-	flag.PrintDefaults()
 }
 
 type ReportView struct {
