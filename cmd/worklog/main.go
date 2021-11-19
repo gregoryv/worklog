@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/gregoryv/cmdline"
-	worklog "github.com/gregoryv/worklog"
+	"github.com/gregoryv/worklog"
 )
 
 func main() {
@@ -31,12 +31,12 @@ func main() {
 		verbose: verbose,
 		origin:  origin,
 	}
-	filePaths := cli.Args()
-	if len(filePaths) == 0 {
+	filenames := cli.Args()
+	if len(filenames) == 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
-	err := cmd.run(filePaths)
+	err := cmd.Run(filenames...)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -50,10 +50,10 @@ type Worklog struct {
 	origin  string
 }
 
-func (me *Worklog) run(filePaths []string) error {
+func (me *Worklog) Run(filenames ...string) error {
 	expect := worklog.NewReport()
 	report := worklog.NewReport()
-	for _, tspath := range filePaths {
+	for _, tspath := range filenames {
 		if me.verbose {
 			fmt.Fprintln(os.Stderr, tspath)
 		}

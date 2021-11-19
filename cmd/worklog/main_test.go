@@ -35,13 +35,12 @@ func Example_ConvertToTagView() {
 	//output: 0:01 vacation
 }
 
-func TestWorklog_run(t *testing.T) {
+func TestWorklog_Run(t *testing.T) {
 	var buf bytes.Buffer
 	cmd := Worklog{
 		out:    &buf,
 		origin: "../../testdata/orig",
 	}
-	timesheets := []string{"../../testdata/201506.timesheet"}
-	cmd.run(timesheets)
+	cmd.Run("../../testdata/201506.timesheet")
 	golden.AssertWith(t, buf.String(), "./testdata/worklog.txt")
 }
