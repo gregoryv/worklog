@@ -5,6 +5,8 @@ github.com/gregoryv/asserter v0.4.1 h1:NGQW1rdiNbX0Teu4sgcVHtOG64idTEPLafif+AePY
 github.com/gregoryv/asserter v0.4.1/go.mod h1:0WJPXw6UYkoTQlbkm8fvRghp0CeOo7oliS5JTvnv6pM=
 github.com/gregoryv/cmdline v0.8.1 h1:vdGWYDpwj1cI2teMcjgdOCKyBvO5KWH2wZ4htHqLnXQ=
 github.com/gregoryv/cmdline v0.8.1/go.mod h1:15MFjQA5LRL9Ot2YXhNGBXjP91lZnN1CkkR5VthI5H0=
+github.com/gregoryv/cmdline v0.9.1 h1:B9QitOJ25O0zGLUpt8SV0Q8UqcT0k8cT5v8PiKJ71uQ=
+github.com/gregoryv/cmdline v0.9.1/go.mod h1:15MFjQA5LRL9Ot2YXhNGBXjP91lZnN1CkkR5VthI5H0=
 github.com/gregoryv/find v0.0.0-20180328085109-1bbc2d70c482/go.mod h1:/xxQlO62bzxhyabf2iKJzGJa+VAJy25spLI/6ICTrxU=
 github.com/gregoryv/find v0.2.0 h1:yCVUbZUAhqRReahLe1WWgsWPe/y28+aPbd754tr1+SU=
 github.com/gregoryv/find v0.2.0/go.mod h1:ZxH/FkVt6VM//T7edeCqCc2dJRrLAtCYvtvdM6Hk398=

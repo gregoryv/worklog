@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"path"
 	"text/template"
@@ -18,27 +19,24 @@ import (
 
 func main() {
 	var (
-		cli     = cmdline.NewBasicParser()
-		verbose = cli.Flag("--verbose")
-		origin  = cli.Option("--origin",
-			"Original timesheets, for comparing reported").String("")
+		cli = cmdline.NewBasicParser()
+		cmd = Worklog{
+			out:     os.Stdout,
+			verbose: cli.Flag("--verbose"),
+
+			origin: cli.Option(
+				"--origin",
+				"Original timesheets, for comparing reported",
+			).String(""),
+
+			filenames: cli.NamedArg("FILES...").Strings(),
+		}
 	)
 	cli.Parse()
 
-	cmd := Worklog{
-		out:     os.Stdout,
-		verbose: verbose,
-		origin:  origin,
-	}
-	filenames := cli.Args()
-	if len(filenames) == 0 {
-		fmt.Println("Missing files, try --help")
-		os.Exit(1)
-	}
-	err := cmd.Run(filenames...)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if err := cmd.Run(); err != nil {
+		log.SetFlags(0)
+		log.Fatal(err)
 	}
 }
 
@@ -47,12 +45,14 @@ type Worklog struct {
 
 	verbose bool
 	origin  string
+
+	filenames []string
 }
 
-func (me *Worklog) Run(filenames ...string) error {
+func (me *Worklog) Run() error {
 	expect := worklog.NewReport()
 	report := worklog.NewReport()
-	for _, tspath := range filenames {
+	for _, tspath := range me.filenames {
 		if me.verbose {
 			fmt.Fprintln(os.Stderr, tspath)
 		}
