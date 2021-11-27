@@ -24,13 +24,20 @@ func main() {
 			out:     os.Stdout,
 			verbose: cli.Flag("--verbose"),
 
-			origin: cli.Option(
-				"--origin",
-				"Original timesheets, for comparing reported",
-			).String(""),
+			origin: cli.Option("--originals", "For calculating flex").String(""),
 
 			filenames: cli.NamedArg("FILES...").Strings(),
 		}
+	)
+	u := cli.Usage()
+	u.Example(
+		"Generate report",
+		"    $ worklog *.timesheet",
+	)
+	u.Example(
+		"Report compared to originals",
+		"    $ worklog --originals ./path/to/dir/ *.timesheet",
+		"",
 	)
 	cli.Parse()
 
@@ -49,6 +56,8 @@ type Worklog struct {
 	filenames []string
 }
 
+// Run generates a comparison of timesheets to the original as a
+// condensed report
 func (me *Worklog) Run() error {
 	expect := worklog.NewReport()
 	report := worklog.NewReport()
