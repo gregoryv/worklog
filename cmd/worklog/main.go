@@ -61,18 +61,20 @@ type Worklog struct {
 func (me *Worklog) Run() error {
 	expect := worklog.NewReport()
 	report := worklog.NewReport()
-	for _, tspath := range me.filenames {
+	for _, filename := range me.filenames {
 		if me.verbose {
-			fmt.Fprintln(os.Stderr, tspath)
+			log.Println(filename)
 		}
-		sheet, err := worklog.Load(tspath)
+		sheet, err := worklog.Load(filename)
 		if err != nil {
 			return err
 		}
 		report.Append(sheet)
+		// calculate expected timesheet
 		if me.origin != "" {
-			tspath := path.Join(me.origin, path.Base(tspath))
-			esheet, err := worklog.Load(tspath)
+			// original filename must match the given filename
+			filename := path.Join(me.origin, path.Base(filename))
+			esheet, err := worklog.Load(filename)
 			if err == nil {
 				expect.Append(esheet)
 			}
