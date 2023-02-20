@@ -80,10 +80,11 @@ func (me *Worklog) Run() error {
 			}
 		}
 	}
+
 	view := &ReportView{
 		Expected:       hhmm(expect.Reported()),
 		Reported:       hhmm(report.Reported()),
-		ReportedIndent: fmt.Sprintf("%22s", ""),
+		ReportedIndent: fmt.Sprintf("%22s", hhmm(report.Reported())),
 		Diff:           diff(report.Reported(), expect.Reported()),
 		Tags:           ConvertToTagView(report.Tags()),
 	}
@@ -94,6 +95,7 @@ func (me *Worklog) Run() error {
 			Reported: hhmm(sheet.Reported.Duration),
 			Tags:     sheet.Tags,
 		}
+		// todo look for flex tag
 		exp, _ := expect.FindByPeriod(sheet.Period)
 		if exp != nil {
 			view.Expected = worklog.FormatHHMM(exp.Reported.Duration)
@@ -132,6 +134,7 @@ type ReportView struct {
 	Tags           []TagView
 }
 
+// SheetView is the view model for each montly line
 type SheetView struct {
 	Period   string
 	Expected string
@@ -159,7 +162,7 @@ func ConvertToTagView(tags []worklog.Tagged) []TagView {
 func renderText(w io.Writer, view *ReportView) error {
 	t, err := template.New("default").Parse(`{{range .Sheets}}{{.Period}} {{.Reported}} {{.Diff}} {{range .Tags}} ({{.}}){{end}}
 {{end}}
-{{printf "%22s" .ReportedIndent}} {{.Diff}}
+{{ .ReportedIndent}} {{.Diff}}
 {{range .Tags}}{{printf "%30s" ""}} {{.Duration}} {{.Tag}}
 {{end}}`)
 
